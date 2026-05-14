@@ -1,0 +1,36 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "result",
+      "mime_type": "application/json",
+      "schema": "mn-agents.control_router.output.v1"
+    }
+  ],
+  "description": "Outputs emitted by mn-agents.control_router.",
+  "emitted_message_types": [
+    "routed_message"
+  ],
+  "events": [
+    "agent_started",
+    "agent_completed",
+    "agent_failed"
+  ],
+  "examples": [
+    {
+      "agent_type": "router",
+      "config": {
+        "emit_type": "simulation_start"
+      },
+      "node_id": "ingress",
+      "role": "root_coordinator",
+      "type": "map"
+    }
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.control_router.output.v1"
+    }
+  ],
+  "schema_version": "mn.agent.output.v1"
+}

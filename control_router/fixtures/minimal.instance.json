@@ -1,0 +1,8 @@
+{
+  "node_id": "ingress",
+  "role": "root_coordinator",
+  "uses": "mn-agents.control_router@1.0.0",
+  "with": {
+    "emit_type": "simulation_start"
+  }
+}

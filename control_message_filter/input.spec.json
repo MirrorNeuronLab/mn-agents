@@ -1,0 +1,33 @@
+{
+  "accepted_message_types": [
+    "control_message_filter_input"
+  ],
+  "description": "Inputs accepted by mn-agents.control_message_filter.",
+  "examples": [
+    {
+      "node_id": "message_filter",
+      "role": "root_coordinator",
+      "uses": "mn-agents.control_message_filter@1.0.0",
+      "with": {
+        "output_message_type": "filtered_message",
+        "predicate": "is_actionable"
+      }
+    }
+  ],
+  "optional_fields": [
+    "node_type",
+    "role",
+    "drop_message_type",
+    "output_message_type"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.control_message_filter.input.v1"
+    }
+  ],
+  "required_fields": [
+    "predicate"
+  ],
+  "schema_version": "mn.agent.input.v1"
+}

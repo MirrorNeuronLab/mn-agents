@@ -1,0 +1,13 @@
+{
+  "node_id": "llm_tool",
+  "role": "tool_using_agent",
+  "uses": "mn-agents.data_llm_tool@1.0.0",
+  "with": {
+    "llm_config": "primary",
+    "output_message_type": "llm_tool_result",
+    "role": "tool_using_agent",
+    "tools": [
+      "search_docs"
+    ]
+  }
+}

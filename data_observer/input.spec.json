@@ -1,0 +1,34 @@
+{
+  "accepted_message_types": [
+    "data_observer_input"
+  ],
+  "description": "Inputs accepted by mn-agents.data_observer.",
+  "examples": [
+    {
+      "node_id": "observer",
+      "role": "observer",
+      "uses": "mn-agents.data_observer@1.0.0",
+      "with": {
+        "observation_mode": "poll",
+        "observation_source": "sensor.feed",
+        "output_message_type": "observation_event"
+      }
+    }
+  ],
+  "optional_fields": [
+    "node_type",
+    "role",
+    "observation_mode",
+    "output_message_type"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.data_observer.input.v1"
+    }
+  ],
+  "required_fields": [
+    "observation_source"
+  ],
+  "schema_version": "mn.agent.input.v1"
+}

@@ -1,0 +1,25 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "result",
+      "mime_type": "application/json",
+      "schema": "mn-agents.data_observer.output.v1"
+    }
+  ],
+  "description": "Outputs emitted by mn-agents.data_observer.",
+  "emitted_message_types": [
+    "observation_event"
+  ],
+  "events": [
+    "agent_started",
+    "agent_completed",
+    "agent_failed"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.data_observer.output.v1"
+    }
+  ],
+  "schema_version": "mn.agent.output.v1"
+}

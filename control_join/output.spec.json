@@ -1,0 +1,36 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "result",
+      "mime_type": "application/json",
+      "schema": "mn-agents.control_join.output.v1"
+    }
+  ],
+  "description": "Outputs emitted by mn-agents.control_join.",
+  "emitted_message_types": [
+    "run_completed"
+  ],
+  "events": [
+    "agent_started",
+    "agent_completed",
+    "agent_failed"
+  ],
+  "examples": [
+    {
+      "agent_type": "aggregator",
+      "config": {
+        "complete_on_message": true
+      },
+      "node_id": "report_sink",
+      "role": "result_sink",
+      "type": "reduce"
+    }
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.control_join.output.v1"
+    }
+  ],
+  "schema_version": "mn.agent.output.v1"
+}

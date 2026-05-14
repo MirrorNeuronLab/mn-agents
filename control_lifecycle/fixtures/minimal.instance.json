@@ -1,0 +1,9 @@
+{
+  "node_id": "lifecycle",
+  "role": "root_coordinator",
+  "uses": "mn-agents.control_lifecycle@1.0.0",
+  "with": {
+    "action": "start",
+    "output_message_type": "workflow_started"
+  }
+}

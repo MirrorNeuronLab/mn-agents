@@ -1,0 +1,10 @@
+{
+  "node_id": "simulation_loop",
+  "role": "root_coordinator",
+  "uses": "mn-agents.data_python_executor@1.0.0",
+  "with": {
+    "output_message_type": "blueprint_report",
+    "script": "scripts/run_blueprint.py",
+    "upload_path": "simulation_loop"
+  }
+}

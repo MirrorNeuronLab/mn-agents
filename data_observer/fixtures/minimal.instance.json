@@ -1,0 +1,10 @@
+{
+  "node_id": "observer",
+  "role": "observer",
+  "uses": "mn-agents.data_observer@1.0.0",
+  "with": {
+    "observation_mode": "poll",
+    "observation_source": "sensor.feed",
+    "output_message_type": "observation_event"
+  }
+}

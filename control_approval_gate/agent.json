@@ -1,0 +1,86 @@
+{
+  "behavior": {
+    "delegation": {
+      "allow_recursive": false,
+      "enabled": false,
+      "inherits_tools": false
+    },
+    "emits": {
+      "artifacts": [
+        {
+          "artifact_id": "result",
+          "mime_type": "application/json",
+          "schema": "mn-agents.control_approval_gate.output.v1"
+        }
+      ],
+      "events": [
+        "agent_started",
+        "agent_completed",
+        "agent_failed"
+      ],
+      "messages": [
+        {
+          "fallback_message_type": "approval_required",
+          "message_type": "with.output_message_type"
+        }
+      ]
+    },
+    "lifecycle_events": {
+      "failure": [
+        "agent_started",
+        "agent_failed"
+      ],
+      "success": [
+        "agent_started",
+        "agent_completed"
+      ]
+    },
+    "required_config": [
+      "approval_mode"
+    ],
+    "routing": {
+      "transitions": [
+        {
+          "then": {
+            "reason": "approval_gate_evaluated",
+            "type": "terminate"
+          },
+          "when": {
+            "type": "always"
+          }
+        }
+      ]
+    },
+    "schema_version": "mn.agent.behavior.v1",
+    "summary": "Emit an approval gate decision before downstream work proceeds."
+  },
+  "defaults": {
+    "agent_type": "router",
+    "type": "map"
+  },
+  "description": "Gates workflow progress on human or policy approval state.",
+  "input_spec": "input.spec.json",
+  "inputs": {
+    "optional": [
+      "node_type",
+      "role",
+      "approver",
+      "timeout_seconds",
+      "output_message_type"
+    ],
+    "required": [
+      "approval_mode"
+    ]
+  },
+  "kind": "router",
+  "output_spec": "output.spec.json",
+  "payloads": "payloads",
+  "provides": [
+    "human_approval_gate",
+    "policy_approval_gate"
+  ],
+  "renders_to": "manifest.nodes[]",
+  "template_category": "control",
+  "template_id": "mn-agents.control_approval_gate",
+  "version": "1.0.0"
+}

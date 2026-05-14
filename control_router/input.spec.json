@@ -1,0 +1,32 @@
+{
+  "accepted_message_types": [
+    "router_input"
+  ],
+  "description": "Inputs accepted by mn-agents.control_router.",
+  "examples": [
+    {
+      "node_id": "ingress",
+      "role": "root_coordinator",
+      "uses": "mn-agents.control_router@1.0.0",
+      "with": {
+        "emit_type": "simulation_start"
+      }
+    }
+  ],
+  "optional_fields": [
+    "emit_type",
+    "node_type",
+    "role",
+    "backpressure",
+    "conditions",
+    "routing_mode"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.control_router.input.v1"
+    }
+  ],
+  "required_fields": [],
+  "schema_version": "mn.agent.input.v1"
+}

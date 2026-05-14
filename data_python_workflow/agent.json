@@ -1,0 +1,100 @@
+{
+  "behavior": {
+    "delegation": {
+      "allow_recursive": false,
+      "enabled": false,
+      "inherits_tools": false
+    },
+    "emits": {
+      "artifacts": [
+        {
+          "artifact_id": "result",
+          "mime_type": "application/json",
+          "schema": "mn-agents.data_python_workflow.output.v1"
+        }
+      ],
+      "events": [
+        "agent_started",
+        "agent_completed",
+        "agent_failed"
+      ],
+      "messages": [
+        {
+          "fallback_message_type": "python_workflow_result",
+          "message_type": "with.output_message_type"
+        }
+      ]
+    },
+    "lifecycle_events": {
+      "failure": [
+        "agent_started",
+        "agent_failed"
+      ],
+      "success": [
+        "agent_started",
+        "agent_completed"
+      ]
+    },
+    "required_config": [
+      "command",
+      "module",
+      "runner_module",
+      "upload_path",
+      "workdir"
+    ],
+    "routing": {
+      "transitions": [
+        {
+          "then": {
+            "reason": "python_workflow_completed",
+            "type": "terminate"
+          },
+          "when": {
+            "type": "always"
+          }
+        }
+      ]
+    },
+    "schema_version": "mn.agent.behavior.v1",
+    "summary": "Run a generated Python workflow worker bundle with standard output handling."
+  },
+  "defaults": {
+    "agent_type": "executor",
+    "pool": "default",
+    "pool_slots": 1,
+    "runner_module": "MirrorNeuron.Runner.HostLocal",
+    "script": "mn_worker.py",
+    "tty": false,
+    "type": "generic",
+    "workdir_template": "/sandbox/job/{upload_path}"
+  },
+  "description": "Runs a generated Python workflow bundle worker with blueprint-standard config/input/output handling.",
+  "input_spec": "input.spec.json",
+  "inputs": {
+    "optional": [
+      "node_type",
+      "role",
+      "output_message_type",
+      "runner_module",
+      "workdir",
+      "environment",
+      "pass_env"
+    ],
+    "required": [
+      "module",
+      "upload_path"
+    ]
+  },
+  "kind": "executor",
+  "output_spec": "output.spec.json",
+  "payloads": "payloads",
+  "provides": [
+    "python_workflow_execution",
+    "run_store_events",
+    "artifact_writing"
+  ],
+  "renders_to": "manifest.nodes[]",
+  "template_category": "data",
+  "template_id": "mn-agents.data_python_workflow",
+  "version": "1.0.0"
+}

@@ -1,0 +1,12 @@
+{
+  "node_id": "sandboxed_codegen",
+  "role": "codegen_agent",
+  "uses": "mn-agents.data_sandboxed_codegen@1.0.0",
+  "with": {
+    "llm_config": "primary",
+    "output_message_type": "codegen_result",
+    "policy": "no_network",
+    "sandbox": "openshell",
+    "task": "generate_patch"
+  }
+}

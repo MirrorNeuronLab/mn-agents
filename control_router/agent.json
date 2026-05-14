@@ -1,0 +1,84 @@
+{
+  "behavior": {
+    "delegation": {
+      "allow_recursive": false,
+      "enabled": false,
+      "inherits_tools": false
+    },
+    "emits": {
+      "artifacts": [
+        {
+          "artifact_id": "result",
+          "mime_type": "application/json",
+          "schema": "mn-agents.control_router.output.v1"
+        }
+      ],
+      "events": [
+        "agent_started",
+        "agent_completed",
+        "agent_failed"
+      ],
+      "messages": [
+        {
+          "fallback_message_type": "routed_message",
+          "message_type": "config.emit_type"
+        }
+      ]
+    },
+    "lifecycle_events": {
+      "failure": [
+        "agent_started",
+        "agent_failed"
+      ],
+      "success": [
+        "agent_started",
+        "agent_completed"
+      ]
+    },
+    "required_config": [],
+    "routing": {
+      "transitions": [
+        {
+          "then": {
+            "reason": "route_emitted",
+            "type": "terminate"
+          },
+          "when": {
+            "message_type": "router_input",
+            "type": "from_message_type"
+          }
+        }
+      ]
+    },
+    "schema_version": "mn.agent.behavior.v1",
+    "summary": "Emit an initial or routed message and advance graph routing deterministically."
+  },
+  "defaults": {
+    "agent_type": "router",
+    "type": "map"
+  },
+  "description": "Emits an initial or routed message into a graph with optional state/backpressure config.",
+  "input_spec": "input.spec.json",
+  "inputs": {
+    "optional": [
+      "emit_type",
+      "node_type",
+      "role",
+      "backpressure",
+      "conditions",
+      "routing_mode"
+    ],
+    "required": []
+  },
+  "kind": "router",
+  "output_spec": "output.spec.json",
+  "payloads": "payloads",
+  "provides": [
+    "message_routing",
+    "state_driven_routing"
+  ],
+  "renders_to": "manifest.nodes[]",
+  "template_category": "control",
+  "template_id": "mn-agents.control_router",
+  "version": "1.0.0"
+}

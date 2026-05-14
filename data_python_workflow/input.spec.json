@@ -1,0 +1,37 @@
+{
+  "accepted_message_types": [
+    "python_workflow_input"
+  ],
+  "description": "Inputs accepted by mn-agents.data_python_workflow.",
+  "examples": [
+    {
+      "node_id": "mn_python_workflow",
+      "uses": "mn-agents.data_python_workflow@1.0.0",
+      "with": {
+        "module": "workflow",
+        "output_message_type": "python_workflow_result",
+        "upload_path": "mn_python_workflow"
+      }
+    }
+  ],
+  "optional_fields": [
+    "node_type",
+    "role",
+    "output_message_type",
+    "runner_module",
+    "workdir",
+    "environment",
+    "pass_env"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.data_python_workflow.input.v1"
+    }
+  ],
+  "required_fields": [
+    "module",
+    "upload_path"
+  ],
+  "schema_version": "mn.agent.input.v1"
+}

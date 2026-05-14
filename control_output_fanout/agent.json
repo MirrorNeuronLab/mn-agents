@@ -1,0 +1,91 @@
+{
+  "behavior": {
+    "delegation": {
+      "allow_recursive": false,
+      "enabled": false,
+      "inherits_tools": false
+    },
+    "emits": {
+      "artifacts": [
+        {
+          "artifact_id": "result",
+          "mime_type": "application/json",
+          "schema": "mn-agents.control_output_fanout.output.v1"
+        }
+      ],
+      "events": [
+        "agent_started",
+        "agent_completed",
+        "agent_failed"
+      ],
+      "messages": [
+        {
+          "message_type": "output_skill_completed"
+        },
+        {
+          "message_type": "output_skill_failed"
+        }
+      ]
+    },
+    "lifecycle_events": {
+      "failure": [
+        "agent_started",
+        "agent_failed"
+      ],
+      "success": [
+        "agent_started",
+        "agent_completed"
+      ]
+    },
+    "required_config": [
+      "content",
+      "runner_module"
+    ],
+    "routing": {
+      "transitions": [
+        {
+          "then": {
+            "reason": "fanout_completed",
+            "type": "terminate"
+          },
+          "when": {
+            "key": "outputs_ready",
+            "type": "context_equals",
+            "value": true
+          }
+        }
+      ]
+    },
+    "schema_version": "mn.agent.behavior.v1",
+    "summary": "Fan out completed local run outputs to configured output skills."
+  },
+  "defaults": {
+    "agent_type": "executor",
+    "runner_module": "MirrorNeuron.Runner.HostLocal",
+    "type": "reduce"
+  },
+  "description": "Fans out output events or artifacts after mandatory local run-store writes.",
+  "input_spec": "input.spec.json",
+  "inputs": {
+    "optional": [
+      "node_type",
+      "role",
+      "skills",
+      "required"
+    ],
+    "required": [
+      "content"
+    ]
+  },
+  "kind": "executor",
+  "output_spec": "output.spec.json",
+  "payloads": "payloads",
+  "provides": [
+    "output_skill_fanout",
+    "optional_output_errors"
+  ],
+  "renders_to": "manifest.nodes[]",
+  "template_category": "control",
+  "template_id": "mn-agents.control_output_fanout",
+  "version": "1.0.0"
+}

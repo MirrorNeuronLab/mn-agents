@@ -1,0 +1,10 @@
+{
+  "agent_type": "router",
+  "config": {
+    "action": "start",
+    "output_message_type": "workflow_started"
+  },
+  "node_id": "lifecycle",
+  "role": "root_coordinator",
+  "type": "map"
+}

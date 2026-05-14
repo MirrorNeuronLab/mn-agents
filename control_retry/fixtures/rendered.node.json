@@ -1,0 +1,12 @@
+{
+  "agent_type": "router",
+  "config": {
+    "backoff_ms": 1000,
+    "max_attempts": 3,
+    "output_message_type": "retry_scheduled",
+    "retry_policy": "exponential_backoff"
+  },
+  "node_id": "retry",
+  "role": "root_coordinator",
+  "type": "map"
+}

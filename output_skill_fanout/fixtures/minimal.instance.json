@@ -1,7 +1,0 @@
-{
-  "node_id": "output_fanout",
-  "uses": "mn-agents.output_skill_fanout@1.0.0",
-  "with": {
-    "content": "events"
-  }
-}

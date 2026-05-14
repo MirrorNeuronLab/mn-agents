@@ -1,0 +1,11 @@
+{
+  "agent_type": "router",
+  "config": {
+    "approval_mode": "manual",
+    "approver": "operator",
+    "output_message_type": "approval_required"
+  },
+  "node_id": "approval_gate",
+  "role": "root_coordinator",
+  "type": "map"
+}

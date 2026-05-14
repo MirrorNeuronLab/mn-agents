@@ -1,0 +1,36 @@
+{
+  "accepted_message_types": [
+    "data_edge_model_input"
+  ],
+  "description": "Inputs accepted by mn-agents.data_edge_model.",
+  "examples": [
+    {
+      "node_id": "edge_model",
+      "role": "edge_model_worker",
+      "uses": "mn-agents.data_edge_model@1.0.0",
+      "with": {
+        "batch_size": 1,
+        "device_profile": "cpu_small",
+        "model_config": "edge_primary",
+        "output_message_type": "edge_model_result"
+      }
+    }
+  ],
+  "optional_fields": [
+    "node_type",
+    "role",
+    "batch_size",
+    "output_message_type"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.data_edge_model.input.v1"
+    }
+  ],
+  "required_fields": [
+    "model_config",
+    "device_profile"
+  ],
+  "schema_version": "mn.agent.input.v1"
+}

@@ -1,0 +1,7 @@
+{
+  "node_id": "web_ui",
+  "uses": "mn-agents.control_web_output@1.0.0",
+  "with": {
+    "adapter": "gradio"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "agent_type": "executor",
+  "config": {
+    "llm_config": "primary",
+    "output_message_type": "codegen_result",
+    "policy": "no_network",
+    "runner_module": "MirrorNeuron.Sandbox.OpenShell",
+    "sandbox": "openshell",
+    "task": "generate_patch"
+  },
+  "node_id": "sandboxed_codegen",
+  "role": "codegen_agent",
+  "type": "map"
+}

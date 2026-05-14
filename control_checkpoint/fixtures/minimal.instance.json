@@ -1,0 +1,10 @@
+{
+  "node_id": "checkpoint",
+  "role": "root_coordinator",
+  "uses": "mn-agents.control_checkpoint@1.0.0",
+  "with": {
+    "checkpoint_key": "stage-1",
+    "checkpoint_mode": "write",
+    "output_message_type": "checkpoint_recorded"
+  }
+}

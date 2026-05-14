@@ -1,0 +1,37 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "result",
+      "mime_type": "application/json",
+      "schema": "mn-agents.control_tick_source.output.v1"
+    }
+  ],
+  "description": "Outputs emitted by mn-agents.control_tick_source.",
+  "emitted_message_types": [
+    "stream_tick"
+  ],
+  "events": [
+    "agent_started",
+    "agent_completed",
+    "agent_failed"
+  ],
+  "examples": [
+    {
+      "agent_type": "module",
+      "config": {
+        "emit_type": "frame_tick",
+        "interval_ms": 1000,
+        "module": "MirrorNeuron.Agents.StreamTickSource"
+      },
+      "node_id": "tick_source",
+      "type": "stream"
+    }
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.control_tick_source.output.v1"
+    }
+  ],
+  "schema_version": "mn.agent.output.v1"
+}

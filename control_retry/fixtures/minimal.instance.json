@@ -1,0 +1,11 @@
+{
+  "node_id": "retry",
+  "role": "root_coordinator",
+  "uses": "mn-agents.control_retry@1.0.0",
+  "with": {
+    "backoff_ms": 1000,
+    "max_attempts": 3,
+    "output_message_type": "retry_scheduled",
+    "retry_policy": "exponential_backoff"
+  }
+}

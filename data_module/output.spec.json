@@ -1,0 +1,37 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "result",
+      "mime_type": "application/json",
+      "schema": "mn-agents.data_module.output.v1"
+    }
+  ],
+  "description": "Outputs emitted by mn-agents.data_module.",
+  "emitted_message_types": [
+    "native_runtime_message"
+  ],
+  "events": [
+    "agent_started",
+    "agent_completed",
+    "agent_failed"
+  ],
+  "examples": [
+    {
+      "agent_type": "module",
+      "config": {
+        "module": "Example.AnswerAgent",
+        "module_source": "beam_modules/answer_agent.ex"
+      },
+      "node_id": "answer_agent",
+      "role": "answer",
+      "type": "stream"
+    }
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.data_module.output.v1"
+    }
+  ],
+  "schema_version": "mn.agent.output.v1"
+}

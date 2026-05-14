@@ -12,6 +12,19 @@ from mn_blueprint_support import render_agent_node, validate_agent_library
 
 
 AGENTS_ROOT = Path(__file__).resolve().parents[1]
+LEGACY_TEMPLATE_IDS = {
+    "mn-agents.python_executor",
+    "mn-agents.python_workflow",
+    "mn-agents.report_aggregator",
+    "mn-agents.module_agent",
+    "mn-agents.router_agent",
+    "mn-agents.stream_tick_source",
+    "mn-agents.input_skill_listener",
+    "mn-agents.output_skill_fanout",
+    "mn-agents.llm_agent",
+    "mn-agents.openshell_service",
+    "mn-agents.web_ui_output",
+}
 
 
 def _read_json(path: Path) -> dict:
@@ -40,8 +53,12 @@ def test_index_entries_are_unique_and_paths_match_agent_files():
         assert not Path(item["path"]).is_absolute()
         assert ".." not in Path(item["path"]).parts
         assert agent["template_id"] == item["template_id"]
+        assert agent["template_id"] not in LEGACY_TEMPLATE_IDS
         assert agent["version"] == item["version"]
         assert agent["kind"] == item["kind"]
+        assert agent["template_category"] == item["template_category"]
+        assert item["template_category"] in {"control", "data"}
+        assert agent["behavior"]["schema_version"] == "mn.agent.behavior.v1"
 
 
 def test_agent_templates_match_schema():
@@ -97,7 +114,7 @@ def test_render_agent_templates_cli_expands_manifest(tmp_path: Path):
         "nodes": [
             {
                 "node_id": "report_sink",
-                "uses": "mn-agents.report_aggregator@1.0.0",
+                "uses": "mn-agents.control_join@1.0.0",
                 "with": {"complete_on_message": True},
             }
         ],
@@ -119,4 +136,4 @@ def test_render_agent_templates_cli_expands_manifest(tmp_path: Path):
     assert rendered["nodes"][0]["node_id"] == "report_sink"
     assert rendered["nodes"][0]["agent_type"] == "aggregator"
     assert "uses" not in rendered["nodes"][0]
-    assert rendered["metadata"]["agent_templates"]["rendered"][0]["template_id"] == "mn-agents.report_aggregator"
+    assert rendered["metadata"]["agent_templates"]["rendered"][0]["template_id"] == "mn-agents.control_join"
