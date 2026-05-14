@@ -1,0 +1,9 @@
+{
+  "agent_type": "aggregator",
+  "config": {
+    "complete_on_message": true
+  },
+  "node_id": "report_sink",
+  "role": "result_sink",
+  "type": "reduce"
+}

@@ -1,0 +1,30 @@
+{
+  "defaults": {
+    "agent_type": "executor",
+    "runner_module": "MirrorNeuron.Runner.HostLocal",
+    "type": "reduce"
+  },
+  "description": "Fans out output events or artifacts after mandatory local run-store writes.",
+  "input_spec": "input.spec.json",
+  "inputs": {
+    "optional": [
+      "node_type",
+      "role",
+      "skills",
+      "required"
+    ],
+    "required": [
+      "content"
+    ]
+  },
+  "kind": "executor",
+  "output_spec": "output.spec.json",
+  "payloads": "payloads",
+  "provides": [
+    "output_skill_fanout",
+    "optional_output_errors"
+  ],
+  "renders_to": "manifest.nodes[]",
+  "template_id": "mn-agents.output_skill_fanout",
+  "version": "1.0.0"
+}

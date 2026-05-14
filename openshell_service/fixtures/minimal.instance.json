@@ -1,0 +1,10 @@
+{
+  "node_id": "web_service",
+  "uses": "mn-agents.openshell_service@1.0.0",
+  "with": {
+    "container_port": 8080,
+    "custom_openshell_image": "web/openshell",
+    "external_port": 8080,
+    "tunnel": "ssh"
+  }
+}

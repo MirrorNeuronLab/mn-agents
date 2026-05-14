@@ -1,0 +1,82 @@
+{
+  "agents": [
+    {
+      "description": "Runs a Python script with standard blueprint lifecycle wiring.",
+      "kind": "executor",
+      "path": "python_executor",
+      "template_id": "mn-agents.python_executor",
+      "version": "1.0.0"
+    },
+    {
+      "description": "Runs a generated Python workflow bundle worker with blueprint-standard config/input/output handling.",
+      "kind": "executor",
+      "path": "python_workflow",
+      "template_id": "mn-agents.python_workflow",
+      "version": "1.0.0"
+    },
+    {
+      "description": "Reduce/aggregator sink that completes when a configured message arrives.",
+      "kind": "aggregator",
+      "path": "report_aggregator",
+      "template_id": "mn-agents.report_aggregator",
+      "version": "1.0.0"
+    },
+    {
+      "description": "Runs a native MirrorNeuron or BEAM module node with standard manifest wiring.",
+      "kind": "module",
+      "path": "module_agent",
+      "template_id": "mn-agents.module_agent",
+      "version": "1.0.0"
+    },
+    {
+      "description": "Emits an initial or routed message into a graph with optional state/backpressure config.",
+      "kind": "router",
+      "path": "router_agent",
+      "template_id": "mn-agents.router_agent",
+      "version": "1.0.0"
+    },
+    {
+      "description": "Reusable stream or polling tick source for live and replayed stream workflows.",
+      "kind": "listener",
+      "path": "stream_tick_source",
+      "template_id": "mn-agents.stream_tick_source",
+      "version": "1.0.0"
+    },
+    {
+      "description": "Listens to connector-backed input skills such as Drive, Slack, webhook, socket, or WebSocket inputs.",
+      "kind": "listener",
+      "path": "input_skill_listener",
+      "template_id": "mn-agents.input_skill_listener",
+      "version": "1.0.0"
+    },
+    {
+      "description": "Fans out output events or artifacts after mandatory local run-store writes.",
+      "kind": "executor",
+      "path": "output_skill_fanout",
+      "template_id": "mn-agents.output_skill_fanout",
+      "version": "1.0.0"
+    },
+    {
+      "description": "Named LLM_CONFIG based LLM agent with optional A2A discovery metadata.",
+      "kind": "executor",
+      "path": "llm_agent",
+      "template_id": "mn-agents.llm_agent",
+      "version": "1.0.0"
+    },
+    {
+      "description": "Custom OpenShell service with explicit port and SSH tunnel verification.",
+      "kind": "service",
+      "path": "openshell_service",
+      "template_id": "mn-agents.openshell_service",
+      "version": "1.0.0"
+    },
+    {
+      "description": "TCP output and web UI service using primary port 8080 and fallback port 8081.",
+      "kind": "service",
+      "path": "web_ui_output",
+      "template_id": "mn-agents.web_ui_output",
+      "version": "1.0.0"
+    }
+  ],
+  "schema_version": "mn-agents.index.v1"
+}

@@ -1,0 +1,35 @@
+{
+  "accepted_message_types": [
+    "input_skill_start"
+  ],
+  "description": "Inputs accepted by mn-agents.input_skill_listener.",
+  "examples": [
+    {
+      "node_id": "input_listener",
+      "uses": "mn-agents.input_skill_listener@1.0.0",
+      "with": {
+        "event_types": [
+          "message"
+        ],
+        "skill_name": "telemetry_ingress"
+      }
+    }
+  ],
+  "optional_fields": [
+    "node_type",
+    "role",
+    "event_types",
+    "live",
+    "backpressure"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.input_skill_listener.input.v1"
+    }
+  ],
+  "required_fields": [
+    "skill_name"
+  ],
+  "schema_version": "mn.agent.input.v1"
+}

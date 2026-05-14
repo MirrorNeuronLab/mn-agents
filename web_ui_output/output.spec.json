@@ -1,0 +1,38 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "result",
+      "mime_type": "application/json",
+      "schema": "mn-agents.web_ui_output.output.v1"
+    }
+  ],
+  "description": "Outputs emitted by mn-agents.web_ui_output.",
+  "emitted_message_types": [
+    "web_ui_available"
+  ],
+  "events": [
+    "agent_started",
+    "agent_completed",
+    "agent_failed"
+  ],
+  "examples": [
+    {
+      "agent_type": "executor",
+      "config": {
+        "adapter": "gradio",
+        "fallback_port": 8081,
+        "primary_port": 8080,
+        "runner_module": "MirrorNeuron.Runner.OpenShell"
+      },
+      "node_id": "web_ui",
+      "type": "generic"
+    }
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.web_ui_output.output.v1"
+    }
+  ],
+  "schema_version": "mn.agent.output.v1"
+}

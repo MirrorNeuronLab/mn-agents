@@ -1,0 +1,33 @@
+{
+  "accepted_message_types": [
+    "stream_start"
+  ],
+  "description": "Inputs accepted by mn-agents.stream_tick_source.",
+  "examples": [
+    {
+      "node_id": "tick_source",
+      "uses": "mn-agents.stream_tick_source@1.0.0",
+      "with": {
+        "emit_type": "frame_tick",
+        "interval_ms": 1000
+      }
+    }
+  ],
+  "optional_fields": [
+    "node_type",
+    "role",
+    "interval_ms",
+    "backpressure",
+    "stream_name"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.stream_tick_source.input.v1"
+    }
+  ],
+  "required_fields": [
+    "emit_type"
+  ],
+  "schema_version": "mn.agent.input.v1"
+}

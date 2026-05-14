@@ -1,0 +1,9 @@
+{
+  "agent_type": "router",
+  "config": {
+    "emit_type": "simulation_start"
+  },
+  "node_id": "ingress",
+  "role": "root_coordinator",
+  "type": "map"
+}

@@ -1,0 +1,12 @@
+{
+  "agent_type": "module",
+  "config": {
+    "event_types": [
+      "message"
+    ],
+    "module": "MirrorNeuron.Agents.InputSkillListener",
+    "skill_name": "telemetry_ingress"
+  },
+  "node_id": "input_listener",
+  "type": "stream"
+}

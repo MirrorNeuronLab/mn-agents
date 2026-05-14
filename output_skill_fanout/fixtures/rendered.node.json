@@ -1,0 +1,9 @@
+{
+  "agent_type": "executor",
+  "config": {
+    "content": "events",
+    "runner_module": "MirrorNeuron.Runner.HostLocal"
+  },
+  "node_id": "output_fanout",
+  "type": "reduce"
+}

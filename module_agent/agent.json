@@ -1,0 +1,31 @@
+{
+  "defaults": {
+    "agent_type": "module",
+    "type": "generic"
+  },
+  "description": "Runs a native MirrorNeuron or BEAM module node with standard manifest wiring.",
+  "input_spec": "input.spec.json",
+  "inputs": {
+    "optional": [
+      "node_type",
+      "role",
+      "module_source",
+      "emit_type",
+      "answer_node",
+      "backpressure"
+    ],
+    "required": [
+      "module"
+    ]
+  },
+  "kind": "module",
+  "output_spec": "output.spec.json",
+  "payloads": "payloads",
+  "provides": [
+    "native_runtime_module",
+    "structured_runtime_config"
+  ],
+  "renders_to": "manifest.nodes[]",
+  "template_id": "mn-agents.module_agent",
+  "version": "1.0.0"
+}

@@ -1,0 +1,9 @@
+{
+  "node_id": "mn_python_workflow",
+  "uses": "mn-agents.python_workflow@1.0.0",
+  "with": {
+    "module": "workflow",
+    "output_message_type": "python_workflow_result",
+    "upload_path": "mn_python_workflow"
+  }
+}

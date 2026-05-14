@@ -1,0 +1,49 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "result",
+      "mime_type": "application/json",
+      "schema": "mn-agents.llm_agent.output.v1"
+    }
+  ],
+  "description": "Outputs emitted by mn-agents.llm_agent.",
+  "emitted_message_types": [
+    "llm_decision"
+  ],
+  "events": [
+    "agent_started",
+    "agent_completed",
+    "agent_failed"
+  ],
+  "examples": [
+    {
+      "agent_type": "executor",
+      "config": {
+        "llm_config": "primary",
+        "output_message_type": "llm_decision",
+        "role": "Decision agent",
+        "runner_module": "MirrorNeuron.Runner.HostLocal"
+      },
+      "node_id": "decision_agent",
+      "type": "map"
+    }
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.llm_agent.output.v1"
+    }
+  ],
+  "protocol_adapters": {
+    "a2a": {
+      "agent_card": "a2a/agent-card.json",
+      "enabled": true,
+      "input_envelope": "Message",
+      "output_envelope": "Artifact",
+      "recommended_for": [
+        "python_llm_agent"
+      ]
+    }
+  },
+  "schema_version": "mn.agent.output.v1"
+}

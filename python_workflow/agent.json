@@ -1,0 +1,40 @@
+{
+  "defaults": {
+    "agent_type": "executor",
+    "pool": "default",
+    "pool_slots": 1,
+    "runner_module": "MirrorNeuron.Runner.HostLocal",
+    "script": "mn_worker.py",
+    "tty": false,
+    "type": "generic",
+    "workdir_template": "/sandbox/job/{upload_path}"
+  },
+  "description": "Runs a generated Python workflow bundle worker with blueprint-standard config/input/output handling.",
+  "input_spec": "input.spec.json",
+  "inputs": {
+    "optional": [
+      "node_type",
+      "role",
+      "output_message_type",
+      "runner_module",
+      "workdir",
+      "environment",
+      "pass_env"
+    ],
+    "required": [
+      "module",
+      "upload_path"
+    ]
+  },
+  "kind": "executor",
+  "output_spec": "output.spec.json",
+  "payloads": "payloads",
+  "provides": [
+    "python_workflow_execution",
+    "run_store_events",
+    "artifact_writing"
+  ],
+  "renders_to": "manifest.nodes[]",
+  "template_id": "mn-agents.python_workflow",
+  "version": "1.0.0"
+}

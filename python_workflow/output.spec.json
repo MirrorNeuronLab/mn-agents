@@ -1,0 +1,46 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "result",
+      "mime_type": "application/json",
+      "schema": "mn-agents.python_workflow.output.v1"
+    }
+  ],
+  "description": "Outputs emitted by mn-agents.python_workflow.",
+  "emitted_message_types": [
+    "python_workflow_result"
+  ],
+  "events": [
+    "agent_started",
+    "agent_completed",
+    "agent_failed"
+  ],
+  "examples": [
+    {
+      "agent_type": "executor",
+      "config": {
+        "command": [
+          "python3",
+          "mn_worker.py"
+        ],
+        "output_message_type": "python_workflow_result",
+        "pool": "default",
+        "pool_slots": 1,
+        "runner_module": "MirrorNeuron.Runner.HostLocal",
+        "tty": false,
+        "upload_as": "mn_python_workflow",
+        "upload_path": "mn_python_workflow",
+        "workdir": "/sandbox/job/mn_python_workflow"
+      },
+      "node_id": "mn_python_workflow",
+      "type": "generic"
+    }
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.python_workflow.output.v1"
+    }
+  ],
+  "schema_version": "mn.agent.output.v1"
+}

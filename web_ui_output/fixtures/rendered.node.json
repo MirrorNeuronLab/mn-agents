@@ -1,0 +1,11 @@
+{
+  "agent_type": "executor",
+  "config": {
+    "adapter": "gradio",
+    "fallback_port": 8081,
+    "primary_port": 8080,
+    "runner_module": "MirrorNeuron.Runner.OpenShell"
+  },
+  "node_id": "web_ui",
+  "type": "generic"
+}

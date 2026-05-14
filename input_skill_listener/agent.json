@@ -1,0 +1,31 @@
+{
+  "defaults": {
+    "agent_type": "module",
+    "module": "MirrorNeuron.Agents.InputSkillListener",
+    "type": "stream"
+  },
+  "description": "Listens to connector-backed input skills such as Drive, Slack, webhook, socket, or WebSocket inputs.",
+  "input_spec": "input.spec.json",
+  "inputs": {
+    "optional": [
+      "node_type",
+      "role",
+      "event_types",
+      "live",
+      "backpressure"
+    ],
+    "required": [
+      "skill_name"
+    ]
+  },
+  "kind": "listener",
+  "output_spec": "output.spec.json",
+  "payloads": "payloads",
+  "provides": [
+    "input_skill_events",
+    "stream_subscription"
+  ],
+  "renders_to": "manifest.nodes[]",
+  "template_id": "mn-agents.input_skill_listener",
+  "version": "1.0.0"
+}

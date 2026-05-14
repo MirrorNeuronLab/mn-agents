@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "inputs": {
+      "type": "object"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "template_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "template_id",
+    "version",
+    "kind",
+    "description",
+    "inputs",
+    "input_spec",
+    "output_spec",
+    "payloads",
+    "defaults",
+    "provides",
+    "renders_to"
+  ],
+  "title": "MirrorNeuron Agent Template",
+  "type": "object"
+}

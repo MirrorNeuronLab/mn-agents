@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "node_id": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "uses": {
+      "type": "string"
+    },
+    "with": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "node_id",
+    "uses",
+    "with"
+  ],
+  "title": "MirrorNeuron Agent Template Instance",
+  "type": "object"
+}

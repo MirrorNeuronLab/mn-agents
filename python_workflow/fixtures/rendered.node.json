@@ -1,0 +1,20 @@
+{
+  "agent_type": "executor",
+  "config": {
+    "command": [
+      "python3",
+      "mn_worker.py"
+    ],
+    "module": "workflow",
+    "output_message_type": "python_workflow_result",
+    "pool": "default",
+    "pool_slots": 1,
+    "runner_module": "MirrorNeuron.Runner.HostLocal",
+    "tty": false,
+    "upload_as": "mn_python_workflow",
+    "upload_path": "mn_python_workflow",
+    "workdir": "/sandbox/job/mn_python_workflow"
+  },
+  "node_id": "mn_python_workflow",
+  "type": "generic"
+}

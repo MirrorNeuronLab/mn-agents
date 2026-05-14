@@ -1,0 +1,8 @@
+{
+  "node_id": "report_sink",
+  "role": "result_sink",
+  "uses": "mn-agents.report_aggregator@1.0.0",
+  "with": {
+    "complete_on_message": true
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "accepted_message_types": [
+    "run_python_script"
+  ],
+  "description": "Inputs accepted by mn-agents.python_executor.",
+  "examples": [
+    {
+      "node_id": "simulation_loop",
+      "role": "root_coordinator",
+      "uses": "mn-agents.python_executor@1.0.0",
+      "with": {
+        "output_message_type": "blueprint_report",
+        "script": "scripts/run_blueprint.py",
+        "upload_path": "simulation_loop"
+      }
+    }
+  ],
+  "optional_fields": [
+    "node_type",
+    "role",
+    "output_message_type",
+    "environment",
+    "pass_env",
+    "pool",
+    "pool_slots",
+    "runner_module",
+    "workdir",
+    "name_prefix",
+    "tty",
+    "backpressure",
+    "custom_openshell_image"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.python_executor.input.v1"
+    }
+  ],
+  "required_fields": [
+    "script",
+    "upload_path"
+  ],
+  "schema_version": "mn.agent.input.v1"
+}

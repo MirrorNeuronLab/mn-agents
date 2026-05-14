@@ -1,0 +1,13 @@
+{
+  "agent_type": "executor",
+  "config": {
+    "container_port": 8080,
+    "custom_openshell_image": "web/openshell",
+    "external_port": 8080,
+    "required": true,
+    "runner_module": "MirrorNeuron.Runner.OpenShell",
+    "tunnel": "ssh"
+  },
+  "node_id": "web_service",
+  "type": "generic"
+}
