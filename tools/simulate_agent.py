@@ -9,7 +9,7 @@ from pathlib import Path
 
 def _add_support_path() -> None:
     workspace = Path(__file__).resolve().parents[2]
-    support = workspace / "mn-skills" / "blueprint_support_skill" / "src"
+    support = workspace / "mn-skills" / "blueprint-support-skill" / "src"
     if support.exists() and str(support) not in sys.path:
         sys.path.insert(0, str(support))
     agents_root = Path(__file__).resolve().parents[1]
