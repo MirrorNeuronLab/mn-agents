@@ -19,7 +19,9 @@
     {
       "agent_type": "aggregator",
       "config": {
-        "complete_on_message": true
+        "complete_on_message": true,
+        "terminal_sink": true,
+        "complete_run": true
       },
       "node_id": "report_sink",
       "role": "result_sink",

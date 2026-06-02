@@ -3,6 +3,8 @@
   "role": "result_sink",
   "uses": "mn-agents.control_join@1.0.0",
   "with": {
-    "complete_on_message": true
+    "complete_on_message": true,
+    "terminal_sink": true,
+    "complete_run": true
   }
 }
