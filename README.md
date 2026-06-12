@@ -9,15 +9,15 @@ blueprints. Blueprints actualize these templates with `uses`, `with`, and
 Install test dependencies and validate the catalog:
 
 ```bash
-python3 -m pip install -r requirements-test.txt
-python3 tools/validate_agents.py --json
-python3 -m pytest -q
+.venv/bin/python -m pip install -r requirements-test.txt
+.venv/bin/python tools/validate_agents.py --json
+.venv/bin/python -m pytest -q
 ```
 
 Simulate one template fixture:
 
 ```bash
-python3 tools/simulate_agent.py data_python_executor/fixtures/minimal.instance.json
+.venv/bin/python tools/simulate_agent.py data_python_executor/fixtures/minimal.instance.json
 ```
 
 ## Details

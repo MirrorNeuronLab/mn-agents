@@ -2,7 +2,7 @@
   "agent_type": "executor",
   "config": {
     "command": [
-      "python3",
+      "python3.11",
       "scripts/run_blueprint.py"
     ],
     "from": "base",

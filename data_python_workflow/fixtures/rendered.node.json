@@ -2,7 +2,7 @@
   "agent_type": "executor",
   "config": {
     "command": [
-      "python3",
+      "python3.11",
       "mn_worker.py"
     ],
     "module": "workflow",

@@ -20,7 +20,7 @@
       "agent_type": "executor",
       "config": {
         "command": [
-          "python3",
+          "python3.11",
           "mn_worker.py"
         ],
         "output_message_type": "python_workflow_result",
