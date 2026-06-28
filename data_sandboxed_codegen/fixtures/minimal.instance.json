@@ -1,7 +1,8 @@
 {
+  "version": 1,
   "node_id": "sandboxed_codegen",
   "role": "codegen_agent",
-  "uses": "mn-agents.data_sandboxed_codegen@1.0.0",
+  "uses": "mn-agents.data_sandboxed_codegen@1",
   "with": {
     "llm_config": "primary",
     "output_message_type": "codegen_result",

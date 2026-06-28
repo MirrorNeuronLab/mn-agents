@@ -82,5 +82,5 @@
   "renders_to": "manifest.nodes[]",
   "template_category": "data",
   "template_id": "mn-agents.data_module",
-  "version": "1.0.0"
+  "version": 1
 }

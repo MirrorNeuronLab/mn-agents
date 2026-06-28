@@ -1,4 +1,5 @@
 {
+  "version": 1,
   "accepted_message_types": [
     "service_start"
   ],
@@ -6,7 +7,7 @@
   "examples": [
     {
       "node_id": "web_service",
-      "uses": "mn-agents.data_openshell_service@1.0.0",
+      "uses": "mn-agents.data_openshell_service@1",
       "with": {
         "container_port": 8080,
         "custom_openshell_image": "web/openshell",

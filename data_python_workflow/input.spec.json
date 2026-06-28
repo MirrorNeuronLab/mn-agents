@@ -1,4 +1,5 @@
 {
+  "version": 1,
   "accepted_message_types": [
     "python_workflow_input"
   ],
@@ -6,7 +7,7 @@
   "examples": [
     {
       "node_id": "mn_python_workflow",
-      "uses": "mn-agents.data_python_workflow@1.0.0",
+      "uses": "mn-agents.data_python_workflow@1",
       "with": {
         "module": "workflow",
         "output_message_type": "python_workflow_result",

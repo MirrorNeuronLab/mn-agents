@@ -1,4 +1,5 @@
 {
+  "version": 1,
   "accepted_message_types": [
     "router_input"
   ],
@@ -7,7 +8,7 @@
     {
       "node_id": "ingress",
       "role": "root_coordinator",
-      "uses": "mn-agents.control_router@1.0.0",
+      "uses": "mn-agents.control_router@1",
       "with": {
         "emit_type": "simulation_start"
       }

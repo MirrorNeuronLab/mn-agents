@@ -1,4 +1,5 @@
 {
+  "version": 1,
   "accepted_message_types": [
     "native_runtime_message"
   ],
@@ -7,7 +8,7 @@
     {
       "node_id": "answer_agent",
       "role": "answer",
-      "uses": "mn-agents.data_module@1.0.0",
+      "uses": "mn-agents.data_module@1",
       "with": {
         "module": "Example.AnswerAgent",
         "module_source": "beam_modules/answer_agent.ex",

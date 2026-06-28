@@ -1,7 +1,8 @@
 {
+  "version": 1,
   "node_id": "message_filter",
   "role": "root_coordinator",
-  "uses": "mn-agents.control_message_filter@1.0.0",
+  "uses": "mn-agents.control_message_filter@1",
   "with": {
     "output_message_type": "filtered_message",
     "predicate": "is_actionable"

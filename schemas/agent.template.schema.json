@@ -1,5 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": 1,
   "properties": {
     "inputs": {
       "type": "object"
@@ -181,7 +182,7 @@
       "type": "string"
     },
     "version": {
-      "type": "string"
+      "const": 1
     }
   },
   "required": [

@@ -1,4 +1,5 @@
 {
+  "version": 1,
   "agents": [
     {
       "description": "Gates workflow progress on human or policy approval state.",
@@ -6,7 +7,7 @@
       "path": "control_approval_gate",
       "template_category": "control",
       "template_id": "mn-agents.control_approval_gate",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Records checkpoint and resume metadata for stateful workflows.",
@@ -14,7 +15,7 @@
       "path": "control_checkpoint",
       "template_category": "control",
       "template_id": "mn-agents.control_checkpoint",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Listens to connector-backed input skills such as Drive, Slack, webhook, socket, or WebSocket inputs.",
@@ -22,7 +23,7 @@
       "path": "control_input_listener",
       "template_category": "control",
       "template_id": "mn-agents.control_input_listener",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Reduce/aggregator sink that completes when a configured message arrives.",
@@ -30,7 +31,7 @@
       "path": "control_join",
       "template_category": "control",
       "template_id": "mn-agents.control_join",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Emits workflow lifecycle control messages such as start, stop, pause, and resume.",
@@ -38,7 +39,7 @@
       "path": "control_lifecycle",
       "template_category": "control",
       "template_id": "mn-agents.control_lifecycle",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Filters or gates messages using a declarative predicate name.",
@@ -46,7 +47,7 @@
       "path": "control_message_filter",
       "template_category": "control",
       "template_id": "mn-agents.control_message_filter",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Fans out output events or artifacts after mandatory local run-store writes.",
@@ -54,7 +55,7 @@
       "path": "control_output_fanout",
       "template_category": "control",
       "template_id": "mn-agents.control_output_fanout",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Routes retry decisions with bounded attempts and backoff metadata.",
@@ -62,7 +63,7 @@
       "path": "control_retry",
       "template_category": "control",
       "template_id": "mn-agents.control_retry",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Emits an initial or routed message into a graph with optional state/backpressure config.",
@@ -70,7 +71,7 @@
       "path": "control_router",
       "template_category": "control",
       "template_id": "mn-agents.control_router",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Reusable stream or polling tick source for live and replayed stream workflows.",
@@ -78,7 +79,7 @@
       "path": "control_tick_source",
       "template_category": "control",
       "template_id": "mn-agents.control_tick_source",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "TCP output and web UI service using primary port 8080 and fallback port 8081.",
@@ -86,7 +87,7 @@
       "path": "control_web_output",
       "template_category": "control",
       "template_id": "mn-agents.control_web_output",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Runs a local or edge model with declared device and resource profile.",
@@ -94,7 +95,7 @@
       "path": "data_edge_model",
       "template_category": "data",
       "template_id": "mn-agents.data_edge_model",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Named LLM_CONFIG based LLM agent with optional A2A discovery metadata.",
@@ -102,7 +103,7 @@
       "path": "data_llm_decision",
       "template_category": "data",
       "template_id": "mn-agents.data_llm_decision",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Runs an LLM-backed tool-using agent through named LLM config and declared tools.",
@@ -110,7 +111,7 @@
       "path": "data_llm_tool",
       "template_category": "data",
       "template_id": "mn-agents.data_llm_tool",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Runs a native MirrorNeuron or BEAM module node with standard manifest wiring.",
@@ -118,7 +119,7 @@
       "path": "data_module",
       "template_category": "data",
       "template_id": "mn-agents.data_module",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Observes a stream, file, sensor, or service and emits normalized observations.",
@@ -126,7 +127,7 @@
       "path": "data_observer",
       "template_category": "data",
       "template_id": "mn-agents.data_observer",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Custom OpenShell service with explicit port and SSH tunnel verification.",
@@ -134,7 +135,7 @@
       "path": "data_openshell_service",
       "template_category": "data",
       "template_id": "mn-agents.data_openshell_service",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Runs a Python script with standard blueprint lifecycle wiring.",
@@ -142,7 +143,7 @@
       "path": "data_python_executor",
       "template_category": "data",
       "template_id": "mn-agents.data_python_executor",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Runs a generated Python workflow bundle worker with blueprint-standard config/input/output handling.",
@@ -150,7 +151,7 @@
       "path": "data_python_workflow",
       "template_category": "data",
       "template_id": "mn-agents.data_python_workflow",
-      "version": "1.0.0"
+      "version": 1
     },
     {
       "description": "Runs code-generation or code-review work inside an explicit sandbox boundary.",
@@ -158,7 +159,7 @@
       "path": "data_sandboxed_codegen",
       "template_category": "data",
       "template_id": "mn-agents.data_sandboxed_codegen",
-      "version": "1.0.0"
+      "version": 1
     }
   ],
   "schema_version": "mn-agents.index.v1"

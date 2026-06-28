@@ -1,4 +1,5 @@
 {
+  "version": 1,
   "accepted_message_types": [
     "control_checkpoint_input"
   ],
@@ -7,7 +8,7 @@
     {
       "node_id": "checkpoint",
       "role": "root_coordinator",
-      "uses": "mn-agents.control_checkpoint@1.0.0",
+      "uses": "mn-agents.control_checkpoint@1",
       "with": {
         "checkpoint_key": "stage-1",
         "checkpoint_mode": "write",

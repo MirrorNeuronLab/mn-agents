@@ -114,7 +114,7 @@ def test_render_agent_templates_cli_expands_manifest(tmp_path: Path):
         "nodes": [
             {
                 "node_id": "report_sink",
-                "uses": "mn-agents.control_join@1.0.0",
+                "uses": "mn-agents.control_join@1",
                 "with": {
                     "complete_on_message": True,
                     "terminal_sink": True,

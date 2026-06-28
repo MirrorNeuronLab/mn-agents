@@ -1,4 +1,5 @@
 {
+  "version": 1,
   "accepted_message_types": [
     "data_llm_tool_input"
   ],
@@ -7,7 +8,7 @@
     {
       "node_id": "llm_tool",
       "role": "tool_using_agent",
-      "uses": "mn-agents.data_llm_tool@1.0.0",
+      "uses": "mn-agents.data_llm_tool@1",
       "with": {
         "llm_config": "primary",
         "output_message_type": "llm_tool_result",

@@ -54,12 +54,12 @@
     "schema_version": "mn.agent.behavior.v1",
     "summary": "Collect final report messages and complete the run when the report is received."
   },
-    "defaults": {
-        "agent_type": "aggregator",
-        "complete_on_message": true,
-        "role": "result_sink",
-        "type": "reduce"
-    },
+  "defaults": {
+    "agent_type": "aggregator",
+    "complete_on_message": true,
+    "role": "result_sink",
+    "type": "reduce"
+  },
   "description": "Reduce/aggregator sink that completes when a configured message arrives.",
   "input_spec": "input.spec.json",
   "inputs": {
@@ -83,5 +83,5 @@
   "renders_to": "manifest.nodes[]",
   "template_category": "control",
   "template_id": "mn-agents.control_join",
-  "version": "1.0.0"
+  "version": 1
 }

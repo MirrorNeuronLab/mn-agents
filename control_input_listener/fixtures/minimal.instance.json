@@ -1,6 +1,7 @@
 {
+  "version": 1,
   "node_id": "input_listener",
-  "uses": "mn-agents.control_input_listener@1.0.0",
+  "uses": "mn-agents.control_input_listener@1",
   "with": {
     "event_types": [
       "message"

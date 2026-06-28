@@ -1,6 +1,7 @@
 {
+  "version": 1,
   "node_id": "output_fanout",
-  "uses": "mn-agents.control_output_fanout@1.0.0",
+  "uses": "mn-agents.control_output_fanout@1",
   "with": {
     "content": "events"
   }

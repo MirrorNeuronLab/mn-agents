@@ -1,7 +1,8 @@
 {
+  "version": 1,
   "node_id": "edge_model",
   "role": "edge_model_worker",
-  "uses": "mn-agents.data_edge_model@1.0.0",
+  "uses": "mn-agents.data_edge_model@1",
   "with": {
     "batch_size": 1,
     "device_profile": "cpu_small",

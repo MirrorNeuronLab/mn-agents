@@ -1,4 +1,5 @@
 {
+  "version": 1,
   "accepted_message_types": [
     "control_approval_gate_input"
   ],
@@ -7,7 +8,7 @@
     {
       "node_id": "approval_gate",
       "role": "root_coordinator",
-      "uses": "mn-agents.control_approval_gate@1.0.0",
+      "uses": "mn-agents.control_approval_gate@1",
       "with": {
         "approval_mode": "manual",
         "approver": "operator",

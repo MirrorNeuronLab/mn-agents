@@ -1,4 +1,5 @@
 {
+  "version": 1,
   "accepted_message_types": [
     "llm_request"
   ],
@@ -6,7 +7,7 @@
   "examples": [
     {
       "node_id": "decision_agent",
-      "uses": "mn-agents.data_llm_decision@1.0.0",
+      "uses": "mn-agents.data_llm_decision@1",
       "with": {
         "llm_config": "primary",
         "output_message_type": "llm_decision",

@@ -83,5 +83,5 @@
   "renders_to": "manifest.nodes[]",
   "template_category": "control",
   "template_id": "mn-agents.control_input_listener",
-  "version": "1.0.0"
+  "version": 1
 }

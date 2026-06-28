@@ -1,4 +1,5 @@
 {
+  "version": 1,
   "accepted_message_types": [
     "stream_start"
   ],
@@ -6,7 +7,7 @@
   "examples": [
     {
       "node_id": "tick_source",
-      "uses": "mn-agents.control_tick_source@1.0.0",
+      "uses": "mn-agents.control_tick_source@1",
       "with": {
         "emit_type": "frame_tick",
         "interval_ms": 1000

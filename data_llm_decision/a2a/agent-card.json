@@ -13,5 +13,5 @@
     "structured_decision"
   ],
   "template_id": "mn-agents.data_llm_decision",
-  "version": "1.0.0"
+  "version": 1
 }

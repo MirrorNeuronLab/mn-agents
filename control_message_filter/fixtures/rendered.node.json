@@ -1,4 +1,5 @@
 {
+  "version": 1,
   "agent_type": "router",
   "config": {
     "output_message_type": "filtered_message",

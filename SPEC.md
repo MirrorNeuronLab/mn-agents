@@ -26,7 +26,7 @@ The `mn-agents` contract describes what an agent template is and how it can be r
 
 Blueprints assemble workflows from shared templates in the same way systems are assembled from reusable parts:
 
-1. The blueprint chooses a template with `uses`, for example `mn-agents.data_llm_decision@1.0.0`.
+1. The blueprint chooses a template with `uses`, for example `mn-agents.data_llm_decision@1`.
 2. The blueprint customizes it with `with`, such as `role`, `llm_config`, `output_message_type`, `upload_path`, or `complete_on_message`.
 3. The renderer expands the template into a concrete manifest node.
 4. MirrorNeuron runs that concrete node as an actual workflow agent.
@@ -147,7 +147,7 @@ Example:
 {
   "template_id": "mn-agents.data_python_executor",
   "template_category": "data",
-  "version": "1.0.0",
+  "version": 1,
   "kind": "executor",
   "description": "Runs a Python script with standard blueprint lifecycle wiring.",
   "inputs": {
@@ -374,7 +374,7 @@ Example `agent.json` fragment for a Python LLM agent that opts into A2A:
 ```json
 {
   "template_id": "mn-agents.data_llm_decision",
-  "version": "1.0.0",
+  "version": 1,
   "input_spec": "input.spec.json",
   "output_spec": "output.spec.json",
   "payloads": "payloads",
@@ -401,7 +401,7 @@ Example:
 ```json
 {
   "node_id": "simulation_loop",
-  "uses": "mn-agents.data_python_executor@1.0.0",
+  "uses": "mn-agents.data_python_executor@1",
   "with": {
     "script": "scripts/run_blueprint.py",
     "upload_path": "simulation_loop",
@@ -442,7 +442,7 @@ Agent templates use semver.
 - Minor version: new optional fields, new defaults that do not change existing rendered output, or new optional capabilities.
 - Major version: changed required fields, changed rendered node behavior, renamed fields, removed defaults, or changed lifecycle behavior.
 
-Blueprints SHOULD pin exact agent versions, such as `mn-agents.data_python_executor@1.0.0`.
+Blueprints SHOULD pin exact agent versions, such as `mn-agents.data_python_executor@1`.
 
 Blueprints SHOULD NOT depend on `latest` for production runs.
 
