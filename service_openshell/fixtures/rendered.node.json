@@ -1,0 +1,14 @@
+{
+  "agent_type": "service",
+  "config": {
+    "container_port": 8080,
+    "custom_openshell_image": "mirror-neuron/service:local",
+    "external_port": 18080,
+    "required": true,
+    "runner_module": "MirrorNeuron.Runner.OpenShell",
+    "tunnel": "local"
+  },
+  "node_id": "openshell_service",
+  "type": "generic",
+  "version": 1
+}

@@ -1,0 +1,86 @@
+{
+  "behavior": {
+    "delegation": {
+      "allow_recursive": false,
+      "enabled": false,
+      "inherits_tools": false
+    },
+    "emits": {
+      "artifacts": [
+        {
+          "artifact_id": "result",
+          "mime_type": "application/json",
+          "schema": "mn-agents.control.message_router.output.v1"
+        }
+      ],
+      "events": [
+        "agent_started",
+        "agent_completed",
+        "agent_failed"
+      ],
+      "messages": [
+        {
+          "fallback_message_type": "route_message",
+          "message_type": "config.emit_type"
+        }
+      ]
+    },
+    "lifecycle_events": {
+      "failure": [
+        "agent_started",
+        "agent_failed"
+      ],
+      "success": [
+        "agent_started",
+        "agent_completed"
+      ]
+    },
+    "required_config": [],
+    "routing": {
+      "transitions": [
+        {
+          "then": {
+            "reason": "agent_completed",
+            "type": "terminate"
+          },
+          "when": {
+            "type": "always"
+          }
+        }
+      ]
+    },
+    "schema_version": "mn.agent.behavior.v1",
+    "summary": "Route or normalize incoming workflow messages."
+  },
+  "defaults": {
+    "agent_type": "router",
+    "type": "map"
+  },
+  "description": "Map router for message ingress and lightweight routing nodes.",
+  "input_spec": "input.spec.json",
+  "inputs": {
+    "optional": [
+      "stereotype",
+      "node_type",
+      "role",
+      "emit_type",
+      "conditions",
+      "routing_mode",
+      "output_message_type"
+    ],
+    "required": []
+  },
+  "kind": "router",
+  "output_spec": "output.spec.json",
+  "payloads": "payloads",
+  "provides": [
+    "runtime_shape",
+    "rendered_manifest_node",
+    "behavior_simulation"
+  ],
+  "renders_to": "manifest.nodes[]",
+  "stereotypes": {},
+  "template_category": "control",
+  "template_id": "mn-agents.control.message_router",
+  "version": 1
+}

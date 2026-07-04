@@ -1,0 +1,11 @@
+{
+  "node_id": "openshell_service",
+  "uses": "mn-agents.service.openshell@1",
+  "version": 1,
+  "with": {
+    "container_port": 8080,
+    "custom_openshell_image": "mirror-neuron/service:local",
+    "external_port": 18080,
+    "tunnel": "local"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "result",
+      "mime_type": "application/json",
+      "schema": "mn-agents.service.openshell.output.v1"
+    }
+  ],
+  "description": "Outputs emitted by mn-agents.service.openshell.",
+  "emitted_message_types": [
+    "service_ready"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.service.openshell.output.v1"
+    }
+  ],
+  "schema_version": "mn.agent.output.v1",
+  "version": 1
+}

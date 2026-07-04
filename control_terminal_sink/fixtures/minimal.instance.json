@@ -1,0 +1,9 @@
+{
+  "node_id": "report_sink",
+  "role": "result_sink",
+  "uses": "mn-agents.control.terminal_sink@1",
+  "version": 1,
+  "with": {
+    "stereotype": "terminal_report_sink"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "accepted_message_types": [
+    "actualize_agent_template"
+  ],
+  "description": "Inputs accepted by mn-agents.service.openshell.",
+  "examples": [
+    {
+      "node_id": "openshell_service",
+      "uses": "mn-agents.service.openshell@1",
+      "with": {
+        "container_port": 8080,
+        "custom_openshell_image": "mirror-neuron/service:local",
+        "external_port": 18080,
+        "tunnel": "local"
+      }
+    }
+  ],
+  "optional_fields": [
+    "stereotype",
+    "node_type",
+    "role",
+    "required",
+    "healthcheck_path",
+    "output_message_type"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.service.openshell.input.v1"
+    }
+  ],
+  "required_fields": [
+    "custom_openshell_image",
+    "container_port",
+    "external_port",
+    "tunnel"
+  ],
+  "schema_version": "mn.agent.input.v1",
+  "version": 1
+}

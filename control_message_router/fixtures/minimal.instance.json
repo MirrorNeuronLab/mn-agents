@@ -1,0 +1,8 @@
+{
+  "node_id": "ingress",
+  "uses": "mn-agents.control.message_router@1",
+  "version": 1,
+  "with": {
+    "emit_type": "input_received"
+  }
+}

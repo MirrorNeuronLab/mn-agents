@@ -1,0 +1,11 @@
+{
+  "agent_type": "module",
+  "config": {
+    "emit_type": "tick_generated",
+    "module": "MirrorNeuron.Examples.TickSource",
+    "module_source": "payloads/tick_source.ex"
+  },
+  "node_id": "video_frame_tick_source",
+  "type": "generic",
+  "version": 1
+}

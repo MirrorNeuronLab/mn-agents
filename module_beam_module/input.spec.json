@@ -1,0 +1,37 @@
+{
+  "accepted_message_types": [
+    "actualize_agent_template"
+  ],
+  "description": "Inputs accepted by mn-agents.module.beam_module.",
+  "examples": [
+    {
+      "node_id": "video_frame_tick_source",
+      "uses": "mn-agents.module.beam_module@1",
+      "with": {
+        "emit_type": "tick_generated",
+        "module": "MirrorNeuron.Examples.TickSource",
+        "module_source": "payloads/tick_source.ex"
+      }
+    }
+  ],
+  "optional_fields": [
+    "stereotype",
+    "node_type",
+    "role",
+    "backpressure",
+    "answer_node"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.module.beam_module.input.v1"
+    }
+  ],
+  "required_fields": [
+    "module",
+    "module_source",
+    "emit_type"
+  ],
+  "schema_version": "mn.agent.input.v1",
+  "version": 1
+}

@@ -1,0 +1,34 @@
+{
+  "accepted_message_types": [
+    "actualize_agent_template"
+  ],
+  "description": "Inputs accepted by mn-agents.control.terminal_sink.",
+  "examples": [
+    {
+      "node_id": "report_sink",
+      "role": "result_sink",
+      "uses": "mn-agents.control.terminal_sink@1",
+      "with": {
+        "stereotype": "terminal_report_sink"
+      }
+    }
+  ],
+  "optional_fields": [
+    "stereotype",
+    "node_type",
+    "role",
+    "complete_on_message",
+    "complete_run",
+    "terminal_sink",
+    "output_message_type"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.control.terminal_sink.input.v1"
+    }
+  ],
+  "required_fields": [],
+  "schema_version": "mn.agent.input.v1",
+  "version": 1
+}

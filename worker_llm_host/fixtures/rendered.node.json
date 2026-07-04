@@ -1,0 +1,16 @@
+{
+  "agent_type": "executor",
+  "config": {
+    "beacon_enabled": true,
+    "beacon_interval_ms": 15000,
+    "beacon_missed_action": "fail_attempt",
+    "beacon_timeout_ms": 45000,
+    "llm_config": "primary",
+    "output_message_type": "evaluate_report_completed",
+    "runner_module": "MirrorNeuron.Runner.HostLocal"
+  },
+  "node_id": "evaluate_report",
+  "role": "risk_evaluator",
+  "type": "map",
+  "version": 1
+}

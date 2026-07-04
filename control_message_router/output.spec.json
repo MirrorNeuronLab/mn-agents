@@ -1,0 +1,21 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "result",
+      "mime_type": "application/json",
+      "schema": "mn-agents.control.message_router.output.v1"
+    }
+  ],
+  "description": "Outputs emitted by mn-agents.control.message_router.",
+  "emitted_message_types": [
+    "route_message"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.control.message_router.output.v1"
+    }
+  ],
+  "schema_version": "mn.agent.output.v1",
+  "version": 1
+}

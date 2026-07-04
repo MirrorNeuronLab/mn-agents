@@ -8,22 +8,42 @@ from pathlib import Path
 
 from jsonschema import Draft202012Validator
 
-from mn_blueprint_support import render_agent_node, validate_agent_library
+import pytest
+
+from mn_blueprint_support import AgentTemplateError, render_agent_node, validate_agent_library
 
 
 AGENTS_ROOT = Path(__file__).resolve().parents[1]
 LEGACY_TEMPLATE_IDS = {
-    "mn-agents.python_executor",
-    "mn-agents.python_workflow",
-    "mn-agents.report_aggregator",
-    "mn-agents.module_agent",
-    "mn-agents.router_agent",
-    "mn-agents.stream_tick_source",
-    "mn-agents.input_skill_listener",
-    "mn-agents.output_skill_fanout",
-    "mn-agents.llm_agent",
-    "mn-agents.openshell_service",
-    "mn-agents.web_ui_output",
+    "mn-agents.control_approval_gate",
+    "mn-agents.control_checkpoint",
+    "mn-agents.control_input_listener",
+    "mn-agents.control_join",
+    "mn-agents.control_lifecycle",
+    "mn-agents.control_message_filter",
+    "mn-agents.control_output_fanout",
+    "mn-agents.control_retry",
+    "mn-agents.control_router",
+    "mn-agents.control_tick_source",
+    "mn-agents.control_web_output",
+    "mn-agents.data_edge_model",
+    "mn-agents.data_llm_decision",
+    "mn-agents.data_llm_tool",
+    "mn-agents.data_module",
+    "mn-agents.data_observer",
+    "mn-agents.data_openshell_service",
+    "mn-agents.data_python_executor",
+    "mn-agents.data_python_workflow",
+    "mn-agents.data_sandboxed_codegen",
+}
+EXPECTED_TEMPLATE_IDS = {
+    "mn-agents.worker.python_host",
+    "mn-agents.worker.python_docker",
+    "mn-agents.worker.llm_host",
+    "mn-agents.control.terminal_sink",
+    "mn-agents.control.message_router",
+    "mn-agents.module.beam_module",
+    "mn-agents.service.openshell",
 }
 
 
@@ -59,6 +79,8 @@ def test_index_entries_are_unique_and_paths_match_agent_files():
         assert agent["template_category"] == item["template_category"]
         assert item["template_category"] in {"control", "data"}
         assert agent["behavior"]["schema_version"] == "mn.agent.behavior.v1"
+
+    assert {item["template_id"] for item in _indexed_agents()} == EXPECTED_TEMPLATE_IDS
 
 
 def test_agent_templates_match_schema():
@@ -114,11 +136,9 @@ def test_render_agent_templates_cli_expands_manifest(tmp_path: Path):
         "nodes": [
             {
                 "node_id": "report_sink",
-                "uses": "mn-agents.control_join@1",
+                "uses": "mn-agents.control.terminal_sink@1",
                 "with": {
-                    "complete_on_message": True,
-                    "terminal_sink": True,
-                    "complete_run": True,
+                    "stereotype": "terminal_report_sink",
                 },
             }
         ],
@@ -140,4 +160,44 @@ def test_render_agent_templates_cli_expands_manifest(tmp_path: Path):
     assert rendered["nodes"][0]["node_id"] == "report_sink"
     assert rendered["nodes"][0]["agent_type"] == "aggregator"
     assert "uses" not in rendered["nodes"][0]
-    assert rendered["metadata"]["agent_templates"]["rendered"][0]["template_id"] == "mn-agents.control_join"
+    provenance = rendered["metadata"]["agent_templates"]["rendered"][0]
+    assert provenance["template_id"] == "mn-agents.control.terminal_sink"
+    assert provenance["stereotype"] == "terminal_report_sink"
+
+
+def test_stereotype_defaults_merge_before_instance_overrides():
+    instance = {
+        "node_id": "research",
+        "uses": "mn-agents.worker.python_docker@1",
+        "with": {
+            "stereotype": "public_browser_worker",
+            "script": "scripts/run_blueprint.py",
+            "upload_path": "document_workflow",
+            "docker_worker_image": "document_workflow/docker_worker",
+            "image": "mirror-neuron/custom:local",
+            "side_effect": "read",
+            "environment": {"WEB_BROWSER_TIMEOUT_SECONDS": "99"},
+        },
+    }
+
+    rendered = render_agent_node(instance, AGENTS_ROOT)
+
+    assert rendered["config"]["side_effect"] == "read"
+    assert rendered["config"]["environment"]["W3M_BROWSER_MAX_CHARS"] == "6000"
+    assert rendered["config"]["environment"]["WEB_BROWSER_TIMEOUT_SECONDS"] == "99"
+    assert "stereotype" not in rendered["config"]
+
+
+def test_unknown_stereotype_fails_rendering():
+    instance = {
+        "node_id": "worker",
+        "uses": "mn-agents.worker.python_host@1",
+        "with": {
+            "stereotype": "not_a_real_stereotype",
+            "script": "scripts/run_blueprint.py",
+            "upload_path": "document_workflow",
+        },
+    }
+
+    with pytest.raises(AgentTemplateError, match="not_a_real_stereotype"):
+        render_agent_node(instance, AGENTS_ROOT)

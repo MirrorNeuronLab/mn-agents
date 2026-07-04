@@ -1,0 +1,45 @@
+{
+  "agent_type": "executor",
+  "config": {
+    "agent_beacon_required": true,
+    "beacon_enabled": true,
+    "beacon_interval_ms": 15000,
+    "beacon_missed_action": "fail_attempt",
+    "beacon_timeout_ms": 45000,
+    "cleanup_remote_dir": true,
+    "command": [
+      "python3",
+      "scripts/run_blueprint.py"
+    ],
+    "docker_worker_image": "document_workflow/docker_worker",
+    "environment": {
+      "W3M_BROWSER_MAX_CHARS": "6000",
+      "W3M_BROWSER_TIMEOUT_SECONDS": "12",
+      "WEB_BROWSER_MAX_CHARS": "12000",
+      "WEB_BROWSER_RESPECT_ROBOTS": "true",
+      "WEB_BROWSER_TIMEOUT_SECONDS": "20"
+    },
+    "from": "base",
+    "idempotent": true,
+    "image": "mirror-neuron/example:local",
+    "network": "mirror-neuron-runtime",
+    "no_auto_providers": true,
+    "no_keep": true,
+    "output_message_type": "research_public_sources_completed",
+    "pool": "default",
+    "pool_slots": 1,
+    "reuse_shared_container": true,
+    "runner_module": "MirrorNeuron.Runner.DockerWorker",
+    "safe_to_retry": true,
+    "shared_container": true,
+    "side_effect": "network_read",
+    "tty": false,
+    "upload_as": "document_workflow",
+    "upload_path": "document_workflow",
+    "workdir": "/mn/job/document_workflow"
+  },
+  "node_id": "research_public_sources",
+  "role": "public_researcher",
+  "type": "generic",
+  "version": 1
+}

@@ -1,0 +1,59 @@
+{
+  "accepted_message_types": [
+    "actualize_agent_template"
+  ],
+  "description": "Inputs accepted by mn-agents.worker.python_docker.",
+  "examples": [
+    {
+      "node_id": "research_public_sources",
+      "role": "public_researcher",
+      "uses": "mn-agents.worker.python_docker@1",
+      "with": {
+        "command": [
+          "python3",
+          "scripts/run_blueprint.py"
+        ],
+        "docker_worker_image": "document_workflow/docker_worker",
+        "image": "mirror-neuron/example:local",
+        "network": "mirror-neuron-runtime",
+        "output_message_type": "research_public_sources_completed",
+        "script": "scripts/run_blueprint.py",
+        "stereotype": "public_browser_worker",
+        "upload_as": "document_workflow",
+        "upload_path": "document_workflow",
+        "workdir": "/mn/job/document_workflow"
+      }
+    }
+  ],
+  "optional_fields": [
+    "stereotype",
+    "node_type",
+    "role",
+    "output_message_type",
+    "environment",
+    "upload_paths",
+    "network",
+    "pool",
+    "pool_slots",
+    "workdir",
+    "command",
+    "side_effect",
+    "timeout_seconds",
+    "max_attempts",
+    "retry_backoff_ms"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.worker.python_docker.input.v1"
+    }
+  ],
+  "required_fields": [
+    "script",
+    "upload_path",
+    "docker_worker_image",
+    "image"
+  ],
+  "schema_version": "mn.agent.input.v1",
+  "version": 1
+}

@@ -5,6 +5,24 @@
     "inputs": {
       "type": "object"
     },
+    "stereotypes": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "with": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "description",
+          "with"
+        ]
+      }
+    },
     "behavior": {
       "type": "object",
       "required": [

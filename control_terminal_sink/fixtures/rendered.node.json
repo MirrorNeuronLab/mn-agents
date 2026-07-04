@@ -1,0 +1,12 @@
+{
+  "agent_type": "aggregator",
+  "config": {
+    "complete_on_message": true,
+    "complete_run": true,
+    "terminal_sink": true
+  },
+  "node_id": "report_sink",
+  "role": "result_sink",
+  "type": "reduce",
+  "version": 1
+}

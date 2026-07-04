@@ -1,164 +1,52 @@
 {
-  "version": 1,
   "agents": [
     {
-      "description": "Gates workflow progress on human or policy approval state.",
-      "kind": "router",
-      "path": "control_approval_gate",
-      "template_category": "control",
-      "template_id": "mn-agents.control_approval_gate",
-      "version": 1
-    },
-    {
-      "description": "Records checkpoint and resume metadata for stateful workflows.",
       "kind": "executor",
-      "path": "control_checkpoint",
-      "template_category": "control",
-      "template_id": "mn-agents.control_checkpoint",
+      "path": "worker_python_host",
+      "template_category": "data",
+      "template_id": "mn-agents.worker.python_host",
       "version": 1
     },
     {
-      "description": "Listens to connector-backed input skills such as Drive, Slack, webhook, socket, or WebSocket inputs.",
-      "kind": "listener",
-      "path": "control_input_listener",
-      "template_category": "control",
-      "template_id": "mn-agents.control_input_listener",
+      "kind": "executor",
+      "path": "worker_python_docker",
+      "template_category": "data",
+      "template_id": "mn-agents.worker.python_docker",
       "version": 1
     },
     {
-      "description": "Reduce/aggregator sink that completes when a configured message arrives.",
+      "kind": "executor",
+      "path": "worker_llm_host",
+      "template_category": "data",
+      "template_id": "mn-agents.worker.llm_host",
+      "version": 1
+    },
+    {
       "kind": "aggregator",
-      "path": "control_join",
+      "path": "control_terminal_sink",
       "template_category": "control",
-      "template_id": "mn-agents.control_join",
+      "template_id": "mn-agents.control.terminal_sink",
       "version": 1
     },
     {
-      "description": "Emits workflow lifecycle control messages such as start, stop, pause, and resume.",
       "kind": "router",
-      "path": "control_lifecycle",
+      "path": "control_message_router",
       "template_category": "control",
-      "template_id": "mn-agents.control_lifecycle",
+      "template_id": "mn-agents.control.message_router",
       "version": 1
     },
     {
-      "description": "Filters or gates messages using a declarative predicate name.",
-      "kind": "router",
-      "path": "control_message_filter",
-      "template_category": "control",
-      "template_id": "mn-agents.control_message_filter",
-      "version": 1
-    },
-    {
-      "description": "Fans out output events or artifacts after mandatory local run-store writes.",
-      "kind": "executor",
-      "path": "control_output_fanout",
-      "template_category": "control",
-      "template_id": "mn-agents.control_output_fanout",
-      "version": 1
-    },
-    {
-      "description": "Routes retry decisions with bounded attempts and backoff metadata.",
-      "kind": "router",
-      "path": "control_retry",
-      "template_category": "control",
-      "template_id": "mn-agents.control_retry",
-      "version": 1
-    },
-    {
-      "description": "Emits an initial or routed message into a graph with optional state/backpressure config.",
-      "kind": "router",
-      "path": "control_router",
-      "template_category": "control",
-      "template_id": "mn-agents.control_router",
-      "version": 1
-    },
-    {
-      "description": "Reusable stream or polling tick source for live and replayed stream workflows.",
-      "kind": "listener",
-      "path": "control_tick_source",
-      "template_category": "control",
-      "template_id": "mn-agents.control_tick_source",
-      "version": 1
-    },
-    {
-      "description": "TCP output and web UI service using primary port 8080 and fallback port 8081.",
-      "kind": "service",
-      "path": "control_web_output",
-      "template_category": "control",
-      "template_id": "mn-agents.control_web_output",
-      "version": 1
-    },
-    {
-      "description": "Runs a local or edge model with declared device and resource profile.",
-      "kind": "executor",
-      "path": "data_edge_model",
-      "template_category": "data",
-      "template_id": "mn-agents.data_edge_model",
-      "version": 1
-    },
-    {
-      "description": "Named LLM_CONFIG based LLM agent with optional A2A discovery metadata.",
-      "kind": "executor",
-      "path": "data_llm_decision",
-      "template_category": "data",
-      "template_id": "mn-agents.data_llm_decision",
-      "version": 1
-    },
-    {
-      "description": "Runs an LLM-backed tool-using agent through named LLM config and declared tools.",
-      "kind": "executor",
-      "path": "data_llm_tool",
-      "template_category": "data",
-      "template_id": "mn-agents.data_llm_tool",
-      "version": 1
-    },
-    {
-      "description": "Runs a native MirrorNeuron or BEAM module node with standard manifest wiring.",
       "kind": "module",
-      "path": "data_module",
+      "path": "module_beam_module",
       "template_category": "data",
-      "template_id": "mn-agents.data_module",
+      "template_id": "mn-agents.module.beam_module",
       "version": 1
     },
     {
-      "description": "Observes a stream, file, sensor, or service and emits normalized observations.",
-      "kind": "executor",
-      "path": "data_observer",
-      "template_category": "data",
-      "template_id": "mn-agents.data_observer",
-      "version": 1
-    },
-    {
-      "description": "Custom OpenShell service with explicit port and SSH tunnel verification.",
       "kind": "service",
-      "path": "data_openshell_service",
+      "path": "service_openshell",
       "template_category": "data",
-      "template_id": "mn-agents.data_openshell_service",
-      "version": 1
-    },
-    {
-      "description": "Runs a Python script with standard blueprint lifecycle wiring.",
-      "kind": "executor",
-      "path": "data_python_executor",
-      "template_category": "data",
-      "template_id": "mn-agents.data_python_executor",
-      "version": 1
-    },
-    {
-      "description": "Runs a generated Python workflow bundle worker with blueprint-standard config/input/output handling.",
-      "kind": "executor",
-      "path": "data_python_workflow",
-      "template_category": "data",
-      "template_id": "mn-agents.data_python_workflow",
-      "version": 1
-    },
-    {
-      "description": "Runs code-generation or code-review work inside an explicit sandbox boundary.",
-      "kind": "executor",
-      "path": "data_sandboxed_codegen",
-      "template_category": "data",
-      "template_id": "mn-agents.data_sandboxed_codegen",
+      "template_id": "mn-agents.service.openshell",
       "version": 1
     }
   ],

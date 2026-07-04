@@ -1,0 +1,9 @@
+{
+  "agent_type": "router",
+  "config": {
+    "emit_type": "input_received"
+  },
+  "node_id": "ingress",
+  "type": "map",
+  "version": 1
+}

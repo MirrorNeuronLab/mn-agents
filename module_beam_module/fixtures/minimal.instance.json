@@ -1,0 +1,10 @@
+{
+  "node_id": "video_frame_tick_source",
+  "uses": "mn-agents.module.beam_module@1",
+  "version": 1,
+  "with": {
+    "emit_type": "tick_generated",
+    "module": "MirrorNeuron.Examples.TickSource",
+    "module_source": "payloads/tick_source.ex"
+  }
+}

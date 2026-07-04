@@ -1,0 +1,10 @@
+{
+  "node_id": "evaluate_report",
+  "role": "risk_evaluator",
+  "uses": "mn-agents.worker.llm_host@1",
+  "version": 1,
+  "with": {
+    "llm_config": "primary",
+    "output_message_type": "evaluate_report_completed"
+  }
+}

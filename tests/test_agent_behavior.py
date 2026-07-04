@@ -21,17 +21,26 @@ from tools.agent_behavior import (
 
 AGENTS_ROOT = Path(__file__).resolve().parents[1]
 LEGACY_TEMPLATE_IDS = {
-    "mn-agents.python_executor",
-    "mn-agents.python_workflow",
-    "mn-agents.report_aggregator",
-    "mn-agents.module_agent",
-    "mn-agents.router_agent",
-    "mn-agents.stream_tick_source",
-    "mn-agents.input_skill_listener",
-    "mn-agents.output_skill_fanout",
-    "mn-agents.llm_agent",
-    "mn-agents.openshell_service",
-    "mn-agents.web_ui_output",
+    "mn-agents.control_approval_gate",
+    "mn-agents.control_checkpoint",
+    "mn-agents.control_input_listener",
+    "mn-agents.control_join",
+    "mn-agents.control_lifecycle",
+    "mn-agents.control_message_filter",
+    "mn-agents.control_output_fanout",
+    "mn-agents.control_retry",
+    "mn-agents.control_router",
+    "mn-agents.control_tick_source",
+    "mn-agents.control_web_output",
+    "mn-agents.data_edge_model",
+    "mn-agents.data_llm_decision",
+    "mn-agents.data_llm_tool",
+    "mn-agents.data_module",
+    "mn-agents.data_observer",
+    "mn-agents.data_openshell_service",
+    "mn-agents.data_python_executor",
+    "mn-agents.data_python_workflow",
+    "mn-agents.data_sandboxed_codegen",
 }
 
 
@@ -66,21 +75,21 @@ def test_legacy_template_ids_are_not_cataloged():
 
 
 def test_behavior_validator_reports_missing_required_lists():
-    agent = _read_json(AGENTS_ROOT / "data_python_executor" / "agent.json")
+    agent = _read_json(AGENTS_ROOT / "worker_python_host" / "agent.json")
     broken = copy.deepcopy(agent)
     broken["behavior"].pop("required_config")
     broken["behavior"]["emits"].pop("events")
 
-    issues = validate_behavior(broken, field="data_python_executor/agent.json.behavior")
+    issues = validate_behavior(broken, field="worker_python_host/agent.json.behavior")
 
     assert {
         "severity": "error",
-        "field": "data_python_executor/agent.json.behavior.required_config",
+            "field": "worker_python_host/agent.json.behavior.required_config",
         "message": "must be a list of strings",
     } in issues
     assert {
         "severity": "error",
-        "field": "data_python_executor/agent.json.behavior.emits.events",
+            "field": "worker_python_host/agent.json.behavior.emits.events",
         "message": "must be a list of strings",
     } in issues
 
@@ -96,7 +105,7 @@ def test_every_minimal_fixture_simulates_successfully():
         assert result["status"] == "completed"
         assert result["template_id"] == item["template_id"]
         assert result["template_category"] == item["template_category"]
-        assert result["version"] == item["version"]
+        assert str(result["version"]) == str(item["version"])
         assert result["rendered_node"]["node_id"] == result["node_id"]
         assert [event["type"] for event in result["events"]] == agent["behavior"]["lifecycle_events"]["success"]
         assert result["messages"], f"{item['path']} should emit at least one simulated message"
@@ -104,7 +113,7 @@ def test_every_minimal_fixture_simulates_successfully():
 
 
 def test_required_config_checks_fail_on_broken_fixture_copy():
-    fixture = _read_json(AGENTS_ROOT / "data_python_executor" / "fixtures" / "minimal.instance.json")
+    fixture = _read_json(AGENTS_ROOT / "worker_python_host" / "fixtures" / "minimal.instance.json")
     broken = copy.deepcopy(fixture)
     broken["config"] = {"command": None}
 
@@ -127,7 +136,7 @@ def test_delegation_is_non_recursive_by_default():
 
 
 def test_simulate_agent_cli_outputs_json():
-    fixture_path = AGENTS_ROOT / "data_python_executor" / "fixtures" / "minimal.instance.json"
+    fixture_path = AGENTS_ROOT / "worker_python_host" / "fixtures" / "minimal.instance.json"
 
     result = subprocess.run(
         [sys.executable, "tools/simulate_agent.py", str(fixture_path)],
@@ -140,7 +149,7 @@ def test_simulate_agent_cli_outputs_json():
 
     assert result.returncode == 0, result.stderr or result.stdout
     payload = json.loads(result.stdout)
-    assert payload["template_id"] == "mn-agents.data_python_executor"
+    assert payload["template_id"] == "mn-agents.worker.python_host"
     assert payload["template_category"] == "data"
-    assert payload["messages"][0]["message_type"] == "blueprint_report"
+    assert payload["messages"][0]["message_type"] == "stage_documents_completed"
     assert [event["type"] for event in payload["events"]] == ["agent_started", "agent_completed"]
