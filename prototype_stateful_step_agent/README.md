@@ -66,6 +66,10 @@ The returned `run` function accepts a MirrorNeuron `StepContext`. Tests and
 composition roots may also provide `inputs`, `runs_root`, and `llm_client`
 explicitly.
 
+When the compiler assigns the same logical agent to multiple workflow phases,
+`StepContext.invocation_id` is used for lifecycle and result persistence. The
+logical `step_id` and `agent_id` remain available to domain code.
+
 ## Handler context
 
 `StatefulStepContext` supports attributes and mapping-style access:

@@ -56,7 +56,8 @@ If `handler` is absent, construction raises `TypeError`.
 2. Otherwise, `find_message_payload` resolves the payload from
    `step_context.message` using `spec.input_keys`.
 3. `step_context.config` is forwarded as `None` when false-like.
-4. `step_context.step_id` is the lifecycle step identifier.
+4. `step_context.invocation_id` is the lifecycle identifier when present;
+   otherwise `step_context.step_id` is used.
 5. Remaining parameters are captured and forwarded to `prepare`, `handler`,
    and `finalize`.
 
