@@ -18,6 +18,8 @@ AGENT_ID = "mn-agents.prototype.stateful_step"
 AGENT_VERSION = 1
 RuntimeFactory = Callable[..., Mapping[str, Any] | Any]
 DomainHandler = Callable[..., Any]
+PrepareHook = Callable[..., Mapping[str, Any] | None]
+FinalizeHook = Callable[..., Any]
 
 
 @dataclass
@@ -27,6 +29,7 @@ class StatefulStepContext:
     state_store: WorkflowStateStore
     state: Any = None
     inputs: dict[str, Any] = field(default_factory=dict)
+    services: dict[str, Any] = field(default_factory=dict)
     llm_client: Any | None = None
 
     def __getitem__(self, key: str) -> Any:
@@ -36,6 +39,8 @@ class StatefulStepContext:
             return self.state_store
         if key == "inputs":
             return self.inputs
+        if key == "services":
+            return self.services
         return self.runtime_context[key]
 
     def get(self, key: str, default: Any = None) -> Any:
@@ -58,6 +63,7 @@ class StatefulStepContext:
             "state": self.state,
             "state_store": self.state_store,
             "inputs": self.inputs,
+            "services": self.services,
         }
 
 
@@ -68,6 +74,8 @@ class StatefulStepSpec:
     state_name: str | None = None
     state_default: Any = field(default_factory=dict)
     hooks: StepLifecycleHooks = field(default_factory=StepLifecycleHooks)
+    prepare: PrepareHook | None = None
+    finalize: FinalizeHook | None = None
 
 
 def load_agent_definition() -> dict[str, Any]:
@@ -80,10 +88,13 @@ def create_agent(spec: StatefulStepSpec, handler: DomainHandler | None = None) -
 
     def run(step_context: StepContext, **parameters: Any) -> dict[str, Any]:
         inputs = parameters.pop("inputs", None)
+        runs_root = parameters.pop("runs_root", None)
+        llm_client = parameters.pop("llm_client", None)
         if not isinstance(inputs, dict):
             inputs = find_message_payload(step_context.message, required_keys=spec.input_keys)
         config = step_context.config or None
         selected_step_id = step_context.step_id
+        bound_parameters = dict(parameters)
 
         def build_context(*, inputs: dict[str, Any] | None = None, config: dict[str, Any] | None = None, runs_root: Any = None, run_id: str | None = None) -> Mapping[str, Any] | Any:
             return spec.context_factory(
@@ -106,10 +117,32 @@ def create_agent(spec: StatefulStepSpec, handler: DomainHandler | None = None) -
                 inputs=dict(inputs or {}),
                 llm_client=llm_client,
             )
-            result = handler(managed, llm_client=llm_client, **options)
-            if spec.state_name and managed.state is not None:
-                store.write(spec.state_name, managed.state)
-            return result
+            call_options = {**bound_parameters, **options}
+            result: Any = None
+            error: BaseException | None = None
+            try:
+                if spec.prepare is not None:
+                    prepared = spec.prepare(managed, llm_client=llm_client, **call_options)
+                    if prepared is not None:
+                        if not isinstance(prepared, Mapping):
+                            raise TypeError("stateful step prepare hook must return a mapping or None")
+                        managed.services.update(dict(prepared))
+                result = handler(managed, llm_client=llm_client, **call_options)
+                if spec.state_name and managed.state is not None:
+                    store.write(spec.state_name, managed.state)
+                return result
+            except BaseException as exc:
+                error = exc
+                raise
+            finally:
+                if spec.finalize is not None:
+                    spec.finalize(
+                        managed,
+                        result=result,
+                        error=error,
+                        llm_client=llm_client,
+                        **call_options,
+                    )
 
         return execute_step_handler(
             selected_step_id,
@@ -117,7 +150,9 @@ def create_agent(spec: StatefulStepSpec, handler: DomainHandler | None = None) -
             context_factory=build_context,
             inputs=inputs,
             config=config,
+            runs_root=runs_root,
             run_id=step_context.run_id or None,
+            llm_client=llm_client,
             hooks=spec.hooks,
         )
 

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import json
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from importlib.resources import files
-from typing import Any, Callable, Iterable, Mapping
+from typing import Any, Callable, Iterable
 
 
 AGENT_ID = "mn-agents.prototype.entity_queue"
@@ -13,6 +13,7 @@ EntityKey = Callable[[Any], str]
 EntityLoader = Callable[..., Iterable[Any]]
 EntityProcessor = Callable[..., Any]
 EntitySkip = Callable[..., bool]
+WorkerResolver = Callable[..., int]
 
 
 @dataclass(frozen=True)
@@ -54,7 +55,7 @@ class EntityQueueSpec:
     process_entity: EntityProcessor
     entity_id: EntityKey = lambda entity: str(entity)
     should_skip: EntitySkip = lambda _context, _entity, **_options: False
-    max_workers: int = 1
+    max_workers: int | WorkerResolver = 1
     failure_policy: str = "fail_fast"
 
 
@@ -65,16 +66,35 @@ def load_agent_definition() -> dict[str, Any]:
 def create_agent(spec: EntityQueueSpec) -> Callable[..., dict[str, Any]]:
     if spec.failure_policy not in {"fail_fast", "collect"}:
         raise ValueError("entity queue failure_policy must be fail_fast or collect")
-    if spec.max_workers < 1:
+    if isinstance(spec.max_workers, int) and spec.max_workers < 1:
         raise ValueError("entity queue max_workers must be positive")
 
     def run(context: Any, **options: Any) -> dict[str, Any]:
-        entities = list(options.pop("entities", spec.load_entities(context, **options)))
+        run_options = dict(options)
+        explicit_entities = run_options.pop("entities", None)
+        max_workers_override = run_options.pop("max_workers", None)
+        entities = list(
+            explicit_entities
+            if explicit_entities is not None
+            else spec.load_entities(context, **run_options)
+        )
+        configured_workers = max_workers_override if max_workers_override is not None else spec.max_workers
+        max_workers = (
+            configured_workers(context, **run_options)
+            if callable(configured_workers)
+            else configured_workers
+        )
+        try:
+            max_workers = int(max_workers)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("entity queue max_workers must resolve to an integer") from exc
+        if max_workers < 1:
+            raise ValueError("entity queue max_workers must be positive")
         outcomes: list[EntityOutcome | None] = [None] * len(entities)
         work: list[tuple[int, Any, str]] = []
         for index, entity in enumerate(entities):
             entity_id = str(spec.entity_id(entity))
-            if spec.should_skip(context, entity, **options):
+            if spec.should_skip(context, entity, **run_options):
                 outcomes[index] = EntityOutcome(entity_id, "skipped")
             else:
                 work.append((index, entity, entity_id))
@@ -82,7 +102,7 @@ def create_agent(spec: EntityQueueSpec) -> Callable[..., dict[str, Any]]:
         def process(item: tuple[int, Any, str]) -> tuple[int, EntityOutcome]:
             index, entity, entity_id = item
             try:
-                value = spec.process_entity(context, entity, **options)
+                value = spec.process_entity(context, entity, **run_options)
                 if isinstance(value, EntityOutcome):
                     return index, value
                 return index, EntityOutcome(entity_id, "processed", value=value)
@@ -91,12 +111,12 @@ def create_agent(spec: EntityQueueSpec) -> Callable[..., dict[str, Any]]:
                     raise
                 return index, EntityOutcome(entity_id, "failed", error=str(exc))
 
-        if spec.max_workers == 1 or len(work) <= 1:
+        if max_workers == 1 or len(work) <= 1:
             for item in work:
                 index, outcome = process(item)
                 outcomes[index] = outcome
         else:
-            with ThreadPoolExecutor(max_workers=spec.max_workers) as executor:
+            with ThreadPoolExecutor(max_workers=max_workers) as executor:
                 futures = [executor.submit(process, item) for item in work]
                 for future in futures:
                     index, outcome = future.result()
