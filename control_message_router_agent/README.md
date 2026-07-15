@@ -1,5 +1,58 @@
-# mn-agents.control.message_router
+# Message Router Agent
 
-Map router for message ingress and lightweight routing nodes.
+`mn-agents.control.message_router@1` is a manifest runtime-node template for
+message ingress, normalization, and lightweight routing. It renders to a
+`type="map"`, `agent_type="router"` node while leaving routing conditions and
+message naming to the blueprint.
 
-This is a runtime-shape block. Blueprints actualize it with `uses`, `with`, optional `with.stereotype`, and optional `config` overrides.
+Use it when a workflow needs a visible router node in its DAG. For dispatch
+inside one Python step, use the operation-router handler factory instead.
+
+## Manifest example
+
+```json
+{
+  "node_id": "ingress",
+  "uses": "mn-agents.control.message_router@1",
+  "with": {
+    "emit_type": "input_received",
+    "routing_mode": "first_match",
+    "conditions": [
+      {"field": "payload.kind", "equals": "video"}
+    ]
+  }
+}
+```
+
+Minimal actualization needs no required fields. When `emit_type` is absent, the
+behavior contract uses `route_message` as the fallback message type.
+
+## Optional inputs
+
+| Field | Purpose |
+| --- | --- |
+| `emit_type` | Message type produced by the router. |
+| `conditions` | Runtime-owned routing/normalization conditions. |
+| `routing_mode` | Strategy interpreted by the runtime implementation. |
+| `output_message_type` | Conventional downstream completion type. |
+| `role` | Semantic node role. |
+| `node_type` | Overrides the rendered node type. |
+| `stereotype` | Reserved template stereotype selection; none exist in v1. |
+
+The template packages shape and behavior metadata; it does not implement
+domain routing rules in Python.
+
+## Rendering API
+
+```python
+from mn_control_message_router_agent import create_agent
+
+definition = create_agent()
+rendered_node = create_agent(instance)
+```
+
+Calling `create_agent()` returns a deep copy of the packaged definition.
+Passing an instance renders it through the SDK template renderer.
+
+See [SPEC.md](SPEC.md) for merge precedence, lifecycle metadata, and
+compatibility rules.

@@ -1,5 +1,50 @@
-# mn-agents.worker.llm_host
+# LLM Host Worker Agent
 
-Host-local LLM worker shape with an llm_config reference.
+`mn-agents.worker.llm_host@1` renders a host-local LLM executor bound to a named
+`llm_config`. Use it for a DAG node whose primary runtime operation is an LLM
+call and whose model/provider policy is already declared in the blueprint
+configuration.
 
-This is a runtime-shape block. Blueprints actualize it with `uses`, `with`, optional `with.stereotype`, and optional `config` overrides.
+## Manifest example
+
+```json
+{
+  "node_id": "evaluate_report",
+  "role": "risk_evaluator",
+  "uses": "mn-agents.worker.llm_host@1",
+  "with": {
+    "llm_config": "primary",
+    "system_prompt_ref": "prompts/risk_evaluator.md",
+    "tools": ["read_report"],
+    "output_message_type": "evaluate_report_completed",
+    "timeout_seconds": 90,
+    "max_attempts": 2
+  }
+}
+```
+
+## Required input
+
+`llm_config` is the only required actualization field. It is a reference to
+runtime-owned model/provider configuration; credentials and raw secrets do not
+belong in the node.
+
+Optional fields include `system_prompt_ref`, `tools`, timeout/retry controls,
+role, output message type, and node type.
+
+## Responsibility boundary
+
+This template supplies host-local executor shape, beacon defaults, and the LLM
+configuration reference. It does not:
+
+- construct prompts;
+- enforce an action or token budget;
+- validate structured output;
+- redact observations;
+- implement fallback policy; or
+- grant tool permissions merely because tool names are listed.
+
+Use SDK budget controls, skills, and runtime tool policy for those concerns.
+
+Version 1 has no stereotypes. See [SPEC.md](SPEC.md) for exact defaults and
+machine-readable behavior.

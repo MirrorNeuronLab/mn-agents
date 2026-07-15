@@ -1,5 +1,78 @@
 # Entity Queue Agent
 
-Provides deterministic ordered queue mechanics while callers supply entity
-loading, skip, and processing strategies. Worker counts may be fixed, resolved
-from runtime context, or overridden per call.
+`mn-agents.prototype.entity_queue` processes a finite collection of entities
+with optional skips and bounded thread parallelism while preserving input-order
+outcomes.
+
+Use it for repeated company, document, account, scene, shot, or asset loops
+where the domain operation is injected and deterministic output ordering
+matters.
+
+## Key guarantees
+
+- entities are loaded once and materialized before processing;
+- skip decisions are evaluated in input order;
+- output outcomes remain in input order even with several workers;
+- worker count may be fixed, resolved at runtime, or overridden per call; and
+- failures either propagate or become explicit failed outcomes.
+
+The queue does not persist progress, retry entities, rate-limit external tools,
+or make a non-thread-safe handler safe.
+
+## Quick start
+
+```python
+from mn_prototype_entity_queue_agent import EntityQueueSpec, create_agent
+
+
+queue = create_agent(
+    EntityQueueSpec(
+        load_entities=lambda context, **_: context["jobs"],
+        entity_id=lambda job: job["id"],
+        should_skip=lambda _context, job, **_: job.get("cached", False),
+        process_entity=lambda _context, job, **_: {"frames": job["frames"]},
+        max_workers=lambda context, **_: context["worker_limit"],
+        failure_policy="collect",
+    )
+)
+
+summary = queue(
+    {
+        "worker_limit": 4,
+        "jobs": [
+            {"id": "scene-1", "frames": 120},
+            {"id": "scene-2", "frames": 80, "cached": True},
+        ],
+    }
+)
+```
+
+Call-time `entities=[...]` bypasses the loader. Call-time `max_workers=N`
+overrides the spec, including a callable configured in the spec.
+
+## Result shape
+
+```json
+{
+  "status": "completed",
+  "outcomes": [
+    {"entity_id": "scene-1", "status": "processed", "value": {"frames": 120}},
+    {"entity_id": "scene-2", "status": "skipped"}
+  ],
+  "processed_count": 1,
+  "skipped_count": 1,
+  "failed_count": 0
+}
+```
+
+`status` becomes `completed_with_errors` when `failure_policy="collect"`
+captures at least one error.
+
+## Thread-safety guidance
+
+Parallel workers share the same context and callback objects. Use immutable
+context data, thread-safe clients, and atomic state-store operations. If a
+handler writes shared files or mutates common dictionaries, select one worker
+or provide synchronization in the owning layer.
+
+See [SPEC.md](SPEC.md) for exact ordering and error behavior.

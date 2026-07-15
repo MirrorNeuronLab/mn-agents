@@ -1,5 +1,84 @@
 # Bounded Tool Loop Agent
 
-Implements deterministic plan/action/observation control with finite limits;
-browser, RAG, and domain tool behavior are injected by the caller. A `ToolPlan`
-may request multiple bounded actions in one strategy iteration.
+`mn-agents.prototype.bounded_tool_loop` provides a finite
+plan/action/observation loop for agentic work. The caller injects decision
+logic, tool adapters, validation policy, and observation shaping; the factory
+owns limits, trace structure, and stop reasons.
+
+This is appropriate for browser research, code inspection, media analysis, or
+other tool-using agents that must never run without explicit bounds.
+
+## Why use it
+
+- one strategy iteration can request several `ToolAction` values in a
+  `ToolPlan`;
+- every executed action produces an ordered trace record;
+- iteration and tool-call limits are enforced separately;
+- policy validation occurs before tool execution; and
+- limit exhaustion is explicit rather than disguised as success.
+
+It does not call an LLM by itself, select tools, redact observations, persist
+traces, or supply a global budget. Inject those concerns from the SDK or a
+skill.
+
+## Quick start
+
+```python
+from mn_prototype_bounded_tool_loop_agent import (
+    ToolAction,
+    ToolLoopSpec,
+    ToolObservation,
+    ToolPlan,
+    create_agent,
+)
+
+
+def propose(context, trace, **_options):
+    if trace:
+        return ToolPlan(stop_reason="enough_evidence")
+    return ToolPlan(
+        actions=(
+            ToolAction("search", {"query": context["query"]}),
+            ToolAction("fetch", {"url": context["seed_url"]}),
+        ),
+        metadata={"planner": "research-v1"},
+    )
+
+
+loop = create_agent(
+    ToolLoopSpec(
+        propose_action=propose,
+        execute_action=lambda _context, action, **_: {"tool": action.name},
+        observe_result=lambda _context, action, value, **_: ToolObservation(
+            action.name,
+            value=value,
+        ),
+        validate_action=lambda _context, action, **_: action.name in {"search", "fetch"},
+        max_iterations=3,
+        max_tool_calls=4,
+    )
+)
+
+result = loop({"query": "example", "seed_url": "https://example.com"})
+```
+
+## Stop behavior
+
+The loop may stop because:
+
+- the planner returns `None` or an empty plan;
+- a `kind="final"` action is encountered;
+- the plan supplies `stop_reason` after its actions;
+- the tool-call budget is exhausted; or
+- the iteration limit is exhausted.
+
+Budget and iteration exhaustion return `status="partial"` by default. Set
+`partial_on_limit=False` to raise instead.
+
+## Security boundary
+
+`validate_action` should enforce the complete allowlist and argument policy.
+Treat model-produced tool names, paths, URLs, commands, and metadata as
+untrusted. This factory guarantees bounded control flow, not tool safety.
+
+See [SPEC.md](SPEC.md) for the trace and counter contract.

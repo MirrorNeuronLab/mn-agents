@@ -1,7 +1,86 @@
 # Actor Review Agent
 
-Owns review lifecycle and failure policy while delegating prompts, actors, and
-RAG behavior to an injected review skill. Actor selection and failure policy
-may be resolved per call, and `wrap_agent` attaches review to a primary agent.
-The review receives that agent's output as `primary_result`, so context builders
-can review the completed deterministic result before artifact finalization.
+`mn-agents.prototype.actor_review` owns the reusable lifecycle around a
+domain-specific review runner. It resolves actor IDs and failure policy,
+builds review context, normalizes and persists findings, and can attach review
+to any successful primary handler.
+
+Prompts, actor personas, RAG retrieval, domain findings, and persistence schema
+remain injected. This keeps human or LLM review policy reusable without putting
+business terminology in `mn-agents`.
+
+## When to use it
+
+Use this factory when:
+
+- several steps need the same review lifecycle;
+- actor selection depends on runtime configuration;
+- a review outage may either fail the run or degrade to warnings; or
+- review must occur after deterministic primary work and before finalization.
+
+Do not use it as an approval UI, actor prompt library, or artifact writer.
+
+## Quick start
+
+```python
+from mn_prototype_actor_review_agent import (
+    ActorReviewResult,
+    ActorReviewSpec,
+    create_agent,
+    wrap_agent,
+)
+
+
+def run_reviews(*, config, llm, actor_ids, context, **_options):
+    return {
+        actor_id: {"status": "reviewed", "subject": context["subject"]}
+        for actor_id in actor_ids
+    }
+
+
+review = create_agent(
+    ActorReviewSpec(
+        runner=run_reviews,
+        actor_ids=lambda context, **_: context["config"]["reviewers"],
+        build_context=lambda context, **_: {"subject": context["subject"]},
+        normalize=lambda findings: dict(sorted(findings.items())),
+        failure_policy=lambda context, **_: context["config"].get(
+            "review_failure_policy",
+            "fail",
+        ),
+        on_error=lambda _context, error, **_: ActorReviewResult(
+            findings={},
+            warnings=({"kind": "review_unavailable", "message": str(error)},),
+            status="completed_with_warnings",
+        ),
+    )
+)
+
+
+def primary(context, **_options):
+    return {"status": "scored", "value": 42}
+
+
+run = wrap_agent(primary, review, result_key="review")
+result = run({"subject": "example", "config": {"reviewers": ["risk"]}})
+```
+
+The review receives `primary_result` in its options. A `build_context` callback
+can use it to review the just-completed deterministic output.
+
+## Failure policies
+
+- `fail` re-raises review errors.
+- `warn` uses `on_error` when configured, otherwise returns generic warning
+  data.
+
+Persistence runs for successful and recovered results. Keep persistence
+idempotent because it is part of the review lifecycle.
+
+## Composition boundary
+
+`wrap_agent` only reviews after a successful primary result. `when` can skip
+review, and `result_key` can attach review output when the primary result is a
+mapping. Without `result_key`, the primary result is returned unchanged.
+
+See [SPEC.md](SPEC.md) for callback signatures and recovery normalization.

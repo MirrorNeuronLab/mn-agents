@@ -1,5 +1,66 @@
-# mn-agents.worker.python_host
+# Python Host Worker Agent
 
-Generic Python worker executed by MirrorNeuron.Runner.HostLocal.
+`mn-agents.worker.python_host@1` renders a Python executor that runs through
+`MirrorNeuron.Runner.HostLocal`. It is the usual choice for trusted
+blueprint-packaged Python that does not need container isolation or public
+network access.
 
-This is a runtime-shape block. Blueprints actualize it with `uses`, `with`, optional `with.stereotype`, and optional `config` overrides.
+## Recommended blueprint step
+
+```json
+{
+  "node_id": "stage_documents",
+  "role": "document_stage",
+  "uses": "mn-agents.worker.python_host@1",
+  "with": {
+    "stereotype": "blueprint_host_worker",
+    "output_message_type": "stage_documents_completed"
+  }
+}
+```
+
+`blueprint_host_worker` supplies the standard SDK step command, upload path,
+work directory, retry safety, and `side_effect="read"`.
+
+## Stereotypes
+
+| Stereotype | Use |
+| --- | --- |
+| `blueprint_host_worker` | Standard host-local SDK step worker. |
+| `internal_write_worker` | Marks writes as internal run-artifact effects. |
+
+Stereotypes may be composed in order:
+
+```json
+{
+  "stereotype": ["blueprint_host_worker", "internal_write_worker"]
+}
+```
+
+Later stereotypes and explicit `with` values override earlier values.
+
+## Direct script form
+
+Without the blueprint stereotype, provide `upload_path` and either `command` or
+`script`:
+
+```json
+{
+  "upload_path": "worker",
+  "script": "main.py",
+  "output_message_type": "worker_completed"
+}
+```
+
+When no command is supplied, the SDK renders `script` as
+`["python3.11", "main.py"]`. It also derives `upload_as` and `workdir` from the
+upload path.
+
+## Security and retry guidance
+
+Host workers run with host-local runtime permissions. Use Docker for untrusted
+code or stronger filesystem/process isolation. Mark `safe_to_retry` and
+`idempotent` true only when repeated execution cannot corrupt or duplicate
+external effects. Keep `side_effect` aligned with actual behavior.
+
+See [SPEC.md](SPEC.md) for all defaults and rendering rules.

@@ -1,5 +1,53 @@
-# mn-agents.worker.python_docker
+# Python Docker Worker Agent
 
-Generic Python worker executed by MirrorNeuron.Runner.DockerWorker.
+`mn-agents.worker.python_docker@1` renders a Python executor for
+`MirrorNeuron.Runner.DockerWorker`. Use it when a step needs a controlled image,
+container filesystem, shared worker pool, or explicitly authorized public
+network access.
 
-This is a runtime-shape block. Blueprints actualize it with `uses`, `with`, optional `with.stereotype`, and optional `config` overrides.
+## Public-browser example
+
+```json
+{
+  "node_id": "research_public_sources",
+  "role": "public_researcher",
+  "uses": "mn-agents.worker.python_docker@1",
+  "with": {
+    "stereotype": ["blueprint_docker_worker", "public_browser_worker"],
+    "image": "example/research:local",
+    "output_message_type": "research_public_sources_completed"
+  }
+}
+```
+
+## Stereotypes
+
+| Stereotype | Contract |
+| --- | --- |
+| `blueprint_docker_worker` | Standard SDK step command, upload/workdir, runtime network, and read-only effect classification. |
+| `internal_write_worker` | `side_effect="internal_write"`. |
+| `public_browser_worker` | `side_effect="network_read"` plus bounded browser environment defaults. |
+
+Use a list to compose a base worker with one capability stereotype. Explicit
+`with.environment` values deep-merge with the browser defaults.
+
+## Required configuration
+
+Every actualized node requires:
+
+- `upload_path`;
+- `docker_worker_image`, identifying the worker facility;
+- `image`, identifying the workload image; and
+- either `command` or `script`.
+
+The `blueprint_docker_worker` stereotype supplies upload path and command, but
+the blueprint still supplies `image`.
+
+## Isolation is policy, not magic
+
+The template declares runtime shape; the Docker runner enforces it. Keep public
+browsing isolated to nodes with `public_browser_worker`. Do not put secrets in
+the public worker environment. Pin and review workload images, and ensure
+network, side-effect, retry, and pool settings match the actual task.
+
+See [SPEC.md](SPEC.md) for merge precedence and all defaults.

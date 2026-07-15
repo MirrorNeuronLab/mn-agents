@@ -1,4 +1,69 @@
 # Supervised Service Agent
 
-Provides signal-safe startup, readiness, cycle/serve, stop-file, and shutdown
-behavior for long-running service blueprints.
+`mn-agents.prototype.supervised_service` gives a long-running Python service a
+small, deterministic lifecycle. It supports either one blocking `serve`
+function or a repeated `cycle` function, plus startup, health, error, shutdown,
+signal, stop-file, and bounded-cycle hooks.
+
+Use it to standardize service entrypoints. It is a lifecycle wrapper, not a
+process supervisor: it does not restart crashed services, fork processes,
+back off, or emit readiness events by itself.
+
+## Cycle mode
+
+```python
+from mn_prototype_supervised_service_agent import (
+    ServiceContext,
+    SupervisedServiceSpec,
+    create_agent,
+)
+
+
+service = create_agent(
+    SupervisedServiceSpec(
+        on_start=lambda context, **_: context.config["logger"].info("starting"),
+        health=lambda context, **_: context.config["probe"](),
+        cycle=lambda context, **_: context.config["poll"](),
+        on_stop=lambda context, **_: context.config["logger"].info("stopped"),
+        interval_seconds=2.0,
+        max_cycles=10,
+        stop_file="stop.requested",
+    )
+)
+
+result = service(config=service_config)
+```
+
+Cycle mode stops when any of these occurs:
+
+- `SIGINT` or `SIGTERM` sets the shared stop event;
+- the configured stop file exists before a cycle;
+- `max_cycles` is reached; or
+- the caller sets `ServiceContext.stop_event`.
+
+## Serve mode
+
+Supply `serve` instead of `cycle` for an injected blocking server:
+
+```python
+service = create_agent(
+    SupervisedServiceSpec(
+        serve=lambda context, **_: run_http_server(context.stop_event),
+        health=lambda context, **_: check_dependencies(),
+    )
+)
+```
+
+The serve callback is responsible for observing the stop event and returning.
+
+## Lifecycle guidance
+
+`health` runs once before serve/cycles. `on_stop` runs in `finally` even when
+startup, health, or work fails. `on_error` observes an exception but does not
+recover it—the original error is re-raised.
+
+Signal handlers are installed only from the main thread. If an existing
+`ServiceContext` is supplied, its configuration and counters are used; the
+separate `config=` argument is ignored.
+
+See [SPEC.md](SPEC.md) for exact lifecycle ordering and limitations.

@@ -1,4 +1,71 @@
 # Artifact Finalizer Agent
 
-Writes only declared outputs and emits artifact lifecycle events. The blueprint
-still owns artifact composition and schema.
+`mn-agents.prototype.artifact_finalizer` is the final write boundary for a
+workflow. Domain code composes an `ArtifactBundle`; the factory writes only the
+declared files, emits one event per write, optionally marks the step complete,
+and returns the declared final artifact.
+
+Use it for root reports, indexes, manifests, media metadata, or any workflow
+whose final write set should be visible and auditable.
+
+## Quick start
+
+```python
+from mn_prototype_artifact_finalizer_agent import (
+    ArtifactBundle,
+    ArtifactFinalizerSpec,
+    ArtifactWrite,
+    create_agent,
+)
+
+
+def compose(context, **_options):
+    report = {"run_id": context["run_id"], "status": "completed"}
+    return ArtifactBundle(
+        final_artifact=report,
+        writes=(
+            ArtifactWrite("report.json", report, destination="both"),
+            ArtifactWrite("report.md", "# Completed\n", kind="text"),
+        ),
+        result={"report_name": "report.json"},
+    )
+
+
+finalize = create_agent(
+    ArtifactFinalizerSpec(
+        compose=compose,
+        step_id="write_report",
+        human_notice="Review the generated report before external use.",
+    )
+)
+result = finalize(context)
+```
+
+## Declared writes
+
+Each `ArtifactWrite` declares:
+
+- a path relative to the selected root;
+- `kind`: `json`, `text`, or `bytes`;
+- `destination`: `run`, `output`, or `both`; and
+- the value to write.
+
+Callers must supply trusted relative paths. Version 1 does not sanitize
+absolute paths or `..` traversal, so never construct artifact paths directly
+from untrusted model or user output.
+
+Text and byte writes use a same-directory temporary file and atomic replace.
+JSON uses the SDK `write_json` implementation.
+
+## Transaction boundary
+
+Writes occur in declaration and destination order. The bundle is not a
+multi-file transaction: if a later write fails, earlier writes and their
+events remain. Compose and validate the full bundle before returning it.
+
+## Human review
+
+`human_notice` emits a `human_input_requested` event after writes. It records an
+approval boundary; it does not pause the process or implement an approval UI.
+
+See [SPEC.md](SPEC.md) for result, event, and error contracts.
