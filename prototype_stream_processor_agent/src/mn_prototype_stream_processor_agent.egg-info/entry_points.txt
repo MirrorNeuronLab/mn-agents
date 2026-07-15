@@ -1,0 +1,2 @@
+[mn.agents]
+mn-agents.prototype.stream_processor = mn_prototype_stream_processor_agent:load_agent_definition

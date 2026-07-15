@@ -1,0 +1,103 @@
+Metadata-Version: 2.4
+Name: mn-prototype-operation-router-agent
+Version: 1.2.24
+Summary: Reusable operation-selection handler factory.
+License-Expression: MIT
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: mirrorneuron-python-sdk
+
+# Operation Router Agent
+
+`mn-agents.prototype.operation_router` turns a table of named Python handlers
+into one predictable dispatcher. Use it when a workflow step supports several
+operations but should keep routing mechanics outside the domain handlers.
+
+The router is a handler factory, not a manifest runtime node. The caller owns
+the operation names, handler implementations, context type, and result schema.
+
+## When to use it
+
+Use this agent for:
+
+- selecting a stage, method, format, or provider by name;
+- replacing repeated `if`/`elif` dispatch or local handler dictionaries;
+- binding stable identifiers into a shared handler; and
+- composing a small domain handler under `stateful_step`.
+
+Do not use it for DAG routing, message transport, retries, authorization, or
+dynamic plugin discovery. Use a control router for workflow messages and
+perform authorization before invoking this dispatcher.
+
+## Quick start
+
+```python
+from mn_prototype_operation_router_agent import (
+    OperationBinding,
+    OperationRouterSpec,
+    create_agent,
+)
+
+
+def score(context, *, method_id, scale=1):
+    return {
+        "entity": context["entity"],
+        "method": method_id,
+        "score": context["raw_score"] * scale,
+    }
+
+
+run = create_agent(
+    OperationRouterSpec(
+        operations={
+            "fast": OperationBinding(
+                score,
+                bound_kwargs={"method_id": "fast", "scale": 1},
+            ),
+            "careful": OperationBinding(
+                score,
+                bound_kwargs={"method_id": "careful", "scale": 2},
+            ),
+        },
+        selector="operation",
+        label="scoring operation",
+    )
+)
+
+result = run(
+    {"entity": "example", "raw_score": 21},
+    operation="careful",
+)
+```
+
+The selector is read from the call first, then from a mapping context, then
+from an attribute on the context object. Per-call keyword arguments override
+`OperationBinding.bound_kwargs`.
+
+## Public API
+
+- `OperationBinding(handler, bound_kwargs={})` binds reusable arguments.
+- `OperationRouterSpec(operations, selector="operation", label="operation")`
+  declares the dispatch table.
+- `create_agent(spec)` returns `run(context, **parameters)`.
+- `create_agent(mapping, selector=..., label=...)` is the compact form.
+- `load_agent_definition()` returns the package metadata.
+
+## Composition
+
+A common composition is:
+
+```text
+stateful_step -> operation_router -> entity_queue -> domain handler
+```
+
+The router deliberately returns the selected handler's value unchanged. That
+makes it safe to place inside lifecycle, review, or finalization wrappers.
+
+## Failure behavior
+
+Construction rejects empty operation names and non-callable handlers. A call
+with a missing or unknown operation raises `ValueError` and lists the valid
+names. Exceptions from the selected handler propagate unchanged.
+
+See [SPEC.md](SPEC.md) for the normative contract and compatibility rules.

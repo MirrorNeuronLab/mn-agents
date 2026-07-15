@@ -1,0 +1,2 @@
+[mn.agents]
+mn-agents.prototype.operation_router = mn_prototype_operation_router_agent:load_agent_definition

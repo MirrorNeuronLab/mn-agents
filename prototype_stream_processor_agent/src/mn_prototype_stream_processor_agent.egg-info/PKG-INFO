@@ -1,0 +1,67 @@
+Metadata-Version: 2.4
+Name: mn-prototype-stream-processor-agent
+Version: 1.2.24
+Summary: Ordered stream processing and checkpoint factory.
+License-Expression: MIT
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: mirrorneuron-python-sdk
+
+# Stream Processor Agent
+
+`mn-agents.prototype.stream_processor` consumes an ordered, finite iterable one
+item at a time. For every item it processes, emits, and then checkpoints. The
+whole item pipeline may be retried, with either fail-fast or collected errors.
+
+Use it when source order and “checkpoint only after successful emission” matter
+more than parallel throughput.
+
+## Quick start
+
+```python
+from mn_prototype_stream_processor_agent import (
+    StreamProcessorSpec,
+    create_agent,
+)
+
+
+processor = create_agent(
+    StreamProcessorSpec(
+        source=lambda context, **_: context["frames"],
+        item_id=lambda frame: frame["id"],
+        process=lambda _context, frame, **_: frame["pixels"].hex(),
+        emit=lambda context, frame, value, **_: context["sink"].append(
+            {"id": frame["id"], "encoded": value}
+        ),
+        checkpoint=lambda context, frame, _value, **_: context[
+            "checkpoint"
+        ].update({"last_frame": frame["id"]}),
+        retries=2,
+        failure_policy="collect",
+    )
+)
+summary = processor(context)
+```
+
+## Processing order
+
+For each item:
+
+```text
+process -> emit -> checkpoint -> record processed
+```
+
+Checkpoint never runs before a successful emit. Items are fully resolved in
+source order, and no later item starts while the current item is retrying.
+
+## Retry warning
+
+A retry repeats `process`, `emit`, and `checkpoint` as one unit. If `emit`
+succeeds but `checkpoint` fails, retrying can emit the item again. Make process,
+emit, and checkpoint idempotent or add deduplication in the injected adapters.
+
+Use `entity_queue` instead when bounded parallel processing and skip semantics
+are needed. Use `supervised_service` when the source is open-ended or polled
+over time.
+
+See [SPEC.md](SPEC.md) for exact failure and summary behavior.

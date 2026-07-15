@@ -1,0 +1,16 @@
+README.md
+SPEC.md
+pyproject.toml
+fixtures/minimal.instance.json
+fixtures/rendered.node.json
+src/mn_worker_python_docker_agent/__init__.py
+src/mn_worker_python_docker_agent/definition.py
+src/mn_worker_python_docker_agent.egg-info/PKG-INFO
+src/mn_worker_python_docker_agent.egg-info/SOURCES.txt
+src/mn_worker_python_docker_agent.egg-info/dependency_links.txt
+src/mn_worker_python_docker_agent.egg-info/entry_points.txt
+src/mn_worker_python_docker_agent.egg-info/requires.txt
+src/mn_worker_python_docker_agent.egg-info/top_level.txt
+src/mn_worker_python_docker_agent/resources/agent.json
+src/mn_worker_python_docker_agent/resources/input.spec.json
+src/mn_worker_python_docker_agent/resources/output.spec.json

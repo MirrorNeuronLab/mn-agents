@@ -1,0 +1,2 @@
+[mn.agents]
+mn-agents.module.beam_module = mn_module_beam_module_agent:load_agent_definition

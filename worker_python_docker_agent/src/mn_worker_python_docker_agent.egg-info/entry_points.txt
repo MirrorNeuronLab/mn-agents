@@ -1,0 +1,2 @@
+[mn.agents]
+mn-agents.worker.python_docker = mn_worker_python_docker_agent:load_agent_definition

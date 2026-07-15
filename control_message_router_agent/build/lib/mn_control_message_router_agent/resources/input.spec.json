@@ -1,0 +1,33 @@
+{
+  "accepted_message_types": [
+    "actualize_agent_template"
+  ],
+  "description": "Inputs accepted by mn-agents.control.message_router.",
+  "examples": [
+    {
+      "node_id": "ingress",
+      "uses": "mn-agents.control.message_router@1",
+      "with": {
+        "emit_type": "input_received"
+      }
+    }
+  ],
+  "optional_fields": [
+    "stereotype",
+    "node_type",
+    "role",
+    "emit_type",
+    "conditions",
+    "routing_mode",
+    "output_message_type"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.control.message_router.input.v1"
+    }
+  ],
+  "required_fields": [],
+  "schema_version": "mn.agent.input.v1",
+  "version": 1
+}

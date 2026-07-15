@@ -1,0 +1,2 @@
+[mn.agents]
+mn-agents.service.openshell = mn_service_openshell_agent:load_agent_definition

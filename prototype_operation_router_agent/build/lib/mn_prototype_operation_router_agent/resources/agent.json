@@ -1,0 +1,26 @@
+{
+  "schema_version": "mn.agent.package.v1",
+  "package_kind": "handler_factory",
+  "agent_id": "mn-agents.prototype.operation_router",
+  "version": 1,
+  "python": {
+    "distribution": "mn-prototype-operation-router-agent",
+    "module": "mn_prototype_operation_router_agent",
+    "factory": "create_agent",
+    "definition_loader": "load_agent_definition"
+  },
+  "handler_factory": {
+    "context": "opaque mapping or StepContext",
+    "strategy_contract": "handler(context, **parameters)",
+    "selector": "operation",
+    "unknown_operation": "error"
+  },
+  "behavior": {
+    "schema_version": "mn.agent.behavior.v1",
+    "summary": "Dispatches a named operation to an injected strategy.",
+    "lifecycle_events": {"success": ["agent_started", "agent_completed"], "failure": ["agent_started", "agent_failed"]},
+    "required_config": [],
+    "emits": {"events": [], "messages": [], "artifacts": []},
+    "delegation": {"enabled": false, "inherits_tools": false, "allow_recursive": false}
+  }
+}

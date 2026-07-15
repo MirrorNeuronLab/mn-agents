@@ -1,0 +1,1 @@
+{"schema_version":"mn.agent.input.v1","accepted_message_types":["service_start"],"parameters":{"max_cycles":"integer","interval_seconds":"number"}}

@@ -1,0 +1,2 @@
+[mn.agents]
+mn-agents.control.message_router = mn_control_message_router_agent:load_agent_definition

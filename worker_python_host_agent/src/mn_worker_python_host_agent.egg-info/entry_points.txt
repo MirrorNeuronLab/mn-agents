@@ -1,0 +1,2 @@
+[mn.agents]
+mn-agents.worker.python_host = mn_worker_python_host_agent:load_agent_definition

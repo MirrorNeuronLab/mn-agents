@@ -1,0 +1,39 @@
+{
+  "accepted_message_types": [
+    "actualize_agent_template"
+  ],
+  "description": "Inputs accepted by mn-agents.worker.llm_host.",
+  "examples": [
+    {
+      "node_id": "evaluate_report",
+      "role": "risk_evaluator",
+      "uses": "mn-agents.worker.llm_host@1",
+      "with": {
+        "llm_config": "primary",
+        "output_message_type": "evaluate_report_completed"
+      }
+    }
+  ],
+  "optional_fields": [
+    "stereotype",
+    "node_type",
+    "role",
+    "output_message_type",
+    "timeout_seconds",
+    "max_attempts",
+    "retry_backoff_ms",
+    "tools",
+    "system_prompt_ref"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.worker.llm_host.input.v1"
+    }
+  ],
+  "required_fields": [
+    "llm_config"
+  ],
+  "schema_version": "mn.agent.input.v1",
+  "version": 1
+}

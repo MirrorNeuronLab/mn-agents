@@ -1,0 +1,2 @@
+[mn.agents]
+mn-agents.prototype.bounded_tool_loop = mn_prototype_bounded_tool_loop_agent:load_agent_definition

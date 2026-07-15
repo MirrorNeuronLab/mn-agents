@@ -1,0 +1,56 @@
+Metadata-Version: 2.4
+Name: mn-service-openshell-agent
+Version: 1.2.24
+Summary: OpenShell service agent package.
+License-Expression: MIT
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: mirrorneuron-python-sdk
+
+# OpenShell Service Agent
+
+`mn-agents.service.openshell@1` renders an OpenShell-backed service with
+explicit image, port, and tunnel metadata. Use it for a workflow dependency
+that must be started and made ready before worker nodes consume it.
+
+## Manifest example
+
+```json
+{
+  "node_id": "media_service",
+  "uses": "mn-agents.service.openshell@1",
+  "with": {
+    "custom_openshell_image": "example/media-service:local",
+    "container_port": 8080,
+    "external_port": 18080,
+    "tunnel": "local",
+    "healthcheck_path": "/health",
+    "output_message_type": "media_service_ready"
+  }
+}
+```
+
+## Required fields
+
+- `custom_openshell_image`;
+- `container_port`;
+- `external_port`; and
+- `tunnel`.
+
+The template defaults to
+`runner_module="MirrorNeuron.Runner.OpenShell"` and `required=true`.
+Optional fields include `healthcheck_path`, `output_message_type`, `role`, and
+`node_type`.
+
+## Operational guidance
+
+Treat image names, tunnels, exposed ports, and health paths as deployment
+configuration. Do not let an LLM select or rewrite them at runtime. Port
+availability, image existence, tunnel policy, authentication, and healthcheck
+semantics are enforced outside this rendering package.
+
+The declared fallback message is `service_ready`. Downstream workflow edges
+should consume a concrete readiness message, not assume node construction means
+the service is healthy.
+
+See [SPEC.md](SPEC.md) for the normative runtime shape.

@@ -1,0 +1,2 @@
+[mn.agents]
+mn-agents.control.terminal_sink = mn_control_terminal_sink_agent:load_agent_definition

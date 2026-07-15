@@ -1,0 +1,2 @@
+[mn.agents]
+mn-agents.prototype.artifact_finalizer = mn_prototype_artifact_finalizer_agent:load_agent_definition

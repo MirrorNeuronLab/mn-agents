@@ -1,0 +1,2 @@
+[mn.agents]
+mn-agents.prototype.actor_review = mn_prototype_actor_review_agent:load_agent_definition

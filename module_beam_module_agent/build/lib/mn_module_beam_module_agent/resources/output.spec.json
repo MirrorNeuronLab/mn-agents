@@ -1,0 +1,21 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "result",
+      "mime_type": "application/json",
+      "schema": "mn-agents.module.beam_module.output.v1"
+    }
+  ],
+  "description": "Outputs emitted by mn-agents.module.beam_module.",
+  "emitted_message_types": [
+    "module_completed"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.module.beam_module.output.v1"
+    }
+  ],
+  "schema_version": "mn.agent.output.v1",
+  "version": 1
+}

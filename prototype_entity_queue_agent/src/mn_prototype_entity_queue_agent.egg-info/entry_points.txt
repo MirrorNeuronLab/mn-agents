@@ -1,0 +1,2 @@
+[mn.agents]
+mn-agents.prototype.entity_queue = mn_prototype_entity_queue_agent:load_agent_definition

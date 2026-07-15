@@ -1,0 +1,1 @@
+{"schema_version":"mn.agent.output.v1","emitted_message_types":["tool_loop_result"],"artifacts":[{"artifact_id":"tool_trace"}]}

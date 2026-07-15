@@ -1,0 +1,63 @@
+Metadata-Version: 2.4
+Name: mn-control-terminal-sink-agent
+Version: 1.2.24
+Summary: Terminal sink agent package.
+License-Expression: MIT
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: mirrorneuron-python-sdk
+
+# Terminal Sink Agent
+
+`mn-agents.control.terminal_sink@1` is the terminal reducer for a
+report-producing workflow. Its `terminal_report_sink` stereotype marks the run
+complete when the final report message reaches the node.
+
+Place one terminal sink at the end of the DAG and connect the final report edge
+to it. Do not use it as an artifact composer; generate and validate artifacts
+before sending the terminal message.
+
+## Recommended manifest use
+
+```json
+{
+  "node_id": "report_sink",
+  "role": "result_sink",
+  "uses": "mn-agents.control.terminal_sink@1",
+  "with": {
+    "stereotype": "terminal_report_sink"
+  }
+}
+```
+
+The stereotype expands to:
+
+```json
+{
+  "complete_on_message": true,
+  "complete_run": true,
+  "terminal_sink": true
+}
+```
+
+The rendered node is an `aggregator` with `type="reduce"` and the supplied
+role.
+
+## Message boundary
+
+Behavior metadata declares a `blueprint_report` input transition and a
+`run_completed` output. The transition terminates with reason
+`terminal_report_received`.
+
+Keep this boundary stable when refactoring a workflow. Moving completion into
+an earlier worker can mark incomplete artifacts as successful and bypass human
+review or final quality checks.
+
+## Overrides
+
+Optional `with` fields include `complete_on_message`, `complete_run`,
+`terminal_sink`, `output_message_type`, `role`, and `node_type`. Explicit
+instance values override stereotype values; explicit top-level `config`
+overrides rendered config last.
+
+See [SPEC.md](SPEC.md) for the normative rendering and lifecycle contract.

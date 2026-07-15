@@ -1,0 +1,1 @@
+{"schema_version":"mn.agent.input.v1","accepted_message_types":["stream_item"],"parameters":{"retries":"integer","failure_policy":"string"}}

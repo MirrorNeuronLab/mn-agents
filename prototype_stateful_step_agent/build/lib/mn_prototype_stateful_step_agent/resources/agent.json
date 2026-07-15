@@ -1,0 +1,15 @@
+{
+  "schema_version": "mn.agent.package.v1",
+  "package_kind": "handler_factory",
+  "agent_id": "mn-agents.prototype.stateful_step",
+  "version": 1,
+  "python": {"distribution":"mn-prototype-stateful-step-agent","module":"mn_prototype_stateful_step_agent","factory":"create_agent","definition_loader":"load_agent_definition"},
+  "handler_factory": {"context":"StatefulStepContext","state_store":"WorkflowStateStore","lifecycle":"mn_sdk.blueprint_support.execute_step_handler"},
+  "behavior": {
+    "schema_version": "mn.agent.behavior.v1",
+    "summary": "Runs an injected handler with shared step lifecycle and workflow state.",
+    "lifecycle_events": {"success":["agent_started","agent_completed"],"failure":["agent_started","agent_failed"]},
+    "required_config": [], "emits":{"events":[],"messages":[],"artifacts":[]},
+    "delegation":{"enabled":false,"inherits_tools":false,"allow_recursive":false}
+  }
+}

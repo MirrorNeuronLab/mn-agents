@@ -1,0 +1,9 @@
+{
+  "schema_version":"mn.agent.package.v1",
+  "package_kind":"handler_factory",
+  "agent_id":"mn-agents.prototype.entity_queue",
+  "version":1,
+  "python":{"distribution":"mn-prototype-entity-queue-agent","module":"mn_prototype_entity_queue_agent","factory":"create_agent","definition_loader":"load_agent_definition"},
+  "handler_factory":{"ordering":"input_order","default_workers":1,"failure_policy":"fail_fast","skip_strategy":"injected"},
+  "behavior":{"schema_version":"mn.agent.behavior.v1","summary":"Processes an ordered entity queue with explicit skip and failure policies.","lifecycle_events":{"success":["agent_started","agent_completed"],"failure":["agent_started","agent_failed"]},"required_config":[],"emits":{"events":[],"messages":[],"artifacts":[]},"delegation":{"enabled":false,"inherits_tools":false,"allow_recursive":false}}
+}

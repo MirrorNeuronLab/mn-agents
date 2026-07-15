@@ -1,0 +1,2 @@
+[mn.agents]
+mn-agents.prototype.supervised_service = mn_prototype_supervised_service_agent:load_agent_definition
