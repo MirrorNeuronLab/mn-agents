@@ -1,0 +1,10 @@
+{
+  "node_id": "stage_documents",
+  "role": "document_stage",
+  "uses": "mn-agents.worker.python_host@1",
+  "version": 1,
+  "with": {
+    "output_message_type": "stage_documents_completed",
+    "stereotype": "blueprint_host_worker"
+  }
+}

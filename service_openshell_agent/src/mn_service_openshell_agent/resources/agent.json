@@ -1,0 +1,107 @@
+{
+  "behavior": {
+    "delegation": {
+      "allow_recursive": false,
+      "enabled": false,
+      "inherits_tools": false
+    },
+    "emits": {
+      "artifacts": [
+        {
+          "artifact_id": "result",
+          "mime_type": "application/json",
+          "schema": "mn-agents.service.openshell.output.v1"
+        }
+      ],
+      "events": [
+        "agent_started",
+        "agent_completed",
+        "agent_failed"
+      ],
+      "messages": [
+        {
+          "fallback_message_type": "service_ready",
+          "message_type": "config.output_message_type"
+        }
+      ]
+    },
+    "lifecycle_events": {
+      "failure": [
+        "agent_started",
+        "agent_failed"
+      ],
+      "success": [
+        "agent_started",
+        "agent_completed"
+      ]
+    },
+    "required_config": [
+      "runner_module",
+      "custom_openshell_image",
+      "container_port",
+      "external_port",
+      "tunnel"
+    ],
+    "routing": {
+      "transitions": [
+        {
+          "then": {
+            "reason": "agent_completed",
+            "type": "terminate"
+          },
+          "when": {
+            "type": "always"
+          }
+        }
+      ]
+    },
+    "schema_version": "mn.agent.behavior.v1",
+    "summary": "Start an OpenShell-backed service with explicit ports and readiness metadata."
+  },
+  "defaults": {
+    "agent_type": "service",
+    "required": true,
+    "runner_module": "MirrorNeuron.Runner.OpenShell",
+    "type": "generic"
+  },
+  "description": "Generic OpenShell-backed service shape with port and tunnel metadata.",
+  "input_spec": "input.spec.json",
+  "inputs": {
+    "optional": [
+      "stereotype",
+      "node_type",
+      "role",
+      "required",
+      "healthcheck_path",
+      "output_message_type"
+    ],
+    "required": [
+      "custom_openshell_image",
+      "container_port",
+      "external_port",
+      "tunnel"
+    ]
+  },
+  "kind": "service",
+  "output_spec": "output.spec.json",
+  "payloads": "payloads",
+  "provides": [
+    "runtime_shape",
+    "rendered_manifest_node",
+    "behavior_simulation"
+  ],
+  "renders_to": "manifest.nodes[]",
+  "stereotypes": {},
+  "template_category": "data",
+  "template_id": "mn-agents.service.openshell",
+  "version": 1,
+  "schema_version": "mn.agent.package.v1",
+  "package_kind": "runtime_node",
+  "agent_id": "mn-agents.service.openshell",
+  "python": {
+    "distribution": "mn-service-openshell-agent",
+    "module": "mn_service_openshell_agent",
+    "factory": "create_agent",
+    "definition_loader": "load_agent_definition"
+  }
+}

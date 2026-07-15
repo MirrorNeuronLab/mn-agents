@@ -1,0 +1,21 @@
+{
+  "node_id": "research_public_sources",
+  "role": "public_researcher",
+  "uses": "mn-agents.worker.python_docker@1",
+  "version": 1,
+  "with": {
+    "command": [
+      "python3",
+      "run_blueprint.py"
+    ],
+    "docker_worker_image": "docker_worker",
+    "image": "mirror-neuron/example:local",
+    "network": "mirror-neuron-runtime",
+    "output_message_type": "research_public_sources_completed",
+    "script": "run_blueprint.py",
+    "stereotype": "public_browser_worker",
+    "upload_as": "runtime",
+    "upload_path": "runtime",
+    "workdir": "/mn/job/runtime"
+  }
+}

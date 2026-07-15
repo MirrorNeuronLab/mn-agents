@@ -1,54 +1,169 @@
 {
   "agents": [
     {
+      "agent_id": "mn-agents.worker.python_host",
+      "distribution": "mn-worker-python-host-agent",
       "kind": "executor",
-      "path": "worker_python_host",
+      "module": "mn_worker_python_host_agent",
+      "package_kind": "runtime_node",
+      "path": "worker_python_host_agent",
+      "resource_path": "worker_python_host_agent/src/mn_worker_python_host_agent/resources/agent.json",
       "template_category": "data",
       "template_id": "mn-agents.worker.python_host",
       "version": 1
     },
     {
+      "agent_id": "mn-agents.worker.python_docker",
+      "distribution": "mn-worker-python-docker-agent",
       "kind": "executor",
-      "path": "worker_python_docker",
+      "module": "mn_worker_python_docker_agent",
+      "package_kind": "runtime_node",
+      "path": "worker_python_docker_agent",
+      "resource_path": "worker_python_docker_agent/src/mn_worker_python_docker_agent/resources/agent.json",
       "template_category": "data",
       "template_id": "mn-agents.worker.python_docker",
       "version": 1
     },
     {
+      "agent_id": "mn-agents.worker.llm_host",
+      "distribution": "mn-worker-llm-host-agent",
       "kind": "executor",
-      "path": "worker_llm_host",
+      "module": "mn_worker_llm_host_agent",
+      "package_kind": "runtime_node",
+      "path": "worker_llm_host_agent",
+      "resource_path": "worker_llm_host_agent/src/mn_worker_llm_host_agent/resources/agent.json",
       "template_category": "data",
       "template_id": "mn-agents.worker.llm_host",
       "version": 1
     },
     {
+      "agent_id": "mn-agents.control.terminal_sink",
+      "distribution": "mn-control-terminal-sink-agent",
       "kind": "aggregator",
-      "path": "control_terminal_sink",
+      "module": "mn_control_terminal_sink_agent",
+      "package_kind": "runtime_node",
+      "path": "control_terminal_sink_agent",
+      "resource_path": "control_terminal_sink_agent/src/mn_control_terminal_sink_agent/resources/agent.json",
       "template_category": "control",
       "template_id": "mn-agents.control.terminal_sink",
       "version": 1
     },
     {
+      "agent_id": "mn-agents.control.message_router",
+      "distribution": "mn-control-message-router-agent",
       "kind": "router",
-      "path": "control_message_router",
+      "module": "mn_control_message_router_agent",
+      "package_kind": "runtime_node",
+      "path": "control_message_router_agent",
+      "resource_path": "control_message_router_agent/src/mn_control_message_router_agent/resources/agent.json",
       "template_category": "control",
       "template_id": "mn-agents.control.message_router",
       "version": 1
     },
     {
+      "agent_id": "mn-agents.module.beam_module",
+      "distribution": "mn-module-beam-module-agent",
       "kind": "module",
-      "path": "module_beam_module",
+      "module": "mn_module_beam_module_agent",
+      "package_kind": "runtime_node",
+      "path": "module_beam_module_agent",
+      "resource_path": "module_beam_module_agent/src/mn_module_beam_module_agent/resources/agent.json",
       "template_category": "data",
       "template_id": "mn-agents.module.beam_module",
       "version": 1
     },
     {
+      "agent_id": "mn-agents.service.openshell",
+      "distribution": "mn-service-openshell-agent",
       "kind": "service",
-      "path": "service_openshell",
+      "module": "mn_service_openshell_agent",
+      "package_kind": "runtime_node",
+      "path": "service_openshell_agent",
+      "resource_path": "service_openshell_agent/src/mn_service_openshell_agent/resources/agent.json",
       "template_category": "data",
       "template_id": "mn-agents.service.openshell",
       "version": 1
+    },
+    {
+      "agent_id": "mn-agents.prototype.operation_router",
+      "distribution": "mn-prototype-operation-router-agent",
+      "kind": "factory",
+      "module": "mn_prototype_operation_router_agent",
+      "package_kind": "handler_factory",
+      "path": "prototype_operation_router_agent",
+      "resource_path": "prototype_operation_router_agent/src/mn_prototype_operation_router_agent/resources/agent.json",
+      "version": 1
+    },
+    {
+      "agent_id": "mn-agents.prototype.stateful_step",
+      "distribution": "mn-prototype-stateful-step-agent",
+      "kind": "factory",
+      "module": "mn_prototype_stateful_step_agent",
+      "package_kind": "handler_factory",
+      "path": "prototype_stateful_step_agent",
+      "resource_path": "prototype_stateful_step_agent/src/mn_prototype_stateful_step_agent/resources/agent.json",
+      "version": 1
+    },
+    {
+      "agent_id": "mn-agents.prototype.entity_queue",
+      "distribution": "mn-prototype-entity-queue-agent",
+      "kind": "factory",
+      "module": "mn_prototype_entity_queue_agent",
+      "package_kind": "handler_factory",
+      "path": "prototype_entity_queue_agent",
+      "resource_path": "prototype_entity_queue_agent/src/mn_prototype_entity_queue_agent/resources/agent.json",
+      "version": 1
+    },
+    {
+      "agent_id": "mn-agents.prototype.bounded_tool_loop",
+      "distribution": "mn-prototype-bounded-tool-loop-agent",
+      "kind": "factory",
+      "module": "mn_prototype_bounded_tool_loop_agent",
+      "package_kind": "handler_factory",
+      "path": "prototype_bounded_tool_loop_agent",
+      "resource_path": "prototype_bounded_tool_loop_agent/src/mn_prototype_bounded_tool_loop_agent/resources/agent.json",
+      "version": 1
+    },
+    {
+      "agent_id": "mn-agents.prototype.actor_review",
+      "distribution": "mn-prototype-actor-review-agent",
+      "kind": "factory",
+      "module": "mn_prototype_actor_review_agent",
+      "package_kind": "handler_factory",
+      "path": "prototype_actor_review_agent",
+      "resource_path": "prototype_actor_review_agent/src/mn_prototype_actor_review_agent/resources/agent.json",
+      "version": 1
+    },
+    {
+      "agent_id": "mn-agents.prototype.artifact_finalizer",
+      "distribution": "mn-prototype-artifact-finalizer-agent",
+      "kind": "factory",
+      "module": "mn_prototype_artifact_finalizer_agent",
+      "package_kind": "handler_factory",
+      "path": "prototype_artifact_finalizer_agent",
+      "resource_path": "prototype_artifact_finalizer_agent/src/mn_prototype_artifact_finalizer_agent/resources/agent.json",
+      "version": 1
+    },
+    {
+      "agent_id": "mn-agents.prototype.supervised_service",
+      "distribution": "mn-prototype-supervised-service-agent",
+      "kind": "factory",
+      "module": "mn_prototype_supervised_service_agent",
+      "package_kind": "handler_factory",
+      "path": "prototype_supervised_service_agent",
+      "resource_path": "prototype_supervised_service_agent/src/mn_prototype_supervised_service_agent/resources/agent.json",
+      "version": 1
+    },
+    {
+      "agent_id": "mn-agents.prototype.stream_processor",
+      "distribution": "mn-prototype-stream-processor-agent",
+      "kind": "factory",
+      "module": "mn_prototype_stream_processor_agent",
+      "package_kind": "handler_factory",
+      "path": "prototype_stream_processor_agent",
+      "resource_path": "prototype_stream_processor_agent/src/mn_prototype_stream_processor_agent/resources/agent.json",
+      "version": 1
     }
   ],
-  "schema_version": "mn-agents.index.v1"
+  "schema_version": "mn-agents.index.v2"
 }
