@@ -19,7 +19,13 @@ from mn_prototype_bounded_tool_loop_agent import (
 )
 from mn_prototype_entity_queue_agent import EntityQueueSpec, create_agent as create_queue
 from mn_prototype_operation_router_agent import OperationBinding, create_agent as create_router
-from mn_prototype_stateful_step_agent import StatefulStepSpec, create_agent as create_stateful_step
+from mn_prototype_stateful_step_agent import (
+    AgentHandlerOutput,
+    MessageAgentSpec,
+    StatefulStepSpec,
+    create_agent as create_stateful_step,
+    create_message_agent,
+)
 from mn_sdk.step_runtime import StepContext
 
 
@@ -222,6 +228,71 @@ def test_stateful_step_forwards_runtime_root_and_llm_client(tmp_path):
     )
     assert captured["runs_root"] == tmp_path
     assert result["same_client"] is True
+
+
+def test_message_agent_replays_durable_route_neutral_output(tmp_path):
+    calls = []
+
+    def handle(_context, *, agent_input, **_options):
+        calls.append(agent_input.idempotency_key)
+        return AgentHandlerOutput(
+            payload={"value": len(calls)},
+            artifacts=({"kind": "report", "path": "reports/result.json"},),
+            metrics={"items": 1},
+        )
+
+    agent = create_message_agent(
+        MessageAgentSpec(
+            stateful=StatefulStepSpec(
+                context_factory=lambda **_kwargs: {
+                    "run_dir": tmp_path / "run-1",
+                    "output_folder": tmp_path / "output",
+                    "run_id": "run-1",
+                    "blueprint_id": "test-blueprint",
+                    "config": {},
+                }
+            ),
+            input_resolver=lambda value: value.payload.get("step_input", {}),
+        ),
+        handle,
+    )
+    context = StepContext(
+        step_id="collect",
+        agent_id="collector",
+        invocation_id="collect__collector",
+        run_id="run-1",
+        idempotency_key="run-1/collect__collector",
+        message={"body": {"outputs": {"item": 1}}},
+    )
+
+    first = agent(context)
+    replay = agent(context)
+
+    assert first.outputs == {"value": 1}
+    assert replay.outputs == {"value": 1}
+    assert calls == ["run-1/collect__collector"]
+    assert first.metrics == {"items": 1}
+    assert {item["kind"] for item in first.artifacts} == {
+        "report",
+        "agent_result",
+        "agent_idempotency_record",
+    }
+    assert (
+        tmp_path
+        / "run-1"
+        / "workflow_state"
+        / "collect__collector_result.json"
+    ).exists()
+    marker = json.loads(
+        (
+            tmp_path
+            / "run-1"
+            / "workflow_state"
+            / "agent_invocations"
+            / "collect__collector.json"
+        ).read_text()
+    )
+    assert marker["result"]["payload"] == {"value": 1}
 
 
 def test_artifact_finalizer_writes_declared_atomic_artifacts(tmp_path):

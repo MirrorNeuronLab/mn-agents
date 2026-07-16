@@ -11,7 +11,14 @@ from mn_sdk.blueprint_support import (
     WorkflowStateStore,
     execute_step_handler,
 )
-from mn_sdk.step_runtime import StepContext, find_message_payload
+from mn_sdk.step_runtime import (
+    AgentInput,
+    StepContext,
+    StepResult,
+    find_message_payload,
+    receive_input,
+    send_output,
+)
 
 
 AGENT_ID = "mn-agents.prototype.stateful_step"
@@ -20,6 +27,7 @@ RuntimeFactory = Callable[..., Mapping[str, Any] | Any]
 DomainHandler = Callable[..., Any]
 PrepareHook = Callable[..., Mapping[str, Any] | None]
 FinalizeHook = Callable[..., Any]
+MessageInputResolver = Callable[[AgentInput], Mapping[str, Any] | None]
 
 
 @dataclass
@@ -76,6 +84,30 @@ class StatefulStepSpec:
     hooks: StepLifecycleHooks = field(default_factory=StepLifecycleHooks)
     prepare: PrepareHook | None = None
     finalize: FinalizeHook | None = None
+
+
+@dataclass(frozen=True)
+class AgentHandlerOutput:
+    """Route-neutral result returned by a domain handler.
+
+    Mapping results remain accepted as a convenience and are treated as the
+    payload with no additional artifacts or metrics.
+    """
+
+    payload: Mapping[str, Any]
+    artifacts: tuple[Mapping[str, Any], ...] = ()
+    metrics: Mapping[str, Any] = field(default_factory=dict)
+    status: str = "completed"
+
+
+@dataclass(frozen=True)
+class MessageAgentSpec:
+    """Message/replay policy layered around a :class:`StatefulStepSpec`."""
+
+    stateful: StatefulStepSpec
+    input_resolver: MessageInputResolver | None = None
+    idempotency_state_dir: str = "agent_invocations"
+    include_default_artifacts: bool = True
 
 
 def load_agent_definition() -> dict[str, Any]:
@@ -189,11 +221,153 @@ def create_agent(
     return run
 
 
+def create_message_agent(
+    spec: MessageAgentSpec,
+    handler: DomainHandler | None = None,
+) -> DomainHandler:
+    """Create a route-neutral, idempotent message-driven agent handler.
+
+    Durable replay state is written before the result is returned to the SDK,
+    so the outer Redis delivery may ACK only after the handler output and its
+    idempotency record are available.
+    """
+
+    if handler is None:
+        raise TypeError("message agent handler is required")
+
+    def run(step_context: StepContext, **parameters: Any) -> StepResult:
+        agent_input = receive_input(step_context)
+        resolved_inputs = (
+            spec.input_resolver(agent_input)
+            if spec.input_resolver is not None
+            else None
+        )
+
+        def invoke(
+            context: StatefulStepContext,
+            *,
+            llm_client: Any | None = None,
+            **options: Any,
+        ) -> dict[str, Any]:
+            invocation_id = (
+                step_context.invocation_id
+                or f"{step_context.step_id}__{step_context.agent_id}"
+            )
+            marker_name = (
+                f"{spec.idempotency_state_dir.strip('/')}/{invocation_id}.json"
+            )
+            cached = context.state_store.read(marker_name, {})
+            if (
+                agent_input.idempotency_key
+                and isinstance(cached, dict)
+                and cached.get("idempotency_key") == agent_input.idempotency_key
+                and isinstance(cached.get("result"), dict)
+            ):
+                return dict(cached["result"])
+
+            raw = handler(
+                context,
+                llm_client=llm_client,
+                agent_input=agent_input,
+                **options,
+            )
+            output = _normalize_agent_handler_output(raw)
+            serialized = {
+                "payload": dict(output.payload),
+                "artifacts": [dict(item) for item in output.artifacts],
+                "metrics": dict(output.metrics),
+                "status": output.status,
+            }
+            context.state_store.write(f"{invocation_id}_result.json", serialized)
+            context.state_store.write(
+                marker_name,
+                {
+                    "agent_id": step_context.agent_id,
+                    "invocation_id": invocation_id,
+                    "idempotency_key": agent_input.idempotency_key,
+                    "result": serialized,
+                    "status": "completed",
+                },
+            )
+            return serialized
+
+        managed_handler = create_agent(spec.stateful, invoke)
+        result = managed_handler(
+            step_context,
+            inputs=dict(resolved_inputs or {}) if resolved_inputs is not None else None,
+            **parameters,
+        )
+        serialized = (
+            result.get("result")
+            if isinstance(result.get("result"), dict)
+            else result
+        )
+        payload = serialized.get("payload")
+        if not isinstance(payload, Mapping):
+            payload = serialized.get("outputs")
+        if not isinstance(payload, Mapping):
+            payload = {}
+        artifacts = [
+            dict(item)
+            for item in serialized.get("artifacts", [])
+            if isinstance(item, Mapping)
+        ]
+        invocation_id = (
+            step_context.invocation_id
+            or f"{step_context.step_id}__{step_context.agent_id}"
+        )
+        if spec.include_default_artifacts:
+            artifacts.extend(
+                [
+                    {
+                        "kind": "agent_result",
+                        "path": f"workflow_state/{invocation_id}_result.json",
+                        "invocation_id": invocation_id,
+                    },
+                    {
+                        "kind": "agent_idempotency_record",
+                        "path": (
+                            "workflow_state/"
+                            f"{spec.idempotency_state_dir.strip('/')}/"
+                            f"{invocation_id}.json"
+                        ),
+                        "invocation_id": invocation_id,
+                    },
+                ]
+            )
+        return send_output(
+            payload,
+            artifacts=artifacts,
+            metrics=(
+                serialized.get("metrics")
+                if isinstance(serialized.get("metrics"), Mapping)
+                else None
+            ),
+            status=str(serialized.get("status") or "completed"),
+        )
+
+    run.__name__ = "run"
+    return run
+
+
+def _normalize_agent_handler_output(value: Any) -> AgentHandlerOutput:
+    if isinstance(value, AgentHandlerOutput):
+        return value
+    if isinstance(value, Mapping):
+        return AgentHandlerOutput(payload=dict(value))
+    raise TypeError(
+        "message agent handler must return AgentHandlerOutput or a mapping"
+    )
+
+
 __all__ = [
     "AGENT_ID",
     "AGENT_VERSION",
+    "AgentHandlerOutput",
+    "MessageAgentSpec",
     "StatefulStepContext",
     "StatefulStepSpec",
     "create_agent",
+    "create_message_agent",
     "load_agent_definition",
 ]

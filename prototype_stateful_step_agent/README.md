@@ -5,6 +5,12 @@ MirrorNeuron `StepContext` and blueprint domain code. It delegates step
 lifecycle execution to `mn-python-sdk`, opens the workflow state store, resolves
 message inputs, and manages optional prepare/finalize resources.
 
+For individually routed agents, `create_message_agent` layers the SDK
+`receive_input`/`send_output` contract and durable idempotent replay over the
+same stateful lifecycle. Domain handlers receive an `AgentInput` without route
+fields and may return an `AgentHandlerOutput` with bounded payload, artifact
+references, metrics, and status.
+
 Use it once at the outside of a step. Keep business logic in the injected
 handler and reusable tool behavior in skills.
 
@@ -19,6 +25,32 @@ handler and reusable tool behavior in skills.
 
 It does not choose operations, process entity queues, invoke tools, review
 outputs, or define the blueprint's state schema.
+
+## Message-driven composition
+
+```python
+from mn_prototype_stateful_step_agent import (
+    AgentHandlerOutput,
+    MessageAgentSpec,
+    StatefulStepSpec,
+    create_message_agent,
+)
+
+run = create_message_agent(
+    MessageAgentSpec(
+        stateful=StatefulStepSpec(context_factory=build_context),
+        input_resolver=lambda value: value.payload.get("step_input", {}),
+    ),
+    lambda context, *, agent_input, **_: AgentHandlerOutput(
+        payload={"count": len(agent_input.payload)},
+        artifacts=({"kind": "report", "path": "reports/result.json"},),
+    ),
+)
+```
+
+The invocation record is persisted before the output is returned to the SDK.
+A duplicate delivery with the same idempotency key returns that durable result
+without calling the domain handler again.
 
 ## Quick start
 

@@ -7,9 +7,9 @@
   "handler_factory": {"context":"StatefulStepContext","state_store":"WorkflowStateStore","lifecycle":"mn_sdk.blueprint_support.execute_step_handler"},
   "behavior": {
     "schema_version": "mn.agent.behavior.v1",
-    "summary": "Runs an injected handler with shared step lifecycle and workflow state.",
+    "summary": "Runs an injected handler with shared step lifecycle and workflow state, with an optional route-neutral idempotent message boundary.",
     "lifecycle_events": {"success":["agent_started","agent_completed"],"failure":["agent_started","agent_failed"]},
-    "required_config": [], "emits":{"events":[],"messages":[],"artifacts":[]},
+    "required_config": [], "emits":{"events":[],"messages":["workflow_step_result"],"artifacts":["workflow_state"]},
     "delegation":{"enabled":false,"inherits_tools":false,"allow_recursive":false}
   }
 }

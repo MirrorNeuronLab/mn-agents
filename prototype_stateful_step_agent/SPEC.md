@@ -31,6 +31,25 @@ create_agent(
     spec: StatefulStepSpec,
     handler: Callable[..., Any],
 ) -> Callable[..., dict[str, Any]]
+
+AgentHandlerOutput(
+    payload: Mapping[str, Any],
+    artifacts: tuple[Mapping[str, Any], ...] = (),
+    metrics: Mapping[str, Any] = {},
+    status: str = "completed",
+)
+
+MessageAgentSpec(
+    stateful: StatefulStepSpec,
+    input_resolver: Callable[[AgentInput], Mapping[str, Any] | None] | None = None,
+    idempotency_state_dir: str = "agent_invocations",
+    include_default_artifacts: bool = True,
+)
+
+create_message_agent(
+    spec: MessageAgentSpec,
+    handler: Callable[..., AgentHandlerOutput | Mapping[str, Any]],
+) -> Callable[..., StepResult]
 ```
 
 ## Returned handler
@@ -117,9 +136,28 @@ idempotent and avoid masking the original error.
   blueprint-specific path convention.
 - Explicit store writes performed by a handler keep their normal SDK semantics.
 
+## Message-agent guarantees
+
+1. `receive_input(step_context)` resolves a route-neutral `AgentInput`.
+2. `input_resolver`, when configured, supplies immutable run inputs to the
+   stateful context factory independently from the delivered agent payload.
+3. The domain handler receives `agent_input` and must return a mapping or
+   `AgentHandlerOutput`.
+4. The normalized payload, artifacts, metrics, and status are written to
+   `<invocation_id>_result.json`, then recorded under
+   `<idempotency_state_dir>/<invocation_id>.json`, before `send_output` returns.
+5. A delivery with the same non-empty idempotency key reuses that record and
+   does not invoke the domain handler.
+6. Default result and idempotency artifact references are appended unless
+   `include_default_artifacts` is false.
+
+The factory never adds sender, recipient, route, or message-type fields.
+
 ## Errors
 
 - Missing handler: `TypeError`.
+- Message handler returning neither a mapping nor `AgentHandlerOutput`:
+  `TypeError`.
 - Non-mapping prepare result: `TypeError`.
 - Invalid runtime mapping or missing `run_dir`: underlying conversion/key error.
 - Context, lifecycle hook, state-store, prepare, handler, and finalize errors
