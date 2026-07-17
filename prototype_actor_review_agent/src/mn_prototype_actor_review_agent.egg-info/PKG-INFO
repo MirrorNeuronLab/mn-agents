@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: mn-prototype-actor-review-agent
-Version: 1.2.24
+Version: 1.2.25
 Summary: Injected actor-review orchestration factory.
 License-Expression: MIT
 Requires-Python: >=3.11
