@@ -1,22 +1,86 @@
 # AGENTS.md
 
-Guidance for future coding agents working in this repository.
+Instructions for coding agents working in this repository. These instructions
+apply only to `mn-agents`.
 
-## Agent Package Documentation
+## Start Here
 
-- Read the repository `SPEC.md` and the target package's `README.md` and
-  `SPEC.md` before changing implementation, resources, fixtures, or tests.
-- Keep human guidance, normative specifications, Python behavior,
-  machine-readable resources, and catalog identity consistent.
-- Update `README.md` when selection or usage changes. Update `SPEC.md` whenever
-  a public contract, invariant, error, default, or compatibility rule changes.
-- Every `index.json` package must include both documents and pass
-  `tests/test_agent_documentation.py`.
-- Keep shared agents domain-neutral. Domain prompts, formulas, schemas, and
-  terminology belong in blueprints or reusable skills.
+1. Read repository `SPEC.md` and `README.md`.
+2. Read the target package's complete `README.md`, `SPEC.md`, `pyproject.toml`,
+   implementation, resources, fixtures, and tests.
+3. Check `git status` and preserve unrelated work.
 
-## Issue Fixing Policy
+Every `index.json` entry is an independently versioned agent contract. Do not
+assume two packages share semantics just because their layouts are similar.
 
-- Unless the user explicitly asks for a temporary workaround, fix the root cause in the intended layer or contract.
-- Avoid adding fallback paths, compatibility shims, feature flags, or temp solutions that mask a broken primary path.
-- If fallback behavior is already product-specified, keep it narrow, documented, and tested; do not use it to avoid fixing the primary path.
+## Repository Boundary
+
+This repository owns reusable, domain-neutral agent packages:
+
+- `runtime_node` packages render/actualize a manifest node; their package
+  factory does not execute the represented worker or service.
+- `handler_factory` packages wrap injected strategies with bounded reusable
+  control flow such as ordering, review, lifecycle, tool loops, or finalization.
+
+Domain prompts, formulas, terminology, schemas, and product decisions belong in
+blueprints. Generic tool capabilities belong in `mn-skills`; cross-blueprint
+contracts/compilation in `mn-python-sdk`; delivery and routing in Core.
+
+## Package Sources of Truth
+
+Keep these synchronized:
+
+- package implementation and public Python API;
+- `src/<module>/resources/agent.json` plus input/output specs;
+- `fixtures/minimal.instance.json` and `fixtures/rendered.node.json` for runtime
+  nodes;
+- exact package identity/version in root `index.json`;
+- package `SPEC.md` (normative contract) and README (selection/usage); and
+- repository tests.
+
+When they disagree, investigate implementation and tests first, then reconcile
+all affected surfaces. Do not silently choose the most convenient description.
+
+## Invariants
+
+- Keep shared agents domain neutral and directly resolvable.
+- Preserve declared ordering, stop, retry, failure, event, artifact, and merge
+  behavior; these are versioned semantics.
+- Tool loops are finite and validate untrusted actions before execution.
+- Retryable side effects are idempotent or deduplicated.
+- Actor review precedes approval-sensitive finalization.
+- Finalizers write only declared artifacts; terminal completion remains at the
+  last owning DAG boundary.
+- Runtime stereotypes classify capability but do not grant authority or permit
+  data leakage.
+- Host workers run trusted code; select isolation appropriate to risk.
+- Never embed secrets in manifests, resources, examples, fixtures, or paths.
+
+## Change and Verification Workflow
+
+- Update README when selection/usage changes and package SPEC when any public
+  input, output, invariant, default, error, or compatibility rule changes.
+- Bump the exact agent version when repository `SPEC.md` classifies a change as
+  breaking.
+- Add success, boundary, error, and fixture-render tests.
+- New `index.json` packages must include both documents and be discovered by the
+  documentation test.
+
+Run:
+
+```bash
+python -m pytest tests/test_agent_documentation.py -q
+python -m pytest tests/test_composable_agents.py -q
+python -m pytest -q
+git diff --check
+```
+
+The suite expects the declared sibling `mn-skills/blueprint_support_skill`
+source path. Do not copy that dependency into this repository to bypass setup.
+
+## Issue-Fixing Policy
+
+- Fix the root cause in the owning agent contract.
+- Avoid fallback paths, compatibility shims, or flags that mask a broken
+  primary path.
+- Keep specified compatibility behavior narrow, documented, and tested.

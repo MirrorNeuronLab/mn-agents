@@ -7,6 +7,8 @@ package-specific `SPEC.md` is normative for that agent's version. Machine-
 readable `agent.json`, input/output specs, catalog entry, fixtures, public
 Python API, README, and SPEC must describe one consistent contract.
 
+This specification applies only to packages published from `mn-agents`.
+
 ## Package kinds
 
 ### Runtime node
@@ -142,3 +144,18 @@ behavior is unchanged and all existing calls still pass.
 The catalog documentation test must discover packages from `index.json`, not a
 hard-coded list. A new catalog entry without both documents, an exact identity
 reference, core normative sections, or a README-to-SPEC link must fail tests.
+
+## Repository acceptance
+
+Root `index.json` is the package inventory. A repository change is accepted
+when catalog documentation validation, composable-agent behavior, and the full
+test suite pass:
+
+```bash
+python -m pytest tests/test_agent_documentation.py -q
+python -m pytest tests/test_composable_agents.py -q
+python -m pytest -q
+```
+
+Tests may consume the declared sibling blueprint-support skill through
+`pytest.ini`; package code must not silently vendor or bootstrap that sibling.
