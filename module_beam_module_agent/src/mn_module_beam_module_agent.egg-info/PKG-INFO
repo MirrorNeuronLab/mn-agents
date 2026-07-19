@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: mn-module-beam-module-agent
-Version: 1.2.25
+Version: 1.2.29
 Summary: Beam module agent package.
 License-Expression: MIT
 Requires-Python: >=3.11

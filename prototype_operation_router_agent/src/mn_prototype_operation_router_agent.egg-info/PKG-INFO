@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: mn-prototype-operation-router-agent
-Version: 1.2.25
+Version: 1.2.29
 Summary: Reusable operation-selection handler factory.
 License-Expression: MIT
 Requires-Python: >=3.11
