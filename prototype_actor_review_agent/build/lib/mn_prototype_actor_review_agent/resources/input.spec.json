@@ -1,1 +1,0 @@
-{"schema_version":"mn.agent.input.v1","accepted_message_types":["workflow_step"],"parameters":{"actor_ids":"array","failure_policy":"string"}}

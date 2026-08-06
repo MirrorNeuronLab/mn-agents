@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from importlib.resources import files
-from typing import Any, Callable, Iterable, Mapping
+from typing import Any, Callable, Iterable
 
 
 AGENT_ID = "mn-agents.prototype.stream_processor"

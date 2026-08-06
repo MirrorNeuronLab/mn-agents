@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import signal
 import threading
-import time
 from dataclasses import dataclass, field
 from importlib.resources import files
 from pathlib import Path

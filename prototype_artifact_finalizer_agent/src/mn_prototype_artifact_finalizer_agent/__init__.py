@@ -6,7 +6,7 @@ import uuid
 from dataclasses import dataclass, field
 from importlib.resources import files
 from pathlib import Path
-from typing import Any, Callable, Iterable, Mapping
+from typing import Any, Callable, Mapping
 
 from mn_sdk.blueprint_support import complete_runtime_step, write_json
 from mn_sdk.blueprint_support.step_execution import append_event
