@@ -12,12 +12,17 @@ def catalog_entries() -> list[dict[str, object]]:
     return [entry for entry in index["agents"] if isinstance(entry, dict)]
 
 
+def package_path(entry: dict[str, object]) -> Path:
+    resource_path = Path(str(entry["resource_path"]))
+    return ROOT / resource_path.parts[0]
+
+
 def test_every_catalog_agent_has_complete_readme_and_spec() -> None:
     entries = catalog_entries()
     assert entries
 
     for entry in entries:
-        package = ROOT / str(entry["path"])
+        package = package_path(entry)
         readme = package / "README.md"
         spec = package / "SPEC.md"
         agent_id = str(entry["agent_id"])
@@ -45,7 +50,7 @@ def test_documented_identity_matches_packaged_definition() -> None:
     for entry in catalog_entries():
         resource = ROOT / str(entry["resource_path"])
         definition = json.loads(resource.read_text(encoding="utf-8"))
-        package = ROOT / str(entry["path"])
+        package = package_path(entry)
         spec_text = (package / "SPEC.md").read_text(encoding="utf-8")
 
         assert definition["agent_id"] == entry["agent_id"]

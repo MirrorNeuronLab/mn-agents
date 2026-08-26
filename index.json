@@ -6,7 +6,6 @@
       "kind": "executor",
       "module": "mn_worker_python_host_agent",
       "package_kind": "runtime_node",
-      "path": "worker_python_host_agent",
       "resource_path": "worker_python_host_agent/src/mn_worker_python_host_agent/resources/agent.json",
       "template_category": "data",
       "template_id": "mn-agents.worker.python_host",
@@ -18,7 +17,6 @@
       "kind": "executor",
       "module": "mn_worker_python_docker_agent",
       "package_kind": "runtime_node",
-      "path": "worker_python_docker_agent",
       "resource_path": "worker_python_docker_agent/src/mn_worker_python_docker_agent/resources/agent.json",
       "template_category": "data",
       "template_id": "mn-agents.worker.python_docker",
@@ -30,7 +28,6 @@
       "kind": "executor",
       "module": "mn_worker_llm_host_agent",
       "package_kind": "runtime_node",
-      "path": "worker_llm_host_agent",
       "resource_path": "worker_llm_host_agent/src/mn_worker_llm_host_agent/resources/agent.json",
       "template_category": "data",
       "template_id": "mn-agents.worker.llm_host",
@@ -42,7 +39,6 @@
       "kind": "aggregator",
       "module": "mn_control_terminal_sink_agent",
       "package_kind": "runtime_node",
-      "path": "control_terminal_sink_agent",
       "resource_path": "control_terminal_sink_agent/src/mn_control_terminal_sink_agent/resources/agent.json",
       "template_category": "control",
       "template_id": "mn-agents.control.terminal_sink",
@@ -54,7 +50,6 @@
       "kind": "router",
       "module": "mn_control_message_router_agent",
       "package_kind": "runtime_node",
-      "path": "control_message_router_agent",
       "resource_path": "control_message_router_agent/src/mn_control_message_router_agent/resources/agent.json",
       "template_category": "control",
       "template_id": "mn-agents.control.message_router",
@@ -66,7 +61,6 @@
       "kind": "module",
       "module": "mn_module_beam_module_agent",
       "package_kind": "runtime_node",
-      "path": "module_beam_module_agent",
       "resource_path": "module_beam_module_agent/src/mn_module_beam_module_agent/resources/agent.json",
       "template_category": "data",
       "template_id": "mn-agents.module.beam_module",
@@ -78,7 +72,6 @@
       "kind": "service",
       "module": "mn_service_openshell_agent",
       "package_kind": "runtime_node",
-      "path": "service_openshell_agent",
       "resource_path": "service_openshell_agent/src/mn_service_openshell_agent/resources/agent.json",
       "template_category": "data",
       "template_id": "mn-agents.service.openshell",
@@ -90,7 +83,6 @@
       "kind": "factory",
       "module": "mn_prototype_operation_router_agent",
       "package_kind": "handler_factory",
-      "path": "prototype_operation_router_agent",
       "resource_path": "prototype_operation_router_agent/src/mn_prototype_operation_router_agent/resources/agent.json",
       "version": 1
     },
@@ -100,7 +92,6 @@
       "kind": "factory",
       "module": "mn_prototype_stateful_step_agent",
       "package_kind": "handler_factory",
-      "path": "prototype_stateful_step_agent",
       "resource_path": "prototype_stateful_step_agent/src/mn_prototype_stateful_step_agent/resources/agent.json",
       "version": 1
     },
@@ -110,7 +101,6 @@
       "kind": "factory",
       "module": "mn_prototype_entity_queue_agent",
       "package_kind": "handler_factory",
-      "path": "prototype_entity_queue_agent",
       "resource_path": "prototype_entity_queue_agent/src/mn_prototype_entity_queue_agent/resources/agent.json",
       "version": 1
     },
@@ -120,7 +110,6 @@
       "kind": "factory",
       "module": "mn_prototype_bounded_tool_loop_agent",
       "package_kind": "handler_factory",
-      "path": "prototype_bounded_tool_loop_agent",
       "resource_path": "prototype_bounded_tool_loop_agent/src/mn_prototype_bounded_tool_loop_agent/resources/agent.json",
       "version": 1
     },
@@ -130,7 +119,6 @@
       "kind": "factory",
       "module": "mn_prototype_actor_review_agent",
       "package_kind": "handler_factory",
-      "path": "prototype_actor_review_agent",
       "resource_path": "prototype_actor_review_agent/src/mn_prototype_actor_review_agent/resources/agent.json",
       "version": 1
     },
@@ -140,7 +128,6 @@
       "kind": "factory",
       "module": "mn_prototype_artifact_finalizer_agent",
       "package_kind": "handler_factory",
-      "path": "prototype_artifact_finalizer_agent",
       "resource_path": "prototype_artifact_finalizer_agent/src/mn_prototype_artifact_finalizer_agent/resources/agent.json",
       "version": 1
     },
@@ -150,7 +137,6 @@
       "kind": "factory",
       "module": "mn_prototype_supervised_service_agent",
       "package_kind": "handler_factory",
-      "path": "prototype_supervised_service_agent",
       "resource_path": "prototype_supervised_service_agent/src/mn_prototype_supervised_service_agent/resources/agent.json",
       "version": 1
     },
@@ -160,7 +146,6 @@
       "kind": "factory",
       "module": "mn_prototype_stream_processor_agent",
       "package_kind": "handler_factory",
-      "path": "prototype_stream_processor_agent",
       "resource_path": "prototype_stream_processor_agent/src/mn_prototype_stream_processor_agent/resources/agent.json",
       "version": 1
     }
