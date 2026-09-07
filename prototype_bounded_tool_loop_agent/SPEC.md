@@ -125,3 +125,33 @@ execution does not depend on that skill.
 caller's existing outer sandbox. It bounds code/input/output sizes and runtime,
 drains process output with bounded memory, and cleans up its process group.
 AST/import checks are policy checks, not a security sandbox.
+
+## Installed skills and durable execution
+
+`skills.SkillRuntime.discover(distributions, bindings)` loads only the explicitly
+supplied installed distributions' `mn.skills` entry points. Each descriptor names
+its module, manual and operation argument schemas. Trusted bindings map
+`(skill_id, operation)` to scoped public Python callables. No installation,
+unrestricted path resolution, generated code or model authority is provided.
+`list_skills`, `read_skill`, and `invoke_skill` expose one implementation to an
+agent; direct callers use the same Python APIs. Invocation requires a prior
+manual read, a registered binding, valid JSON-schema arguments, and a bounded
+JSON result (65,536 bytes by default). Manuals are package resources, not checkout
+paths. This is an additive API; the existing ToolLoopSpec contract is unchanged.
+
+`checkpoint.CheckpointLoop(path, binding, max_decisions=40, max_invocations=24,
+seconds=600)` persists a model decision before dispatch and a completed observation
+before requesting another decision, composing the existing bounded loop. Bindings
+and budgets are hashed and checked on resume. Completed decisions/observations
+are reused. A crash during an in-flight operation can retry that operation;
+handlers must therefore be read-only or idempotent. The caller supplies domain
+state, proposal, execution and cancellation callbacks. Decision records include
+concise justifications, never a requirement for private reasoning traces.
+
+The deadline uses POSIX interval timers on the worker main thread, including
+blocking calls. Background-thread execution fails explicitly. Cancellation is
+checked between actions; an in-flight call is bounded by its timeout/deadline.
+Invalid responses and tool errors are recorded and consume budget. Terminal
+stop reasons distinguish completion, cancellation, time and call/decision limits.
+One worker must own a checkpoint at a time; the enclosing worker lifecycle owns
+invocation serialization. No checkpoint is a cross-process locking primitive.
