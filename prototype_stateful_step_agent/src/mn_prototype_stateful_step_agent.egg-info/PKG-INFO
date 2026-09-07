@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: mn-prototype-stateful-step-agent
-Version: 1.2.29
+Version: 0.0.0
 Summary: SDK lifecycle and workflow-state handler factory.
 License-Expression: MIT
 Requires-Python: >=3.11
