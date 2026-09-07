@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 import hashlib
 import json
 from pathlib import Path
@@ -64,19 +64,33 @@ class CheckpointLoop:
     """
 
     def __init__(
-        self, path, binding, *, max_decisions=40, max_invocations=24, seconds=600
+        self,
+        path,
+        binding,
+        *,
+        max_decisions=40,
+        max_invocations=24,
+        seconds=600,
+        finalization_decisions=0,
     ):
-        if any(
-            type(v) is not int or v <= 0
-            for v in (max_decisions, max_invocations, seconds)
-        ):
+        if any(type(v) is not int or v <= 0 for v in (max_decisions, max_invocations)):
             raise ValueError("loop budgets must be positive integers")
+        if seconds is not None and (type(seconds) is not int or seconds <= 0):
+            raise ValueError("seconds must be a positive integer or None")
         self.path = Path(path)
+        if (
+            type(finalization_decisions) is not int
+            or not 0 <= finalization_decisions <= max_decisions
+        ):
+            raise ValueError("invalid finalization reserve")
         self.limits = dict(
             max_decisions=max_decisions,
             max_invocations=max_invocations,
             seconds=seconds,
+            finalization_decisions=finalization_decisions,
         )
+        if not finalization_decisions:
+            self.limits.pop("finalization_decisions")
         identity = fingerprint({"binding": binding, "limits": self.limits})
         self.state = (
             json.loads(self.path.read_text())
@@ -106,7 +120,11 @@ class CheckpointLoop:
             return self.state
         started = time.monotonic()
         self._clock = (started, self.state["elapsed"])
-        remaining_seconds = self.limits["seconds"] - self.state["elapsed"]
+        remaining_seconds = (
+            self.limits["seconds"] - self.state["elapsed"]
+            if self.limits["seconds"] is not None
+            else None
+        )
 
         def next_action(_context, _trace):
             if cancelled():
@@ -120,7 +138,12 @@ class CheckpointLoop:
                 sum(r["action"].get("name") == "invoke_skill" for r in records)
                 >= self.limits["max_invocations"]
             ):
-                return ToolPlan(stop_reason="tool_call_budget_exhausted")
+                reserve = self.limits.get("finalization_decisions", 0)
+                if not reserve:
+                    return ToolPlan(stop_reason="tool_call_budget_exhausted")
+                start = self.state.setdefault("finalization_started", len(records))
+                if len(records) - start >= reserve:
+                    return ToolPlan(stop_reason="tool_call_budget_exhausted")
             try:
                 action = propose(self.state)
                 if not isinstance(action, dict) or set(action) != {
@@ -158,6 +181,17 @@ class CheckpointLoop:
                 return None
             record = self.state["records"][action.arguments["index"]]
             try:
+                if (
+                    record["action"]["name"] == "invoke_skill"
+                    and sum(
+                        r["action"].get("name") == "invoke_skill"
+                        for r in self.state["records"][:-1]
+                    )
+                    >= self.limits["max_invocations"]
+                ):
+                    raise ValueError(
+                        "tool budget exhausted; only finalization actions remain"
+                    )
                 record["result"] = execute(record["action"], self.state)
             except DeadlineExceeded:
                 raise
@@ -174,9 +208,13 @@ class CheckpointLoop:
             return next_action(context, trace)
 
         try:
-            if remaining_seconds <= 0:
+            if remaining_seconds is not None and remaining_seconds <= 0:
                 raise DeadlineExceeded()
-            with deadline(remaining_seconds):
+            with (
+                deadline(remaining_seconds)
+                if remaining_seconds is not None
+                else nullcontext()
+            ):
                 result = create_agent(
                     ToolLoopSpec(
                         planner,

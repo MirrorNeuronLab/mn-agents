@@ -14,6 +14,7 @@ PROJECTS = [
     for name in ("document_reading_skill", "graph_analysis_skill", "pdf_extract_skill")
 ]
 PROJECTS += [WORKSPACE / "mn-agents/prototype_bounded_tool_loop_agent"]
+PROJECTS += [WORKSPACE / "mn-python-sdk/packages" / name for name in ("common", "models", "rag")]
 
 
 @pytest.mark.parametrize("mode", ["source", "wheel"])
@@ -55,6 +56,10 @@ if MODE == 'wheel':
     for module in (mn_document_reading_skill, mn_graph_analysis_skill, mn_pdf_extract_skill):
         assert Path(module.__file__).is_relative_to(TARGET), module.__file__
         assert not any('mirror-neuron-set' in str(p) for p in sys.path)
+from mn_sdk_rag.lexical import LexicalKnowledgeIndex
+knowledge = LexicalKnowledgeIndex([dict(id='dates', title='Chronology', text='Preserve timestamp context.', source_url='https://example.org/reference', reviewed_at='2026-09-07', jurisdiction='test')])
+assert knowledge.retrieve('timestamp')['citations'][0]['id'] == 'dates'
+knowledge.close()
 text='Cybersecurity review notice.'
 index=PassageIndex.build(Path('passages.db'),[dict(source_id='one',text=text,content_sha256=hashlib.sha256(text.encode()).hexdigest(),access_scope='case')],'case')
 def pdf(source_id):
@@ -65,6 +70,9 @@ graph=GraphClient(Path('graph'),binary='/bin/echo')
 # Stub only the external engine transport; actual query validation/serialization runs.
 graph._run=lambda arguments: json.dumps({'rows':[], 'arguments':arguments})
 bindings={('mirrorneuron.document.reading','search'):index.search,
+          ('mirrorneuron.document.reading','sources'):index.sources,
+          ('mirrorneuron.document.reading','read_source'):index.read_source,
+          ('mirrorneuron.document.reading','decode_rot13'):index.decode_rot13,
           ('mirrorneuron.graph.analysis','query'):graph.query,
           ('mirrorneuron.pdf.extract','extract_pages'):pdf}
 runtime=SkillRuntime.discover(['mirrorneuron-document-reading-skill','mirrorneuron-graph-analysis-skill','mirrorneuron-pdf-extract-skill'],bindings)
@@ -73,6 +81,8 @@ for skill in runtime.list_skills():
 assert runtime.invoke_skill('mirrorneuron.document.reading','search',{'query':'cybersecurity'})==index.search('cybersecurity')
 assert runtime.invoke_skill('mirrorneuron.graph.analysis','query',{'rgql':'MATCH (n) RETURN n LIMIT 5'})==graph.query('MATCH (n) RETURN n LIMIT 5')
 assert runtime.invoke_skill('mirrorneuron.pdf.extract','extract_pages',{'source_id':'one'})==pdf('one')
+for op, args in [('sources', {}), ('read_source', {'source_id':'one'}), ('decode_rot13', {'source_id':'one'})]:
+    assert runtime.invoke_skill('mirrorneuron.document.reading', op, args) == getattr(index, op)(**args)
 print('manual discovery and dual-use operations passed')
 """
     prefix = f"PATHS={paths!r}\nMODE={mode!r}\nTARGET={str(target)!r}\n"

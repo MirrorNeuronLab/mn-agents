@@ -125,3 +125,17 @@ Invalid responses and tool errors are recorded and consume budget. Terminal
 stop reasons distinguish completion, cancellation, time and call/decision limits.
 One worker must own a checkpoint at a time; the enclosing worker lifecycle owns
 invocation serialization. No checkpoint is a cross-process locking primitive.
+
+### Optional phase cycle and unbounded elapsed time
+
+`phases.PhaseCycle(data, max_actions=6)` persists planning/execution state, plans,
+review outcomes and attempted operation counts in caller-owned checkpoint data.
+The caller validates plan/outcome schemas. Tools require an active plan; a review
+returns to planning. Completed outcomes survive resume.
+
+`CheckpointLoop(seconds=None)` disables the overall elapsed deadline while keeping
+finite decision/invocation budgets and cancellation between calls. Existing default
+seconds=600 behavior is unchanged. `finalization_decisions=0` remains the default;
+a positive optional reserve allows that many further decisions after the invocation
+limit, rejects further invocations, and allows a final report/finish. It does not
+increase max_decisions. Per-operation timeouts remain the caller's responsibility.
