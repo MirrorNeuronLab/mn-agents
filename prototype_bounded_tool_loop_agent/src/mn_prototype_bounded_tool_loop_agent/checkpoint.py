@@ -11,6 +11,7 @@ import threading
 import time
 
 from . import ToolAction, ToolLoopSpec, ToolPlan, create_agent
+from .progress import ProgressGuard
 
 
 def fingerprint(value):
@@ -91,7 +92,7 @@ class CheckpointLoop:
         )
         if not finalization_decisions:
             self.limits.pop("finalization_decisions")
-        identity = fingerprint({"binding": binding, "limits": self.limits})
+        identity = fingerprint({"binding": binding, "limits": self.limits, "progress_policy": 1})
         self.state = (
             json.loads(self.path.read_text())
             if self.path.exists()
@@ -115,9 +116,22 @@ class CheckpointLoop:
             self.state["elapsed"] = clock[1] + time.monotonic() - clock[0]
         atomic_json(self.path, self.state)
 
-    def run(self, propose, execute, *, cancelled=lambda: False):
+    def run(self, propose, execute, *, cancelled=lambda: False, allowed_actions=None, progress=None, event_sink=None):
         if self.state["stop_reason"]:
             return self.state
+        guard = ProgressGuard(self.state)
+        if progress is not None and not guard.state["progress"]:
+            from .progress import digest
+            guard.state["progress"] = digest(progress(self.state))
+
+        def observe_progress(record):
+            event = guard.observe(record, progress(self.state) if progress else None)
+            if event and event["type"] == "agent_stalled" and not self.state["stop_reason"]:
+                self.state["stop_reason"] = "investigation_stalled"
+            self.save()
+            if event and event_sink:
+                event_sink(event)
+
         started = time.monotonic()
         self._clock = (started, self.state["elapsed"])
         remaining_seconds = (
@@ -170,7 +184,7 @@ class CheckpointLoop:
                         "result": {"error": str(exc)[:1000]},
                     }
                 )
-                self.save()
+                observe_progress(records[-1])
                 return ToolAction("noop")
             records.append({"action": action})
             self.save()
@@ -181,6 +195,8 @@ class CheckpointLoop:
                 return None
             record = self.state["records"][action.arguments["index"]]
             try:
+                if allowed_actions is not None and record["action"]["name"] not in allowed_actions(self.state):
+                    raise ValueError("action unavailable in current phase; choose from allowed_actions")
                 if (
                     record["action"]["name"] == "invoke_skill"
                     and sum(
@@ -199,7 +215,7 @@ class CheckpointLoop:
                 record["result"] = {"error": str(exc)[:1000]}
             if record["action"]["name"] == "finish" and "error" not in record["result"]:
                 self.state["stop_reason"] = "completed"
-            self.save()
+            observe_progress(record)
             return record["result"]
 
         def planner(context, trace):

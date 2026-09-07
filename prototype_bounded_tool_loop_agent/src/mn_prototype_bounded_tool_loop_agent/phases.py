@@ -34,3 +34,10 @@ class PhaseCycle:
             raise ValueError("no active enquiry to review")
         self.state["outcomes"].append(outcome)
         self.state.update(phase="planning", actions=0)
+
+    def allowed_actions(self, *, planning, execution, common=(), pending_review=None):
+        """Project the same phase policy for model instructions and dispatch."""
+        if pending_review is not None:
+            return tuple(pending_review)
+        selected = planning if self.phase == "planning" else execution
+        return tuple(dict.fromkeys((*common, *selected)))

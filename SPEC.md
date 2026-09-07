@@ -159,3 +159,10 @@ python -m pytest -q
 
 Tests install the declared SDK and component dependencies. Package code must
 not silently vendor or bootstrap siblings.
+
+Bounded-loop progress recovery uses a caller-provided allowed-action projection
+for both prompt construction and dispatch. Three identical rejected operations
+allow one recovery decision; twelve decisions without substantive progress allow
+two. Exhausted recovery persists `investigation_stalled`. Counters survive resume,
+and the progress-policy version is part of checkpoint identity. Domain progress
+metrics remain caller-owned; growing logs alone must not count as progress.
