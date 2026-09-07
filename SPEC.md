@@ -157,5 +157,5 @@ python -m pytest tests/test_composable_agents.py -q
 python -m pytest -q
 ```
 
-Tests may consume the declared sibling blueprint-support skill through
-`pytest.ini`; package code must not silently vendor or bootstrap that sibling.
+Tests install the declared SDK and component dependencies. Package code must
+not silently vendor or bootstrap siblings.

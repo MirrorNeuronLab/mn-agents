@@ -112,3 +112,16 @@ multi-action ordering, or stop-status mapping. Tests must cover single actions,
 multi-action plans, metadata, final actions, zero tool budget, both limits,
 `partial_on_limit=False`, invalid proposals/actions, policy rejection,
 observation normalization, and execution errors.
+
+## Optional tool session
+
+`mn_prototype_bounded_tool_loop_agent.session.ToolSession` combines an explicit
+allowlisted `ToolRegistry`, an injected prompt factory, a workspace and a finite
+tool-call budget. `run()` uses this package's shared `ToolLoopSpec` loop.
+Goal/prompt construction can be supplied by the autonomous-research skill;
+execution does not depend on that skill.
+
+`execution.execute_generated_python` validates code and runs it inside the
+caller's existing outer sandbox. It bounds code/input/output sizes and runtime,
+drains process output with bounded memory, and cleans up its process group.
+AST/import checks are policy checks, not a security sandbox.

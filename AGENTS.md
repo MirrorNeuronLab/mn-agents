@@ -75,8 +75,8 @@ python -m pytest -q
 git diff --check
 ```
 
-The suite expects the declared sibling `mn-skills/blueprint_support_skill`
-source path. Do not copy that dependency into this repository to bypass setup.
+Install the SDK and its component distributions before running agent tests.
+Do not inject retired skill source paths to bypass package dependencies.
 
 ## Issue-Fixing Policy
 
