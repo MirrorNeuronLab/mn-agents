@@ -8,6 +8,8 @@
     "src/mn_prototype_bounded_tool_loop_agent.egg-info/dependency_links.txt",
     "src/mn_prototype_bounded_tool_loop_agent.egg-info/entry_points.txt",
     "src/mn_prototype_bounded_tool_loop_agent.egg-info/requires.txt",
+    "src/mn_prototype_bounded_tool_loop_agent.egg-info/scm_file_list.json",
+    "src/mn_prototype_bounded_tool_loop_agent.egg-info/scm_version.json",
     "src/mn_prototype_bounded_tool_loop_agent.egg-info/top_level.txt",
     "src/mn_prototype_bounded_tool_loop_agent/__init__.py",
     "src/mn_prototype_bounded_tool_loop_agent/checkpoint.py",
