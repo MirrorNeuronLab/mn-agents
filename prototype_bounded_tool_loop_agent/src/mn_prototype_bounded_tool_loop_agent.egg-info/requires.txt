@@ -1,1 +1,2 @@
 mirrorneuron-python-sdk
+jsonschema>=4.18

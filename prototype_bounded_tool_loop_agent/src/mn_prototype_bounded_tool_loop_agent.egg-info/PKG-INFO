@@ -1,11 +1,12 @@
 Metadata-Version: 2.4
 Name: mn-prototype-bounded-tool-loop-agent
-Version: 1.2.29
+Version: 1.3.10.dev5
 Summary: Bounded plan, action, observation loop factory.
 License-Expression: MIT
 Requires-Python: >=3.11
 Description-Content-Type: text/markdown
 Requires-Dist: mirrorneuron-python-sdk
+Requires-Dist: jsonschema>=4.18
 
 # Bounded Tool Loop Agent
 
@@ -91,3 +92,76 @@ Treat model-produced tool names, paths, URLs, commands, and metadata as
 untrusted. This factory guarantees bounded control flow, not tool safety.
 
 See [SPEC.md](SPEC.md) for the trace and counter contract.
+
+## Optional tool session
+
+`mn_prototype_bounded_tool_loop_agent.session.ToolSession` combines an explicit
+allowlisted `ToolRegistry`, an injected prompt factory, a workspace and a finite
+tool-call budget. `run()` uses this package's shared `ToolLoopSpec` loop.
+Goal/prompt construction can be supplied by the autonomous-research skill;
+execution does not depend on that skill.
+
+`execution.execute_generated_python` validates code and runs it inside the
+caller's existing outer sandbox. It bounds code/input/output sizes and runtime,
+drains process output with bounded memory, and cleans up its process group.
+AST/import checks are policy checks, not a security sandbox.
+
+## Installed skills and durable execution
+
+`skills.SkillRuntime.discover(distributions, bindings)` loads only the explicitly
+supplied installed distributions' `mn.skills` entry points. Each descriptor names
+its module, manual and operation argument schemas. Trusted bindings map
+`(skill_id, operation)` to scoped public Python callables. No installation,
+unrestricted path resolution, generated code or model authority is provided.
+`list_skills`, `read_skill`, and `invoke_skill` expose one implementation to an
+agent; direct callers use the same Python APIs. Invocation requires a prior
+manual read, a registered binding, valid JSON-schema arguments, and a bounded
+JSON result (65,536 bytes by default). Manuals are package resources, not checkout
+paths. This is an additive API; the existing ToolLoopSpec contract is unchanged.
+
+`checkpoint.CheckpointLoop(path, binding, max_decisions=40, max_invocations=24,
+seconds=600)` persists a model decision before dispatch and a completed observation
+before requesting another decision, composing the existing bounded loop. Bindings
+and budgets are hashed and checked on resume. Completed decisions/observations
+are reused. A crash during an in-flight operation can retry that operation;
+handlers must therefore be read-only or idempotent. The caller supplies domain
+state, proposal, execution and cancellation callbacks. Decision records include
+concise justifications, never a requirement for private reasoning traces.
+
+The deadline uses POSIX interval timers on the worker main thread, including
+blocking calls. Background-thread execution fails explicitly. Cancellation is
+checked between actions; an in-flight call is bounded by its timeout/deadline.
+Invalid responses and tool errors are recorded and consume budget. Terminal
+stop reasons distinguish completion, cancellation, time and call/decision limits.
+One worker must own a checkpoint at a time; the enclosing worker lifecycle owns
+invocation serialization. No checkpoint is a cross-process locking primitive.
+
+### Optional phase cycle and unbounded elapsed time
+
+`phases.PhaseCycle(data, max_actions=6)` persists planning/execution state, plans,
+review outcomes and attempted operation counts in caller-owned checkpoint data.
+The caller validates plan/outcome schemas. Tools require an active plan; a review
+returns to planning. Completed outcomes survive resume.
+
+`CheckpointLoop(seconds=None)` disables the overall elapsed deadline while keeping
+finite decision/invocation budgets and cancellation between calls. Existing default
+seconds=600 behavior is unchanged. `finalization_decisions=0` remains the default;
+a positive optional reserve allows that many further decisions after the invocation
+limit, rejects further invocations, and allows a final report/finish. It does not
+increase max_decisions. Per-operation timeouts remain the caller's responsibility.
+
+### Progress recovery
+
+`CheckpointLoop.run` accepts `allowed_actions(state)`, `progress(state)`, and
+`event_sink(event)` callbacks. The action projection is enforced before dispatch;
+callers should also show that same projection in each model request. The progress
+callback returns a stable JSON-serializable snapshot of substantive progress,
+not elapsed time or audit length. Without it, distinct successful nonempty
+operation results count as progress.
+
+Three identical errors trigger one corrective decision; twelve decisions without
+progress trigger two corrective decisions. Continued failure ends with
+`investigation_stalled`. Recovery state and counters are checkpointed, and the
+progress-policy version participates in the resume binding. Events are
+`agent_recovery_started`, `agent_recovery_completed`, and `agent_stalled`.
+`PhaseCycle.allowed_actions` provides a shared planning/execution projection.
