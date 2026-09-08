@@ -21,12 +21,15 @@ from mn_prototype_entity_queue_agent import EntityQueueSpec, create_agent as cre
 from mn_prototype_operation_router_agent import OperationBinding, create_agent as create_router
 from mn_prototype_stateful_step_agent import (
     AgentHandlerOutput,
+    DomainOperationSpec,
     MessageAgentSpec,
     StatefulStepSpec,
     create_agent as create_stateful_step,
+    create_domain_message_agent,
     create_message_agent,
+    require_child_step_input,
 )
-from mn_sdk.step_runtime import StepContext
+from mn_sdk.step_runtime import AgentInput, StepContext
 
 
 def test_entity_queue_resolves_workers_at_runtime_and_preserves_input_order():
@@ -295,6 +298,78 @@ def test_message_agent_replays_durable_route_neutral_output(tmp_path):
     assert marker["result"]["payload"] == {"value": 1}
 
 
+def test_domain_message_agent_adapts_results_and_reports_errors(tmp_path):
+    failures = []
+
+    def operation(_context, *, agent_input, fail=False, **_options):
+        if fail:
+            raise RuntimeError("boom")
+        return {"value": agent_input.payload["body"]}
+
+    def adapt(_context, *, result, **_options):
+        return AgentHandlerOutput(payload=result, metrics={"adapted": True})
+
+    agent = create_domain_message_agent(
+        DomainOperationSpec(
+            stateful=StatefulStepSpec(
+                context_factory=lambda **_kwargs: {
+                    "run_dir": tmp_path / "run",
+                    "output_folder": tmp_path / "output",
+                    "run_id": "run-1",
+                    "blueprint_id": "test-blueprint",
+                    "config": {},
+                }
+            ),
+            operation=operation,
+            result_adapter=adapt,
+            on_error=lambda _context, *, error, **_options: failures.append(str(error)),
+        )
+    )
+    context = StepContext(
+        step_id="collect",
+        agent_id="collector",
+        invocation_id="collect__collector",
+        run_id="run-1",
+        idempotency_key="run-1/collect__collector",
+        message={"body": {"outputs": {"body": "ok"}}},
+    )
+
+    result = agent(context)
+
+    assert result.outputs == {"value": "ok"}
+    assert result.metrics == {"adapted": True}
+    failing_context = StepContext(
+        step_id="fail",
+        agent_id="collector",
+        invocation_id="fail__collector0",
+        run_id="run-1",
+        idempotency_key="run-1/fail",
+        message={"body": {"outputs": {"body": "bad"}}},
+    )
+    try:
+        agent(failing_context, fail=True)
+    except RuntimeError:
+        pass
+    assert failures == ["boom"]
+
+
+def test_require_child_step_input_validates_core_metadata():
+    value = AgentInput(
+        payload={"step_input": {"work": 1, "_child": {"round": 2}}},
+        artifacts=(),
+        idempotency_key="child-1",
+    )
+    assert require_child_step_input(value)["work"] == 1
+
+    invalid = AgentInput(payload={"step_input": {"work": 1}}, artifacts=())
+    try:
+        require_child_step_input(invalid)
+    except ValueError as exc:
+        assert "_child" in str(exc)
+    else:
+        raise AssertionError("missing child metadata should fail")
+
+
 def test_artifact_finalizer_writes_declared_atomic_artifacts(tmp_path):
     context = {"run_dir": tmp_path / "run", "output_folder": tmp_path / "output"}
     finalizer = create_finalizer(
@@ -315,6 +390,24 @@ def test_artifact_finalizer_writes_declared_atomic_artifacts(tmp_path):
     assert (tmp_path / "output" / "result.json").exists()
     assert (tmp_path / "output" / "notes.txt").read_text(encoding="utf-8") == "done"
     assert len(result["artifact_writes"]) == 3
+
+
+def test_artifact_finalizer_can_require_contained_paths(tmp_path):
+    finalizer = create_finalizer(
+        ArtifactFinalizerSpec(
+            compose=lambda _context, **_options: ArtifactBundle(
+                final_artifact={},
+                writes=(ArtifactWrite("../escape.json", {}),),
+            ),
+            contained_paths=True,
+        )
+    )
+    try:
+        finalizer({"run_dir": tmp_path / "run", "output_folder": tmp_path / "out"})
+    except ValueError as exc:
+        assert "contained relative path" in str(exc)
+    else:
+        raise AssertionError("unsafe finalizer path should fail")
 
 
 def test_full_factory_composition_routes_queues_reviews_and_finalizes(tmp_path):

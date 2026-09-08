@@ -28,6 +28,8 @@ DomainHandler = Callable[..., Any]
 PrepareHook = Callable[..., Mapping[str, Any] | None]
 FinalizeHook = Callable[..., Any]
 MessageInputResolver = Callable[[AgentInput], Mapping[str, Any] | None]
+DomainResultAdapter = Callable[..., "AgentHandlerOutput | Mapping[str, Any]"]
+DomainErrorHook = Callable[..., Any]
 
 
 @dataclass
@@ -106,6 +108,19 @@ class MessageAgentSpec:
 
     stateful: StatefulStepSpec
     input_resolver: MessageInputResolver | None = None
+    idempotency_state_dir: str = "agent_invocations"
+    include_default_artifacts: bool = True
+
+
+@dataclass(frozen=True)
+class DomainOperationSpec:
+    """Bind one injected domain operation to the standard message lifecycle."""
+
+    stateful: StatefulStepSpec
+    operation: DomainHandler
+    input_resolver: MessageInputResolver | None = None
+    result_adapter: DomainResultAdapter | None = None
+    on_error: DomainErrorHook | None = None
     idempotency_state_dir: str = "agent_invocations"
     include_default_artifacts: bool = True
 
@@ -350,6 +365,68 @@ def create_message_agent(
     return run
 
 
+def create_domain_message_agent(spec: DomainOperationSpec) -> DomainHandler:
+    """Create a message agent around an injected, domain-owned operation."""
+
+    def invoke(
+        context: StatefulStepContext,
+        *,
+        agent_input: AgentInput,
+        llm_client: Any | None = None,
+        **options: Any,
+    ) -> AgentHandlerOutput | Mapping[str, Any]:
+        try:
+            result = spec.operation(
+                context,
+                agent_input=agent_input,
+                llm_client=llm_client,
+                **options,
+            )
+        except BaseException as exc:
+            if spec.on_error is not None:
+                spec.on_error(
+                    context,
+                    error=exc,
+                    agent_input=agent_input,
+                    llm_client=llm_client,
+                    **options,
+                )
+            raise
+        if spec.result_adapter is not None:
+            return spec.result_adapter(
+                context,
+                result=result,
+                agent_input=agent_input,
+                llm_client=llm_client,
+                **options,
+            )
+        return _normalize_agent_handler_output(result)
+
+    return create_message_agent(
+        MessageAgentSpec(
+            stateful=spec.stateful,
+            input_resolver=spec.input_resolver,
+            idempotency_state_dir=spec.idempotency_state_dir,
+            include_default_artifacts=spec.include_default_artifacts,
+        ),
+        invoke,
+    )
+
+
+def require_child_step_input(
+    agent_input: AgentInput, *, marker: str = "_child"
+) -> dict[str, Any]:
+    """Return validated Core-owned child step input from a route-neutral message."""
+
+    step_input = agent_input.payload.get("step_input")
+    if not isinstance(step_input, Mapping):
+        raise ValueError("child workflow message requires a step_input object")
+    child = step_input.get(marker)
+    if not isinstance(child, Mapping):
+        raise ValueError(f"child workflow step_input requires a {marker} object")
+    return dict(step_input)
+
+
 def _normalize_agent_handler_output(value: Any) -> AgentHandlerOutput:
     if isinstance(value, AgentHandlerOutput):
         return value
@@ -364,10 +441,13 @@ __all__ = [
     "AGENT_ID",
     "AGENT_VERSION",
     "AgentHandlerOutput",
+    "DomainOperationSpec",
     "MessageAgentSpec",
     "StatefulStepContext",
     "StatefulStepSpec",
     "create_agent",
+    "create_domain_message_agent",
     "create_message_agent",
     "load_agent_definition",
+    "require_child_step_input",
 ]

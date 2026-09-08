@@ -32,6 +32,7 @@ ArtifactFinalizerSpec(
     event_writer: Callable[[Path, str, dict], None] = append_event,
     result_builder: Callable[..., Mapping] | None = None,
     human_notice: str = "",
+    contained_paths: bool = False,
 )
 ```
 
@@ -77,6 +78,9 @@ created before those writes. Unsupported kinds raise `ValueError`.
 Paths are joined with `Path(root) / artifact.path`. Version 1 does not enforce
 relative or contained paths. Callers must provide trusted, normalized relative
 paths and must reject untrusted traversal or absolute paths before composition.
+When `contained_paths=True`, the factory rejects absolute paths, `..`, resolved
+parent escapes, and existing symlinks that resolve outside the selected root
+before writing. The default remains false for version 1 compatibility.
 
 ## Atomicity and errors
 

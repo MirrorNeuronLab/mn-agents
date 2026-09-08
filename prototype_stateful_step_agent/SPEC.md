@@ -50,6 +50,19 @@ create_message_agent(
     spec: MessageAgentSpec,
     handler: Callable[..., AgentHandlerOutput | Mapping[str, Any]],
 ) -> Callable[..., StepResult]
+
+DomainOperationSpec(
+    stateful: StatefulStepSpec,
+    operation: Callable[..., Any],
+    input_resolver: Callable[[AgentInput], Mapping | None] | None = None,
+    result_adapter: Callable[..., AgentHandlerOutput | Mapping] | None = None,
+    on_error: Callable[..., Any] | None = None,
+    idempotency_state_dir: str = "agent_invocations",
+    include_default_artifacts: bool = True,
+)
+
+create_domain_message_agent(spec: DomainOperationSpec) -> Callable[..., StepResult]
+require_child_step_input(agent_input: AgentInput, *, marker: str = "_child") -> dict
 ```
 
 ## Returned handler
@@ -152,6 +165,12 @@ idempotent and avoid masking the original error.
    `include_default_artifacts` is false.
 
 The factory never adds sender, recipient, route, or message-type fields.
+
+`create_domain_message_agent` delegates to this same contract. It invokes the
+injected operation, applies the optional result adapter, calls `on_error` before
+propagating an operation failure, and otherwise preserves all message-agent
+ordering and replay semantics. `require_child_step_input` requires both a
+mapping `step_input` and mapping Core-owned marker.
 
 ## Errors
 

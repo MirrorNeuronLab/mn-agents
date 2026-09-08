@@ -52,6 +52,12 @@ The invocation record is persisted before the output is returned to the SDK.
 A duplicate delivery with the same idempotency key returns that durable result
 without calling the domain handler again.
 
+For the common case where a blueprint only injects one domain operation and a
+result projection, use `DomainOperationSpec` with
+`create_domain_message_agent`. Child-workflow handlers can use
+`require_child_step_input` to validate the Core-owned `_child` metadata without
+copying message-shape checks into each blueprint.
+
 ## Quick start
 
 ```python

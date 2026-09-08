@@ -54,6 +54,11 @@ Callers must supply trusted relative paths. Version 1 does not sanitize
 absolute paths or `..` traversal, so never construct artifact paths directly
 from untrusted model or user output.
 
+Set `contained_paths=True` to reject absolute paths, traversal, and symlink
+escapes before any declared write. New blueprint integrations should enable
+this option; omission preserves the version 1 path behavior for existing
+callers.
+
 Text and byte writes use a same-directory temporary file and atomic replace.
 JSON uses the SDK `write_json` implementation.
 

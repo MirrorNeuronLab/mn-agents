@@ -38,6 +38,7 @@ class ArtifactFinalizerSpec:
     event_writer: Callable[[Path, str, dict[str, Any]], None] = append_event
     result_builder: Callable[..., Mapping[str, Any]] | None = None
     human_notice: str = ""
+    contained_paths: bool = False
 
 
 def load_agent_definition() -> dict[str, Any]:
@@ -57,9 +58,9 @@ def create_agent(spec: ArtifactFinalizerSpec) -> Callable[..., dict[str, Any]]:
                 raise ValueError(f"unsupported artifact destination: {artifact.destination}")
             targets = []
             if artifact.destination in {"output", "both"}:
-                targets.append(output_folder / artifact.path)
+                targets.append(_target(output_folder, artifact.path, spec.contained_paths))
             if artifact.destination in {"run", "both"}:
-                targets.append(run_dir / artifact.path)
+                targets.append(_target(run_dir, artifact.path, spec.contained_paths))
             for target in targets:
                 _write(target, artifact.kind, artifact.value)
                 written.append(str(target))
@@ -93,6 +94,22 @@ def _write(path: Path, kind: str, value: Any) -> None:
     else:
         raise ValueError(f"unsupported artifact kind: {kind}")
     temporary.replace(path)
+
+
+def _target(root: Path, value: str, contained: bool) -> Path:
+    path = Path(str(value))
+    if not contained:
+        return root / path
+    if path.is_absolute() or not path.parts or any(part == ".." for part in path.parts):
+        raise ValueError("artifact path must be a contained relative path")
+    resolved_root = root.expanduser().resolve()
+    target = resolved_root.joinpath(*path.parts)
+    resolved_parent = target.parent.resolve()
+    if resolved_parent != resolved_root and resolved_root not in resolved_parent.parents:
+        raise ValueError("artifact path escapes its destination root")
+    if target.exists() and target.resolve().parent != resolved_parent:
+        raise ValueError("artifact symlink escapes its destination root")
+    return target
 
 
 __all__ = ["AGENT_ID", "AGENT_VERSION", "ArtifactBundle", "ArtifactFinalizerSpec", "ArtifactWrite", "create_agent", "load_agent_definition"]
