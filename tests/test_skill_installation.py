@@ -55,7 +55,8 @@ import mn_document_reading_skill, mn_graph_analysis_skill, mn_pdf_extract_skill
 if MODE == 'wheel':
     for module in (mn_document_reading_skill, mn_graph_analysis_skill, mn_pdf_extract_skill):
         assert Path(module.__file__).is_relative_to(TARGET), module.__file__
-        assert not any('mirror-neuron-set' in str(p) for p in sys.path)
+    for project in PROJECT_ROOTS:
+        assert not any(Path(p).resolve() in {Path(project).resolve(), (Path(project) / 'src').resolve()} for p in sys.path)
 from mn_sdk_rag.lexical import LexicalKnowledgeIndex
 knowledge = LexicalKnowledgeIndex([dict(id='dates', title='Chronology', text='Preserve timestamp context.', source_url='https://example.org/reference', reviewed_at='2026-09-07', jurisdiction='test')])
 assert knowledge.retrieve('timestamp')['citations'][0]['id'] == 'dates'
@@ -85,7 +86,7 @@ for op, args in [('sources', {}), ('read_source', {'source_id':'one'}), ('decode
     assert runtime.invoke_skill('mirrorneuron.document.reading', op, args) == getattr(index, op)(**args)
 print('manual discovery and dual-use operations passed')
 """
-    prefix = f"PATHS={paths!r}\nMODE={mode!r}\nTARGET={str(target)!r}\n"
+    prefix = f"PATHS={paths!r}\nMODE={mode!r}\nTARGET={str(target)!r}\nPROJECT_ROOTS={[str(p) for p in PROJECTS]!r}\n"
     result = subprocess.run(
         [sys.executable, "-I", "-S", "-c", prefix + script],
         cwd=tmp_path,

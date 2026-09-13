@@ -1,8 +1,8 @@
 {
-  "tag": "1.3.35",
-  "distance": 3,
-  "node": "g05e639180ac56e9b59c6a3c2e15834968bac9ce8",
-  "dirty": false,
+  "tag": "1.3.49",
+  "distance": 0,
+  "node": "g5a04f7a6e13e0fa320c7efcafc34aefc0dae405d",
+  "dirty": true,
   "branch": "main",
-  "node_date": "2026-09-10"
+  "node_date": "2026-09-13"
 }
