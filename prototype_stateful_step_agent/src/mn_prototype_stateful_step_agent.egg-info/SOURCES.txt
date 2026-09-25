@@ -7,6 +7,7 @@ src/mn_prototype_stateful_step_agent.egg-info/SOURCES.txt
 src/mn_prototype_stateful_step_agent.egg-info/dependency_links.txt
 src/mn_prototype_stateful_step_agent.egg-info/entry_points.txt
 src/mn_prototype_stateful_step_agent.egg-info/requires.txt
+src/mn_prototype_stateful_step_agent.egg-info/scm_file_list.json
 src/mn_prototype_stateful_step_agent.egg-info/top_level.txt
 src/mn_prototype_stateful_step_agent/resources/agent.json
 src/mn_prototype_stateful_step_agent/resources/input.spec.json
