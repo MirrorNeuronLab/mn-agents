@@ -10,6 +10,7 @@
     "src/mn_worker_python_docker_agent.egg-info/dependency_links.txt",
     "src/mn_worker_python_docker_agent.egg-info/entry_points.txt",
     "src/mn_worker_python_docker_agent.egg-info/requires.txt",
+    "src/mn_worker_python_docker_agent.egg-info/scm_file_list.json",
     "src/mn_worker_python_docker_agent.egg-info/top_level.txt",
     "src/mn_worker_python_docker_agent/__init__.py",
     "src/mn_worker_python_docker_agent/definition.py",
