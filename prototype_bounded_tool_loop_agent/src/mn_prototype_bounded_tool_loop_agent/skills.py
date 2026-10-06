@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import hashlib
+from collections.abc import Callable, Mapping
 from importlib import metadata, resources
-from typing import Callable, Mapping
 
 from jsonschema import Draft202012Validator
 
@@ -38,8 +38,16 @@ class SkillRuntime:
                 raise ValueError("binding has no declared skill operation")
 
     @classmethod
-    def discover(cls, distributions, bindings, **options):
+    def discover(cls, distributions, bindings, *, install_dependencies=True, **options):
+        """Register admitted packages after their optional local dependency setup.
+
+        Python distributions must already be installed. Setup runs once per
+        explicitly supplied distribution; imports and invocation never install.
+        """
+        if not isinstance(install_dependencies, bool):
+            raise ValueError("install_dependencies must be a boolean")
         descriptors = []
+        setups = []
         for name in sorted(set(distributions)):
             distribution = metadata.distribution(name)
             entries = [e for e in distribution.entry_points if e.group == "mn.skills"]
@@ -50,7 +58,20 @@ class SkillRuntime:
                 descriptor["distribution"] = distribution.metadata["Name"]
                 descriptor["version"] = distribution.version
                 descriptors.append(descriptor)
-        return cls(descriptors, bindings, **options)
+            hooks = [e for e in distribution.entry_points if e.group == "mn.skills.setup"]
+            if len(hooks) > 1:
+                raise ValueError(f"declared skill has multiple mn.skills.setup hooks: {name}")
+            if hooks:
+                setups.append((name, hooks[0]))
+        # Validate every descriptor and binding before any dependency side effect.
+        runtime = cls(descriptors, bindings, **options)
+        runtime.preparation = {}
+        for name, entry in setups:
+            result = entry.load()({"version": 1, "allow_install": install_dependencies})
+            if not isinstance(result, dict) or result.get("version") != 1 or result.get("status") not in {"ready", "installed"}:
+                raise ValueError(f"skill dependency setup did not complete: {name}")
+            runtime.preparation[name] = result
+        return runtime
 
     def list_skills(self):
         return [

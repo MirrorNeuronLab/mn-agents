@@ -101,8 +101,15 @@ AST/import checks are policy checks, not a security sandbox.
 `skills.SkillRuntime.discover(distributions, bindings)` loads only the explicitly
 supplied installed distributions' `mn.skills` entry points. Each descriptor names
 its module, manual and operation argument schemas. Trusted bindings map
-`(skill_id, operation)` to scoped public Python callables. No installation,
-unrestricted path resolution, generated code or model authority is provided.
+`(skill_id, operation)` to scoped public Python callables. Before registration
+returns, an admitted package's optional single `mn.skills.setup` entry point
+receives `{"version": 1, "allow_install": true}` to prepare its local dependencies.
+Python distributions must already be installed. All schemas and bindings are
+validated before setup; failed setup prevents registration. Set
+`install_dependencies=False` for a check without installation. Hooks must return
+`version=1` and `status="ready"` or `"installed"`; results are available in
+`runtime.preparation`. Imports, manual reads and invocation never run setup.
+Unrestricted path resolution, generated code and model authority are not provided.
 `list_skills`, `read_skill`, and `invoke_skill` expose one implementation to an
 agent; direct callers use the same Python APIs. Invocation requires a prior
 manual read, a registered binding, valid JSON-schema arguments, and a bounded

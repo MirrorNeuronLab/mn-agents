@@ -1,86 +1,59 @@
-import hashlib
-
 import pytest
 from jsonschema import ValidationError
-from mn_prototype_bounded_tool_loop_agent.skills import SkillRuntime
+from mn_prototype_bounded_tool_loop_agent import skills as skills_module
 from mn_prototype_bounded_tool_loop_agent.checkpoint import CheckpointLoop
-from mn_document_reading_skill.search import PassageIndex
-from mn_document_reading_skill import extract_outline
+from mn_prototype_bounded_tool_loop_agent.skills import SkillRuntime
 
-DOC = "mirrorneuron.document.reading"
-DIST = "mirrorneuron-document-reading-skill"
+SKILL = "example.reading"
 
 
-def runtime(tmp_path):
-    text = "Cybersecurity approval. Routine cybersecurity responsibilities."
-    index = PassageIndex.build(
-        tmp_path / "index.db",
-        [
-            dict(
-                source_id="one",
-                text=text,
-                access_scope="case",
-                content_sha256=hashlib.sha256(text.encode()).hexdigest(),
-            )
-        ],
-        "case",
-    )
-    return index, SkillRuntime.discover(
-        [DIST],
-        {
-            (DOC, "search"): index.search,
-            (DOC, "passage"): index.passage,
-            (DOC, "outline"): extract_outline,
-        },
-    )
+@pytest.fixture
+def runtime(tmp_path, monkeypatch):
+    manual = tmp_path / "resources"
+    manual.mkdir()
+    (manual / "SKILL.md").write_text("Read the scoped lexical evidence before answering.")
+    monkeypatch.setattr(skills_module.resources, "files", lambda module: tmp_path)
+    schema = {"type": "object", "required": ["query"], "additionalProperties": False,
+              "properties": {"query": {"type": "string", "minLength": 1},
+                             "top_k": {"type": "integer", "minimum": 1, "maximum": 20}}}
+    descriptor = {"id": SKILL, "module": "example", "description": "Scoped evidence",
+                  "operations": {"search": {"arguments": schema}}}
+    direct = lambda query, top_k=3: {"passages": [{"evidence_id": "one", "query": query}], "limit": top_k}
+    return direct, SkillRuntime([descriptor], {(SKILL, "search"): direct})
 
 
-def test_manual_and_dual_use(tmp_path):
-    index, skills = runtime(tmp_path)
+def test_manual_and_dual_use(runtime):
+    direct, skills = runtime
     with pytest.raises(ValueError, match="read_skill"):
-        skills.invoke_skill(DOC, "search", {"query": "cybersecurity"})
-    manual = skills.read_skill(DOC)
+        skills.invoke_skill(SKILL, "search", {"query": "cybersecurity"})
+    manual = skills.read_skill(SKILL)
     assert "lexical" in manual["manual"] and len(manual["sha256"]) == 64
-    result = skills.invoke_skill(DOC, "search", {"query": "cybersecurity", "top_k": 3})
-    assert result == index.search("cybersecurity", 3)
-    eid = result["passages"][0]["evidence_id"]
-    assert skills.invoke_skill(DOC, "passage", {"evidence_id": eid}) == index.passage(
-        eid
-    )
-    assert skills.invoke_skill(
-        DOC, "outline", {"text": "# Example"}
-    ) == extract_outline("# Example")
-    assert skills.list_skills()[0]["id"] == DOC
+    result = skills.invoke_skill(SKILL, "search", {"query": "cybersecurity", "top_k": 3})
+    assert result == direct("cybersecurity", 3)
+    assert skills.list_skills()[0]["id"] == SKILL
 
 
-@pytest.mark.parametrize(
-    "args",
-    [
-        {"query": "a", "path": "/etc/passwd"},
-        {"query": "a", "top_k": True},
-        {"query": "a", "top_k": 21},
-        {"query": ""},
-    ],
-)
-def test_invalid_arguments(tmp_path, args):
-    _, skills = runtime(tmp_path)
-    skills.read_skill(DOC)
+@pytest.mark.parametrize("args", [
+    {"query": "a", "path": "/etc/passwd"}, {"query": "a", "top_k": True},
+    {"query": "a", "top_k": 21}, {"query": ""},
+])
+def test_invalid_arguments(runtime, args):
+    _, skills = runtime
+    skills.read_skill(SKILL)
     with pytest.raises(ValidationError):
-        skills.invoke_skill(DOC, "search", args)
+        skills.invoke_skill(SKILL, "search", args)
 
 
-def test_discovery_and_registration_boundaries(tmp_path):
-    _, skills = runtime(tmp_path)
-    skills.read_skill(DOC)
+def test_registration_boundaries(runtime):
+    _, skills = runtime
+    skills.read_skill(SKILL)
     with pytest.raises(ValueError):
-        skills.invoke_skill(DOC, "create", {})
+        skills.invoke_skill(SKILL, "create", {})
     with pytest.raises(KeyError):
         skills.read_skill("uninstalled")
-    with pytest.raises(ValueError, match="descriptor"):
-        SkillRuntime.discover(["mn-prototype-bounded-tool-loop-agent"], {})
     skills.max_output_bytes = 5
     with pytest.raises(ValueError, match="byte limit"):
-        skills.invoke_skill(DOC, "search", {"query": "approval"})
+        skills.invoke_skill(SKILL, "search", {"query": "approval"})
 
 
 def action(name="invoke_skill"):
