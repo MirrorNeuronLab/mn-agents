@@ -483,3 +483,27 @@ def test_full_factory_composition_routes_queues_reviews_and_finalizes(tmp_path):
         outcome["value"]["tool_loop"]["stop_reason"]
         for outcome in payload["outcomes"]
     ] == ["evidence_collected", "evidence_collected"]
+
+
+def test_tool_registry_reports_runtime_actions_results_and_safe_failures(monkeypatch, capsys):
+    import pytest
+    import json
+    from mn_prototype_bounded_tool_loop_agent.session import ToolRegistry
+    monkeypatch.setenv('MN_AGENT_ID', 'researcher')
+    registry = ToolRegistry({'search'})
+    registry.register('search', lambda args: {'count': 2, 'secret': 'private result'})
+    assert registry.execute('search')['count'] == 2
+    records = [json.loads(line.removeprefix('__MN_EVENT__')) for line in capsys.readouterr().out.splitlines()]
+    assert [item['activity_kind'] for item in records] == ['action', 'result']
+    assert 'private result' not in str(records)
+    def fail(args):
+        raise ValueError('private error')
+    registry.register('search', fail)
+    with pytest.raises(ValueError):
+        registry.execute('search')
+    records = [json.loads(line.removeprefix('__MN_EVENT__')) for line in capsys.readouterr().out.splitlines()]
+    assert records[-1]['level'] == 'error'
+    assert 'private error' not in str(records)
+    with pytest.raises(ValueError):
+        registry.execute('untrusted')
+    assert capsys.readouterr().out == ''

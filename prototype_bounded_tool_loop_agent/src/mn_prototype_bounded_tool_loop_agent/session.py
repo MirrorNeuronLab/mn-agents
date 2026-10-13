@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -26,7 +27,20 @@ class ToolRegistry:
             raise ValueError(f"tool is not allowlisted: {normalized}")
         if normalized not in self.handlers:
             raise ValueError(f"tool is not registered: {normalized}")
-        return self.handlers[normalized](arguments or {})
+        from mn_sdk.agent_events import report_activity
+
+        active = bool(os.getenv("MN_AGENT_ID") or os.getenv("MN_WORKFLOW_AGENT_ID"))
+        if active:
+            report_activity(f"Running tool: {normalized}", kind="action")
+        try:
+            result = self.handlers[normalized](arguments or {})
+        except Exception as exc:
+            if active:
+                report_activity(f"Tool {normalized} failed ({type(exc).__name__})", kind="result", level="error")
+            raise
+        if active:
+            report_activity(f"Tool completed: {normalized}", kind="result")
+        return result
 
 
 @dataclass

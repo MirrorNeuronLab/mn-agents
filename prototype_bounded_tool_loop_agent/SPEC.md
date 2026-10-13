@@ -176,3 +176,7 @@ seconds=600 behavior is unchanged. `finalization_decisions=0` remains the defaul
 a positive optional reserve allows that many further decisions after the invocation
 limit, rejects further invocations, and allows a final report/finish. It does not
 increase max_decisions. Per-operation timeouts remain the caller's responsibility.
+
+ToolRegistry.execute reports allowlisted tool execution and completion through
+`mn_sdk.report_activity` when Core supplies worker identity. Arguments and full
+results are excluded; failures report only the exception class.

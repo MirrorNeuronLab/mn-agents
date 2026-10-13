@@ -162,3 +162,7 @@ progress trigger two corrective decisions. Continued failure ends with
 progress-policy version participates in the resume binding. Events are
 `agent_recovery_started`, `agent_recovery_completed`, and `agent_stalled`.
 `PhaseCycle.allowed_actions` provides a shared planning/execution projection.
+
+ToolRegistry.execute reports allowlisted tool execution and completion through
+`mn_sdk.report_activity` when Core supplies worker identity. Arguments and full
+results are excluded; failures report only the exception class.
