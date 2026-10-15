@@ -3,7 +3,7 @@ name = "mn-prototype-entity-queue-agent"
 dynamic = ["version"]
 description = "Ordered entity queue handler factory."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = "MIT"
 dependencies = ["mirrorneuron-python-sdk"]
 

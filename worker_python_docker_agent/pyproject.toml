@@ -3,7 +3,7 @@ name = "mn-worker-python-docker-agent"
 dynamic = ["version"]
 description = "Python Docker worker agent package."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = "MIT"
 dependencies = ["mirrorneuron-python-sdk"]
 

@@ -53,7 +53,7 @@ Without the blueprint stereotype, provide `upload_path` and either `command` or
 ```
 
 When no command is supplied, the SDK renders `script` as
-`["python3.11", "main.py"]`. It also derives `upload_as` and `workdir` from the
+`["python3.12", "main.py"]`. It also derives `upload_as` and `workdir` from the
 upload path.
 
 ## Security and retry guidance

@@ -1,5 +1,7 @@
 # MirrorNeuron Agent Package Specification
 
+Every agent distribution requires Python 3.12 or newer. Runtime Python command defaults use Python 3.12, matching the SDK and Core HostLocal.
+
 ## Purpose
 
 This document defines repository-wide rules for `mn-agents` packages. A

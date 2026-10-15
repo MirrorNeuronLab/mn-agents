@@ -49,7 +49,7 @@ Version 1 renders:
 
 Given `upload_path=X`, default rendering sets `upload_as=X` and
 `workdir=/sandbox/job/X` unless overridden. Given `script=S` without a command,
-it sets `command=["python3.11", S]`. `script` itself is not retained in rendered
+it sets `command=["python3.12", S]`. `script` itself is not retained in rendered
 config.
 
 Manifest workflow control may provide timeout and retry defaults through the

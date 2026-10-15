@@ -1,5 +1,7 @@
 # MirrorNeuron Agents
 
+Every agent distribution requires Python 3.12 or newer. Runtime Python command defaults use Python 3.12, matching the SDK and Core HostLocal.
+
 `mn-agents` is the shared, versioned catalog of MirrorNeuron runtime-node
 templates and Python handler factories. Blueprints reuse these packages instead
 of copying execution shape or orchestration mechanics.

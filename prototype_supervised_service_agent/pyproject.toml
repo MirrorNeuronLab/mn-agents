@@ -3,7 +3,7 @@ name = "mn-prototype-supervised-service-agent"
 dynamic = ["version"]
 description = "Supervised long-running service lifecycle factory."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = "MIT"
 dependencies = ["mirrorneuron-python-sdk"]
 

@@ -3,7 +3,7 @@ name = "mn-prototype-stateful-step-agent"
 dynamic = ["version"]
 description = "SDK lifecycle and workflow-state handler factory."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = "MIT"
 dependencies = ["mirrorneuron-python-sdk"]
 

@@ -3,7 +3,7 @@ name = "mn-control-terminal-sink-agent"
 dynamic = ["version"]
 description = "Terminal sink agent package."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = "MIT"
 dependencies = ["mirrorneuron-python-sdk"]
 
