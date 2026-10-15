@@ -1,11 +1,11 @@
 Metadata-Version: 2.4
 Name: mn-prototype-bounded-tool-loop-agent
-Version: 1.3.58
+Version: 1.3.61.dev2
 Summary: Bounded plan, action, observation loop factory.
 License-Expression: MIT
-Requires-Python: >=3.11
+Requires-Python: >=3.12
 Description-Content-Type: text/markdown
-Requires-Dist: mirrorneuron-python-sdk
+Requires-Dist: mirrorneuron-python-sdk<2.0,>=1.3.61.dev4
 Requires-Dist: jsonschema>=4.18
 
 # Bounded Tool Loop Agent
@@ -172,3 +172,7 @@ progress trigger two corrective decisions. Continued failure ends with
 progress-policy version participates in the resume binding. Events are
 `agent_recovery_started`, `agent_recovery_completed`, and `agent_stalled`.
 `PhaseCycle.allowed_actions` provides a shared planning/execution projection.
+
+ToolRegistry.execute reports allowlisted tool execution and completion through
+`mn_sdk.report_activity` when Core supplies worker identity. Arguments and full
+results are excluded; failures report only the exception class.
