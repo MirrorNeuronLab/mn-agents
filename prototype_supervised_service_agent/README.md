@@ -66,4 +66,11 @@ Signal handlers are installed only from the main thread. If an existing
 `ServiceContext` is supplied, its configuration and counters are used; the
 separate `config=` argument is ignored.
 
+Cycle services can opt into `health_each_cycle=True` to check health before every
+cycle (the initial startup check covers the first cycle). Health callbacks must
+raise to reject readiness; their return values retain the version 1 behavior.
+`restore_signals=True` restores the process's previous signal handlers after
+shutdown, including failure. Both options default to false, preserving existing
+callers. Periodic cycle health does not apply to a blocking `serve` callback.
+
 See [SPEC.md](SPEC.md) for exact lifecycle ordering and limitations.

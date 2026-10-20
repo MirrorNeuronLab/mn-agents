@@ -46,6 +46,8 @@ class SupervisedServiceSpec:
     interval_seconds: float = 0.0
     max_cycles: int | None = None
     stop_file: str | Path | None = None
+    health_each_cycle: bool = False
+    restore_signals: bool = False
 
 
 def load_agent_definition() -> dict[str, Any]:
@@ -59,10 +61,14 @@ def create_agent(spec: SupervisedServiceSpec) -> Callable[..., dict[str, Any]]:
         raise ValueError("service interval_seconds must not be negative")
     if spec.max_cycles is not None and spec.max_cycles < 1:
         raise ValueError("service max_cycles must be positive")
+    if type(spec.health_each_cycle) is not bool or type(spec.restore_signals) is not bool:
+        raise ValueError("service health/signal policies must be booleans")
+    if spec.health_each_cycle and (spec.cycle is None or spec.health is None):
+        raise ValueError("health_each_cycle requires cycle and health callbacks")
 
     def run(*, context: ServiceContext | None = None, config: Mapping[str, Any] | None = None, **options: Any) -> dict[str, Any]:
         service_context = context or ServiceContext(config=config or {})
-        _install_signal_handlers(service_context.stop_event)
+        previous_signals = _install_signal_handlers(service_context.stop_event)
         if spec.stop_file:
             stop_file = Path(spec.stop_file)
         else:
@@ -78,6 +84,8 @@ def create_agent(spec: SupervisedServiceSpec) -> Callable[..., dict[str, Any]]:
                 while not service_context.stop_event.is_set():
                     if stop_file and stop_file.exists():
                         break
+                    if spec.health_each_cycle and service_context.cycles_completed:
+                        spec.health(service_context, **options)
                     spec.cycle(service_context, **options)
                     service_context.cycles_completed += 1
                     if spec.max_cycles and service_context.cycles_completed >= spec.max_cycles:
@@ -90,21 +98,29 @@ def create_agent(spec: SupervisedServiceSpec) -> Callable[..., dict[str, Any]]:
                 spec.on_error(service_context, exc, **options)
             raise
         finally:
-            if spec.on_stop:
-                spec.on_stop(service_context, **options)
+            try:
+                if spec.on_stop:
+                    spec.on_stop(service_context, **options)
+            finally:
+                if spec.restore_signals:
+                    for signum, previous in (previous_signals or {}).items():
+                        signal.signal(signum, previous)
         return result.to_dict()
 
     run.__name__ = "run"
     return run
 
 
-def _install_signal_handlers(stop_event: threading.Event) -> None:
+def _install_signal_handlers(stop_event: threading.Event) -> dict:
+    previous = {}
     if threading.current_thread() is not threading.main_thread():
-        return
+        return previous
     for name in ("SIGTERM", "SIGINT"):
         value = getattr(signal, name, None)
         if value is not None:
+            previous[value] = signal.getsignal(value)
             signal.signal(value, lambda _signum, _frame: stop_event.set())
+    return previous
 
 
 __all__ = ["AGENT_ID", "AGENT_VERSION", "ServiceContext", "ServiceResult", "SupervisedServiceSpec", "create_agent", "load_agent_definition"]

@@ -33,6 +33,8 @@ SupervisedServiceSpec(
     interval_seconds: float = 0.0,
     max_cycles: int | None = None,
     stop_file: str | Path | None = None,
+    health_each_cycle: bool = False,
+    restore_signals: bool = False,
 )
 ```
 
@@ -41,6 +43,8 @@ SupervisedServiceSpec(
 - Exactly one of `serve` and `cycle` must be configured.
 - `interval_seconds` must not be negative.
 - `max_cycles`, when set, must be positive.
+- New health/signal policies must be booleans. `health_each_cycle=True` requires
+  both `cycle` and `health`; it is not available in blocking serve mode.
 
 Invalid specifications raise `ValueError`.
 
@@ -95,6 +99,14 @@ raises, normal `finally` exception behavior applies.
 - Stop-file existence is checked only in cycle mode and only before a cycle.
 
 ## Result contract
+
+When `health_each_cycle=True`, startup health covers the first cycle; health is
+called again before each subsequent cycle, after stop checks. A raised health
+error prevents the next cycle, preserves the completed-cycle count and follows
+the existing error/shutdown path. Return values remain uninterpreted.
+`restore_signals=True` restores the main thread's prior handlers after on_stop,
+even when startup, work or cleanup raises. Other threads install/restore none.
+Both additions are opt-in and preserve all omitted-option version 1 behavior.
 
 The returned mapping contains `status` and `cycles_completed`. `error` is
 included only when non-empty, although the current successful path does not
