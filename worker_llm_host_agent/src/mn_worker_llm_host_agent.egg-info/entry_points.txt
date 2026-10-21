@@ -1,2 +1,0 @@
-[mn.agents]
-mn-agents.worker.llm_host = mn_worker_llm_host_agent:load_agent_definition

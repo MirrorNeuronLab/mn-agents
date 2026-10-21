@@ -2,4 +2,7 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 build/
+# Generated Python packaging artifacts
+*.egg-info/
+*.egg
 .DS_Store

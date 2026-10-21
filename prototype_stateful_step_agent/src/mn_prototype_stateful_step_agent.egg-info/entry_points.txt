@@ -1,2 +1,0 @@
-[mn.agents]
-mn-agents.prototype.stateful_step = mn_prototype_stateful_step_agent:load_agent_definition

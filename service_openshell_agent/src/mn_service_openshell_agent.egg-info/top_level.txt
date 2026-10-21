@@ -1,1 +1,0 @@
-mn_service_openshell_agent
