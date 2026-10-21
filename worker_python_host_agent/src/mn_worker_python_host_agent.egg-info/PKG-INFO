@@ -1,9 +1,9 @@
 Metadata-Version: 2.4
 Name: mn-worker-python-host-agent
-Version: 1.3.56
+Version: 1.3.61.dev9
 Summary: Python host worker agent package.
 License-Expression: MIT
-Requires-Python: >=3.11
+Requires-Python: >=3.12
 Description-Content-Type: text/markdown
 Requires-Dist: mirrorneuron-python-sdk
 
@@ -62,7 +62,7 @@ Without the blueprint stereotype, provide `upload_path` and either `command` or
 ```
 
 When no command is supplied, the SDK renders `script` as
-`["python3.11", "main.py"]`. It also derives `upload_as` and `workdir` from the
+`["python3.12", "main.py"]`. It also derives `upload_as` and `workdir` from the
 upload path.
 
 ## Security and retry guidance
