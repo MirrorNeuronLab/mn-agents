@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/checkout@v4
+        with:
+          repository: MirrorNeuronLab/mn-python-sdk
+          path: .ci-sdk
+          token: ${{ secrets.MN_GITHUB_TOKEN || secrets.GH_TOKEN || github.token }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install source components and package test dependencies
+        env:
+          PIP_INDEX_URL: https://us-central1-python.pkg.dev/mirrorneuron-public-packages/agent-skills/simple/
+          PIP_EXTRA_INDEX_URL: https://pypi.org/simple
+        shell: bash
+        run: |
+          set -euo pipefail
+          requirements=(-e '.ci-sdk[dev]')
+          for project in .ci-sdk/packages/*; do
+            [[ -f "$project/pyproject.toml" ]] || continue
+            requirements+=(-e "$project[dev]")
+          done
+          for project in *_agent *_skill; do
+            [[ -f "$project/pyproject.toml" ]] || continue
+            requirements+=(-e "$project")
+          done
+          python -m pip install "${requirements[@]}" pytest-mock
+      - name: Validate package contracts
+        run: |
+          python -m pytest -q
