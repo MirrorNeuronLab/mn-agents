@@ -11,14 +11,32 @@ SKILL = "example.reading"
 def runtime(tmp_path, monkeypatch):
     manual = tmp_path / "resources"
     manual.mkdir()
-    (manual / "SKILL.md").write_text("Read the scoped lexical evidence before answering.")
+    (manual / "SKILL.md").write_text(
+        "Read the scoped lexical evidence before answering."
+    )
     monkeypatch.setattr(skills_module.resources, "files", lambda module: tmp_path)
-    schema = {"type": "object", "required": ["query"], "additionalProperties": False,
-              "properties": {"query": {"type": "string", "minLength": 1},
-                             "top_k": {"type": "integer", "minimum": 1, "maximum": 20}}}
-    descriptor = {"id": SKILL, "module": "example", "description": "Scoped evidence",
-                  "operations": {"search": {"arguments": schema}}}
-    direct = lambda query, top_k=3: {"passages": [{"evidence_id": "one", "query": query}], "limit": top_k}
+    schema = {
+        "type": "object",
+        "required": ["query"],
+        "additionalProperties": False,
+        "properties": {
+            "query": {"type": "string", "minLength": 1},
+            "top_k": {"type": "integer", "minimum": 1, "maximum": 20},
+        },
+    }
+    descriptor = {
+        "id": SKILL,
+        "module": "example",
+        "description": "Scoped evidence",
+        "operations": {"search": {"arguments": schema}},
+    }
+
+    def direct(query, top_k=3):
+        return {
+            "passages": [{"evidence_id": "one", "query": query}],
+            "limit": top_k,
+        }
+
     return direct, SkillRuntime([descriptor], {(SKILL, "search"): direct})
 
 
@@ -28,15 +46,22 @@ def test_manual_and_dual_use(runtime):
         skills.invoke_skill(SKILL, "search", {"query": "cybersecurity"})
     manual = skills.read_skill(SKILL)
     assert "lexical" in manual["manual"] and len(manual["sha256"]) == 64
-    result = skills.invoke_skill(SKILL, "search", {"query": "cybersecurity", "top_k": 3})
+    result = skills.invoke_skill(
+        SKILL, "search", {"query": "cybersecurity", "top_k": 3}
+    )
     assert result == direct("cybersecurity", 3)
     assert skills.list_skills()[0]["id"] == SKILL
 
 
-@pytest.mark.parametrize("args", [
-    {"query": "a", "path": "/etc/passwd"}, {"query": "a", "top_k": True},
-    {"query": "a", "top_k": 21}, {"query": ""},
-])
+@pytest.mark.parametrize(
+    "args",
+    [
+        {"query": "a", "path": "/etc/passwd"},
+        {"query": "a", "top_k": True},
+        {"query": "a", "top_k": 21},
+        {"query": ""},
+    ],
+)
 def test_invalid_arguments(runtime, args):
     _, skills = runtime
     skills.read_skill(SKILL)

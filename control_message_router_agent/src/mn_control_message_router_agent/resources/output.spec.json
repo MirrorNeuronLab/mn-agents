@@ -7,9 +7,7 @@
     }
   ],
   "description": "Outputs emitted by mn-agents.control.message_router.",
-  "emitted_message_types": [
-    "route_message"
-  ],
+  "emitted_message_types": ["route_message"],
   "parts": [
     {
       "kind": "data",

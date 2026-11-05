@@ -22,11 +22,11 @@ network access.
 
 ## Stereotypes
 
-| Stereotype | Contract |
-| --- | --- |
+| Stereotype                | Contract                                                                                         |
+| ------------------------- | ------------------------------------------------------------------------------------------------ |
 | `blueprint_docker_worker` | Standard SDK step command, upload/workdir, runtime network, and read-only effect classification. |
-| `internal_write_worker` | `side_effect="internal_write"`. |
-| `public_browser_worker` | `side_effect="network_read"` plus bounded browser environment defaults. |
+| `internal_write_worker`   | `side_effect="internal_write"`.                                                                  |
+| `public_browser_worker`   | `side_effect="network_read"` plus bounded browser environment defaults.                          |
 
 Use a list to compose a base worker with one capability stereotype. Explicit
 `with.environment` values deep-merge with the browser defaults.

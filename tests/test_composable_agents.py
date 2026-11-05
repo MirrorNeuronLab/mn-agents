@@ -4,7 +4,11 @@ import json
 import time
 from pathlib import Path
 
-from mn_prototype_actor_review_agent import ActorReviewSpec, create_agent as create_review, wrap_agent
+from mn_prototype_actor_review_agent import (
+    ActorReviewSpec,
+    create_agent as create_review,
+    wrap_agent,
+)
 from mn_prototype_artifact_finalizer_agent import (
     ArtifactBundle,
     ArtifactFinalizerSpec,
@@ -17,8 +21,14 @@ from mn_prototype_bounded_tool_loop_agent import (
     ToolPlan,
     create_agent as create_tool_loop,
 )
-from mn_prototype_entity_queue_agent import EntityQueueSpec, create_agent as create_queue
-from mn_prototype_operation_router_agent import OperationBinding, create_agent as create_router
+from mn_prototype_entity_queue_agent import (
+    EntityQueueSpec,
+    create_agent as create_queue,
+)
+from mn_prototype_operation_router_agent import (
+    OperationBinding,
+    create_agent as create_router,
+)
 from mn_prototype_stateful_step_agent import (
     AgentHandlerOutput,
     DomainOperationSpec,
@@ -60,7 +70,9 @@ def test_bounded_tool_loop_executes_multi_action_plan_and_honors_call_limit():
                 actions=(ToolAction("one"), ToolAction("two"), ToolAction("three")),
                 metadata={"thought_summary": "batch"},
             ),
-            execute_action=lambda _context, action, **_options: executed.append(action.name) or action.name,
+            execute_action=lambda _context, action, **_options: (
+                executed.append(action.name) or action.name
+            ),
             max_iterations=2,
             max_tool_calls=5,
         )
@@ -107,7 +119,9 @@ def test_actor_review_supports_dynamic_ids_warning_recovery_and_wrapping():
             persist=lambda _context, result, **_options: persisted.append(result),
         )
     )
-    wrapped = wrap_agent(lambda _context, **_options: {"value": 1}, review, result_key="review")
+    wrapped = wrap_agent(
+        lambda _context, **_options: {"value": 1}, review, result_key="review"
+    )
 
     result = wrapped({"config": {}})
 
@@ -138,12 +152,16 @@ def test_stateful_router_queue_composition_prepares_and_finalizes_resources(tmp_
                 "config": {},
             },
             prepare=lambda _context, **_options: {"prepared": True},
-            finalize=lambda _context, result, error, **_options: lifecycle.append((result, error)),
+            finalize=lambda _context, result, error, **_options: lifecycle.append(
+                (result, error)
+            ),
         ),
         router,
     )
 
-    result = stateful(StepContext(step_id="queue_step", run_id="run-1"), operation="queue")
+    result = stateful(
+        StepContext(step_id="queue_step", run_id="run-1"), operation="queue"
+    )
 
     assert result["processed_count"] == 2
     assert result["outcomes"][0]["value"] == (True, "item-a")
@@ -165,7 +183,9 @@ def test_stateful_finalize_runs_after_handler_failure(tmp_path):
                 "blueprint_id": "test-blueprint",
                 "config": {},
             },
-            finalize=lambda _context, result, error, **_options: lifecycle.append((result, error)),
+            finalize=lambda _context, result, error, **_options: lifecycle.append(
+                (result, error)
+            ),
         ),
         fail,
     )
@@ -189,8 +209,12 @@ def test_stateful_finalize_runs_after_prepare_failure(tmp_path):
                 "blueprint_id": "test-blueprint",
                 "config": {},
             },
-            prepare=lambda _context, **_options: (_ for _ in ()).throw(RuntimeError("prepare failed")),
-            finalize=lambda _context, result, error, **_options: lifecycle.append((result, error)),
+            prepare=lambda _context, **_options: (_ for _ in ()).throw(
+                RuntimeError("prepare failed")
+            ),
+            finalize=lambda _context, result, error, **_options: lifecycle.append(
+                (result, error)
+            ),
         ),
         lambda _context, **_options: None,
     )
@@ -281,10 +305,7 @@ def test_message_agent_replays_durable_route_neutral_output(tmp_path):
         "agent_idempotency_record",
     }
     assert (
-        tmp_path
-        / "run-1"
-        / "workflow_state"
-        / "collect__collector_result.json"
+        tmp_path / "run-1" / "workflow_state" / "collect__collector_result.json"
     ).exists()
     marker = json.loads(
         (
@@ -378,7 +399,9 @@ def test_artifact_finalizer_writes_declared_atomic_artifacts(tmp_path):
                 final_artifact={"type": "demo"},
                 writes=(
                     ArtifactWrite("result.json", {"ok": True}, destination="both"),
-                    ArtifactWrite("notes.txt", "done", kind="text", destination="output"),
+                    ArtifactWrite(
+                        "notes.txt", "done", kind="text", destination="output"
+                    ),
                 ),
             )
         )
@@ -417,7 +440,10 @@ def test_full_factory_composition_routes_queues_reviews_and_finalizes(tmp_path):
                 actions=(ToolAction("inspect"),),
                 stop_reason="evidence_collected",
             ),
-            execute_action=lambda _context, action, **_options: {"tool": action.name, "ok": True},
+            execute_action=lambda _context, action, **_options: {
+                "tool": action.name,
+                "ok": True,
+            },
             max_iterations=1,
             max_tool_calls=1,
         )
@@ -442,7 +468,9 @@ def test_full_factory_composition_routes_queues_reviews_and_finalizes(tmp_path):
                 }
             },
             actor_ids=("reviewer",),
-            build_context=lambda _context, *, primary_result, **_options: primary_result,
+            build_context=lambda _context, *, primary_result, **_options: (
+                primary_result
+            ),
         )
     )
     reviewed_router = wrap_agent(router, review, result_key="review")
@@ -480,30 +508,40 @@ def test_full_factory_composition_routes_queues_reviews_and_finalizes(tmp_path):
     )
     assert payload["review"]["findings"]["reviewer"]["status"] == "reviewed"
     assert [
-        outcome["value"]["tool_loop"]["stop_reason"]
-        for outcome in payload["outcomes"]
+        outcome["value"]["tool_loop"]["stop_reason"] for outcome in payload["outcomes"]
     ] == ["evidence_collected", "evidence_collected"]
 
 
-def test_tool_registry_reports_runtime_actions_results_and_safe_failures(monkeypatch, capsys):
+def test_tool_registry_reports_runtime_actions_results_and_safe_failures(
+    monkeypatch, capsys
+):
     import pytest
     import json
     from mn_prototype_bounded_tool_loop_agent.session import ToolRegistry
-    monkeypatch.setenv('MN_AGENT_ID', 'researcher')
-    registry = ToolRegistry({'search'})
-    registry.register('search', lambda args: {'count': 2, 'secret': 'private result'})
-    assert registry.execute('search')['count'] == 2
-    records = [json.loads(line.removeprefix('__MN_EVENT__')) for line in capsys.readouterr().out.splitlines()]
-    assert [item['activity_kind'] for item in records] == ['action', 'result']
-    assert 'private result' not in str(records)
+
+    monkeypatch.setenv("MN_AGENT_ID", "researcher")
+    registry = ToolRegistry({"search"})
+    registry.register("search", lambda args: {"count": 2, "secret": "private result"})
+    assert registry.execute("search")["count"] == 2
+    records = [
+        json.loads(line.removeprefix("__MN_EVENT__"))
+        for line in capsys.readouterr().out.splitlines()
+    ]
+    assert [item["activity_kind"] for item in records] == ["action", "result"]
+    assert "private result" not in str(records)
+
     def fail(args):
-        raise ValueError('private error')
-    registry.register('search', fail)
+        raise ValueError("private error")
+
+    registry.register("search", fail)
     with pytest.raises(ValueError):
-        registry.execute('search')
-    records = [json.loads(line.removeprefix('__MN_EVENT__')) for line in capsys.readouterr().out.splitlines()]
-    assert records[-1]['level'] == 'error'
-    assert 'private error' not in str(records)
+        registry.execute("search")
+    records = [
+        json.loads(line.removeprefix("__MN_EVENT__"))
+        for line in capsys.readouterr().out.splitlines()
+    ]
+    assert records[-1]["level"] == "error"
+    assert "private error" not in str(records)
     with pytest.raises(ValueError):
-        registry.execute('untrusted')
-    assert capsys.readouterr().out == ''
+        registry.execute("untrusted")
+    assert capsys.readouterr().out == ""

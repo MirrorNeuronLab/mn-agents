@@ -2,14 +2,14 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
+| Field              | Value                            |
+| ------------------ | -------------------------------- |
 | Template reference | `mn-agents.worker.python_host@1` |
-| Agent ID | `mn-agents.worker.python_host` |
-| Distribution | `mn-worker-python-host-agent` |
-| Import module | `mn_worker_python_host_agent` |
-| Package kind | `runtime_node` |
-| Category / kind | `data` / `executor` |
+| Agent ID           | `mn-agents.worker.python_host`   |
+| Distribution       | `mn-worker-python-host-agent`    |
+| Import module      | `mn_worker_python_host_agent`    |
+| Package kind       | `runtime_node`                   |
+| Category / kind    | `data` / `executor`              |
 
 ## Actualization contract
 

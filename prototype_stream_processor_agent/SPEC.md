@@ -2,13 +2,13 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
-| Agent ID | `mn-agents.prototype.stream_processor` |
-| Version | `1` |
-| Distribution | `mn-prototype-stream-processor-agent` |
-| Import module | `mn_prototype_stream_processor_agent` |
-| Package kind | `handler_factory` |
+| Field         | Value                                  |
+| ------------- | -------------------------------------- |
+| Agent ID      | `mn-agents.prototype.stream_processor` |
+| Version       | `1`                                    |
+| Distribution  | `mn-prototype-stream-processor-agent`  |
+| Import module | `mn_prototype_stream_processor_agent`  |
+| Package kind  | `handler_factory`                      |
 
 ## Public data types
 

@@ -47,7 +47,9 @@ class StreamProcessorSpec:
 
 
 def load_agent_definition() -> dict[str, Any]:
-    return json.loads(files(__package__).joinpath("resources/agent.json").read_text(encoding="utf-8"))
+    return json.loads(
+        files(__package__).joinpath("resources/agent.json").read_text(encoding="utf-8")
+    )
 
 
 def create_agent(spec: StreamProcessorSpec) -> Callable[..., dict[str, Any]]:
@@ -87,4 +89,12 @@ def create_agent(spec: StreamProcessorSpec) -> Callable[..., dict[str, Any]]:
     return run
 
 
-__all__ = ["AGENT_ID", "AGENT_VERSION", "StreamItemResult", "StreamProcessorSpec", "StreamSummary", "create_agent", "load_agent_definition"]
+__all__ = [
+    "AGENT_ID",
+    "AGENT_VERSION",
+    "StreamItemResult",
+    "StreamProcessorSpec",
+    "StreamSummary",
+    "create_agent",
+    "load_agent_definition",
+]

@@ -58,9 +58,13 @@ class SkillRuntime:
                 descriptor["distribution"] = distribution.metadata["Name"]
                 descriptor["version"] = distribution.version
                 descriptors.append(descriptor)
-            hooks = [e for e in distribution.entry_points if e.group == "mn.skills.setup"]
+            hooks = [
+                e for e in distribution.entry_points if e.group == "mn.skills.setup"
+            ]
             if len(hooks) > 1:
-                raise ValueError(f"declared skill has multiple mn.skills.setup hooks: {name}")
+                raise ValueError(
+                    f"declared skill has multiple mn.skills.setup hooks: {name}"
+                )
             if hooks:
                 setups.append((name, hooks[0]))
         # Validate every descriptor and binding before any dependency side effect.
@@ -68,7 +72,11 @@ class SkillRuntime:
         runtime.preparation = {}
         for name, entry in setups:
             result = entry.load()({"version": 1, "allow_install": install_dependencies})
-            if not isinstance(result, dict) or result.get("version") != 1 or result.get("status") not in {"ready", "installed"}:
+            if (
+                not isinstance(result, dict)
+                or result.get("version") != 1
+                or result.get("status") not in {"ready", "installed"}
+            ):
                 raise ValueError(f"skill dependency setup did not complete: {name}")
             runtime.preparation[name] = result
         return runtime

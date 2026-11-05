@@ -17,9 +17,7 @@ inside one Python step, use the operation-router handler factory instead.
   "with": {
     "emit_type": "input_received",
     "routing_mode": "first_match",
-    "conditions": [
-      {"field": "payload.kind", "equals": "video"}
-    ]
+    "conditions": [{ "field": "payload.kind", "equals": "video" }]
   }
 }
 ```
@@ -29,15 +27,15 @@ behavior contract uses `route_message` as the fallback message type.
 
 ## Optional inputs
 
-| Field | Purpose |
-| --- | --- |
-| `emit_type` | Message type produced by the router. |
-| `conditions` | Runtime-owned routing/normalization conditions. |
-| `routing_mode` | Strategy interpreted by the runtime implementation. |
-| `output_message_type` | Conventional downstream completion type. |
-| `role` | Semantic node role. |
-| `node_type` | Overrides the rendered node type. |
-| `stereotype` | Reserved template stereotype selection; none exist in v1. |
+| Field                 | Purpose                                                   |
+| --------------------- | --------------------------------------------------------- |
+| `emit_type`           | Message type produced by the router.                      |
+| `conditions`          | Runtime-owned routing/normalization conditions.           |
+| `routing_mode`        | Strategy interpreted by the runtime implementation.       |
+| `output_message_type` | Conventional downstream completion type.                  |
+| `role`                | Semantic node role.                                       |
+| `node_type`           | Overrides the rendered node type.                         |
+| `stereotype`          | Reserved template stereotype selection; none exist in v1. |
 
 The template packages shape and behavior metadata; it does not implement
 domain routing rules in Python.

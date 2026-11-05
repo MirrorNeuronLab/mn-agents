@@ -25,10 +25,14 @@ class OperationRouterSpec:
 
 
 def load_agent_definition() -> dict[str, Any]:
-    return json.loads(files(__package__).joinpath("resources/agent.json").read_text(encoding="utf-8"))
+    return json.loads(
+        files(__package__).joinpath("resources/agent.json").read_text(encoding="utf-8")
+    )
 
 
-def create_agent(spec: OperationRouterSpec | Mapping[str, Handler | OperationBinding], **options: Any) -> Handler:
+def create_agent(
+    spec: OperationRouterSpec | Mapping[str, Handler | OperationBinding], **options: Any
+) -> Handler:
     if isinstance(spec, OperationRouterSpec):
         resolved = spec
     else:
@@ -42,7 +46,11 @@ def create_agent(spec: OperationRouterSpec | Mapping[str, Handler | OperationBin
         operation = str(name).strip()
         if not operation:
             raise ValueError("operation names must not be empty")
-        selected = binding if isinstance(binding, OperationBinding) else OperationBinding(binding)
+        selected = (
+            binding
+            if isinstance(binding, OperationBinding)
+            else OperationBinding(binding)
+        )
         if not callable(selected.handler):
             raise TypeError(f"operation {operation!r} handler must be callable")
         operations[operation] = selected
@@ -57,7 +65,9 @@ def create_agent(spec: OperationRouterSpec | Mapping[str, Handler | OperationBin
         binding = operations.get(selected_key)
         if binding is None:
             available = ", ".join(sorted(operations))
-            raise ValueError(f"unknown {resolved.label} {selected_key!r}; expected one of: {available}")
+            raise ValueError(
+                f"unknown {resolved.label} {selected_key!r}; expected one of: {available}"
+            )
         call_kwargs = {**dict(binding.bound_kwargs), **parameters}
         return binding.handler(context, **call_kwargs)
 

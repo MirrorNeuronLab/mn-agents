@@ -18,9 +18,16 @@
   "behavior": {
     "schema_version": "mn.agent.behavior.v1",
     "summary": "Dispatches a named operation to an injected strategy.",
-    "lifecycle_events": {"success": ["agent_started", "agent_completed"], "failure": ["agent_started", "agent_failed"]},
+    "lifecycle_events": {
+      "success": ["agent_started", "agent_completed"],
+      "failure": ["agent_started", "agent_failed"]
+    },
     "required_config": [],
-    "emits": {"events": [], "messages": [], "artifacts": []},
-    "delegation": {"enabled": false, "inherits_tools": false, "allow_recursive": false}
+    "emits": { "events": [], "messages": [], "artifacts": [] },
+    "delegation": {
+      "enabled": false,
+      "inherits_tools": false,
+      "allow_recursive": false
+    }
   }
 }

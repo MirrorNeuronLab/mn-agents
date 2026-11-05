@@ -92,7 +92,9 @@ class CheckpointLoop:
         )
         if not finalization_decisions:
             self.limits.pop("finalization_decisions")
-        identity = fingerprint({"binding": binding, "limits": self.limits, "progress_policy": 1})
+        identity = fingerprint(
+            {"binding": binding, "limits": self.limits, "progress_policy": 1}
+        )
         self.state = (
             json.loads(self.path.read_text())
             if self.path.exists()
@@ -116,17 +118,31 @@ class CheckpointLoop:
             self.state["elapsed"] = clock[1] + time.monotonic() - clock[0]
         atomic_json(self.path, self.state)
 
-    def run(self, propose, execute, *, cancelled=lambda: False, allowed_actions=None, progress=None, event_sink=None):
+    def run(
+        self,
+        propose,
+        execute,
+        *,
+        cancelled=lambda: False,
+        allowed_actions=None,
+        progress=None,
+        event_sink=None,
+    ):
         if self.state["stop_reason"]:
             return self.state
         guard = ProgressGuard(self.state)
         if progress is not None and not guard.state["progress"]:
             from .progress import digest
+
             guard.state["progress"] = digest(progress(self.state))
 
         def observe_progress(record):
             event = guard.observe(record, progress(self.state) if progress else None)
-            if event and event["type"] == "agent_stalled" and not self.state["stop_reason"]:
+            if (
+                event
+                and event["type"] == "agent_stalled"
+                and not self.state["stop_reason"]
+            ):
                 self.state["stop_reason"] = "investigation_stalled"
             self.save()
             if event and event_sink:
@@ -195,8 +211,12 @@ class CheckpointLoop:
                 return None
             record = self.state["records"][action.arguments["index"]]
             try:
-                if allowed_actions is not None and record["action"]["name"] not in allowed_actions(self.state):
-                    raise ValueError("action unavailable in current phase; choose from allowed_actions")
+                if allowed_actions is not None and record["action"][
+                    "name"
+                ] not in allowed_actions(self.state):
+                    raise ValueError(
+                        "action unavailable in current phase; choose from allowed_actions"
+                    )
                 if (
                     record["action"]["name"] == "invoke_skill"
                     and sum(

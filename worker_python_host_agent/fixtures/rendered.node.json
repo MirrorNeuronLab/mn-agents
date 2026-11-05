@@ -6,11 +6,7 @@
     "beacon_interval_ms": 15000,
     "beacon_missed_action": "fail_attempt",
     "beacon_timeout_ms": 45000,
-    "command": [
-      "python3",
-      "-m",
-      "mn_sdk.step_runtime"
-    ],
+    "command": ["python3", "-m", "mn_sdk.step_runtime"],
     "from": "base",
     "idempotent": true,
     "no_auto_providers": true,

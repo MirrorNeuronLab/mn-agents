@@ -7,9 +7,7 @@
     }
   ],
   "description": "Outputs emitted by mn-agents.worker.python_host.",
-  "emitted_message_types": [
-    "worker_completed"
-  ],
+  "emitted_message_types": ["worker_completed"],
   "parts": [
     {
       "kind": "data",

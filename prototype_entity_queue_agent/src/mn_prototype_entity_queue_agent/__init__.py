@@ -60,7 +60,9 @@ class EntityQueueSpec:
 
 
 def load_agent_definition() -> dict[str, Any]:
-    return json.loads(files(__package__).joinpath("resources/agent.json").read_text(encoding="utf-8"))
+    return json.loads(
+        files(__package__).joinpath("resources/agent.json").read_text(encoding="utf-8")
+    )
 
 
 def create_agent(spec: EntityQueueSpec) -> Callable[..., dict[str, Any]]:
@@ -78,7 +80,11 @@ def create_agent(spec: EntityQueueSpec) -> Callable[..., dict[str, Any]]:
             if explicit_entities is not None
             else spec.load_entities(context, **run_options)
         )
-        configured_workers = max_workers_override if max_workers_override is not None else spec.max_workers
+        configured_workers = (
+            max_workers_override
+            if max_workers_override is not None
+            else spec.max_workers
+        )
         max_workers = (
             configured_workers(context, **run_options)
             if callable(configured_workers)
@@ -87,7 +93,9 @@ def create_agent(spec: EntityQueueSpec) -> Callable[..., dict[str, Any]]:
         try:
             max_workers = int(max_workers)
         except (TypeError, ValueError) as exc:
-            raise ValueError("entity queue max_workers must resolve to an integer") from exc
+            raise ValueError(
+                "entity queue max_workers must resolve to an integer"
+            ) from exc
         if max_workers < 1:
             raise ValueError("entity queue max_workers must be positive")
         outcomes: list[EntityOutcome | None] = [None] * len(entities)

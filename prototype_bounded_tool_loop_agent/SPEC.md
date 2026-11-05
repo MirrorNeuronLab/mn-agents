@@ -2,13 +2,13 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
-| Agent ID | `mn-agents.prototype.bounded_tool_loop` |
-| Version | `1` |
-| Distribution | `mn-prototype-bounded-tool-loop-agent` |
-| Import module | `mn_prototype_bounded_tool_loop_agent` |
-| Package kind | `handler_factory` |
+| Field         | Value                                   |
+| ------------- | --------------------------------------- |
+| Agent ID      | `mn-agents.prototype.bounded_tool_loop` |
+| Version       | `1`                                     |
+| Distribution  | `mn-prototype-bounded-tool-loop-agent`  |
+| Import module | `mn_prototype_bounded_tool_loop_agent`  |
+| Package kind  | `handler_factory`                       |
 
 ## Public data types
 
@@ -81,14 +81,14 @@ callers needing failed traces must observe or persist them in injected code.
 
 ## Stop reasons and status
 
-| Condition | Stop reason | Status |
-| --- | --- | --- |
-| Proposal is `None` | `completed` | `completed` |
-| Empty plan | plan reason or `completed` | `completed` |
-| Final action | plan reason or `completed` | `completed` |
-| Plan actions finish with a reason | plan reason | `completed` |
-| Tool-call limit | `tool_call_budget_exhausted` | `partial` |
-| Iteration limit | `iteration_limit_exhausted` | `partial` |
+| Condition                         | Stop reason                  | Status      |
+| --------------------------------- | ---------------------------- | ----------- |
+| Proposal is `None`                | `completed`                  | `completed` |
+| Empty plan                        | plan reason or `completed`   | `completed` |
+| Final action                      | plan reason or `completed`   | `completed` |
+| Plan actions finish with a reason | plan reason                  | `completed` |
+| Tool-call limit                   | `tool_call_budget_exhausted` | `partial`   |
+| Iteration limit                   | `iteration_limit_exhausted`  | `partial`   |
 
 Only the two built-in limit reasons imply `partial`. Custom stop reasons remain
 `completed`. When `partial_on_limit` is false, either limit raises

@@ -2,13 +2,13 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
-| Agent ID | `mn-agents.prototype.operation_router` |
-| Version | `1` |
-| Distribution | `mn-prototype-operation-router-agent` |
-| Import module | `mn_prototype_operation_router_agent` |
-| Package kind | `handler_factory` |
+| Field         | Value                                  |
+| ------------- | -------------------------------------- |
+| Agent ID      | `mn-agents.prototype.operation_router` |
+| Version       | `1`                                    |
+| Distribution  | `mn-prototype-operation-router-agent`  |
+| Import module | `mn_prototype_operation_router_agent`  |
+| Package kind  | `handler_factory`                      |
 
 This document is normative for version 1. “Must” describes compatibility
 requirements; “should” describes recommended caller behavior.

@@ -1,1 +1,5 @@
-{"schema_version":"mn.agent.output.v1","emitted_message_types":["operation_result"],"artifacts":[]}
+{
+  "schema_version": "mn.agent.output.v1",
+  "emitted_message_types": ["operation_result"],
+  "artifacts": []
+}

@@ -2,14 +2,14 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
+| Field              | Value                               |
+| ------------------ | ----------------------------------- |
 | Template reference | `mn-agents.control.terminal_sink@1` |
-| Agent ID | `mn-agents.control.terminal_sink` |
-| Distribution | `mn-control-terminal-sink-agent` |
-| Import module | `mn_control_terminal_sink_agent` |
-| Package kind | `runtime_node` |
-| Category / kind | `control` / `aggregator` |
+| Agent ID           | `mn-agents.control.terminal_sink`   |
+| Distribution       | `mn-control-terminal-sink-agent`    |
+| Import module      | `mn_control_terminal_sink_agent`    |
+| Package kind       | `runtime_node`                      |
+| Category / kind    | `control` / `aggregator`            |
 
 ## Python API
 

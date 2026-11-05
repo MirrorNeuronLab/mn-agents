@@ -2,14 +2,14 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
+| Field              | Value                            |
+| ------------------ | -------------------------------- |
 | Template reference | `mn-agents.module.beam_module@1` |
-| Agent ID | `mn-agents.module.beam_module` |
-| Distribution | `mn-module-beam-module-agent` |
-| Import module | `mn_module_beam_module_agent` |
-| Package kind | `runtime_node` |
-| Category / kind | `data` / `module` |
+| Agent ID           | `mn-agents.module.beam_module`   |
+| Distribution       | `mn-module-beam-module-agent`    |
+| Import module      | `mn_module_beam_module_agent`    |
+| Package kind       | `runtime_node`                   |
+| Category / kind    | `data` / `module`                |
 
 ## Python and actualization API
 
@@ -19,11 +19,11 @@
 
 Required `with` fields:
 
-| Field | Contract |
-| --- | --- |
-| `module` | Non-absent runtime module identifier. |
+| Field           | Contract                                        |
+| --------------- | ----------------------------------------------- |
+| `module`        | Non-absent runtime module identifier.           |
 | `module_source` | Non-absent source path consumed by the runtime. |
-| `emit_type` | Non-absent emitted message type. |
+| `emit_type`     | Non-absent emitted message type.                |
 
 The renderer checks presence, not value type or source-file existence. Blueprint
 validation and packaging must provide those stronger guarantees.
@@ -34,7 +34,7 @@ Optional fields: `stereotype`, `node_type`, `role`, `backpressure`, and
 Rendered defaults:
 
 ```json
-{"type": "generic", "agent_type": "module", "config": {}}
+{ "type": "generic", "agent_type": "module", "config": {} }
 ```
 
 Required and optional instance fields are rendered into `config` according to

@@ -110,7 +110,9 @@ def test_actor_call_fails_closed_when_live_response_is_required() -> None:
         )
 
 
-def test_actor_factory_keeps_live_requirement_separate_from_strict_json(monkeypatch) -> None:
+def test_actor_factory_keeps_live_requirement_separate_from_strict_json(
+    monkeypatch,
+) -> None:
     monkeypatch.setenv("MN_LLM_PROVIDER", "docker_model_runner")
     monkeypatch.setenv("MN_LLM_MODEL", "default")
     config = _config()

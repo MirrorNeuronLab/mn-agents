@@ -24,9 +24,9 @@ work directory, retry safety, and `side_effect="read"`.
 
 ## Stereotypes
 
-| Stereotype | Use |
-| --- | --- |
-| `blueprint_host_worker` | Standard host-local SDK step worker. |
+| Stereotype              | Use                                            |
+| ----------------------- | ---------------------------------------------- |
+| `blueprint_host_worker` | Standard host-local SDK step worker.           |
 | `internal_write_worker` | Marks writes as internal run-artifact effects. |
 
 Stereotypes may be composed in order:

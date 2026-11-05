@@ -7,9 +7,7 @@
     }
   ],
   "description": "Outputs emitted by mn-agents.service.openshell.",
-  "emitted_message_types": [
-    "service_ready"
-  ],
+  "emitted_message_types": ["service_ready"],
   "parts": [
     {
       "kind": "data",

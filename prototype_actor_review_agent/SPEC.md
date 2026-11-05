@@ -2,13 +2,13 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
-| Agent ID | `mn-agents.prototype.actor_review` |
-| Version | `1` |
-| Distribution | `mn-prototype-actor-review-agent` |
-| Import module | `mn_prototype_actor_review_agent` |
-| Package kind | `handler_factory` |
+| Field         | Value                              |
+| ------------- | ---------------------------------- |
+| Agent ID      | `mn-agents.prototype.actor_review` |
+| Version       | `1`                                |
+| Distribution  | `mn-prototype-actor-review-agent`  |
+| Import module | `mn_prototype_actor_review_agent`  |
+| Package kind  | `handler_factory`                  |
 
 ## Public data types
 

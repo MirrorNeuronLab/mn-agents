@@ -2,13 +2,13 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
-| Agent ID | `mn-agents.prototype.stateful_step` |
-| Version | `1` |
-| Distribution | `mn-prototype-stateful-step-agent` |
-| Import module | `mn_prototype_stateful_step_agent` |
-| Package kind | `handler_factory` |
+| Field         | Value                               |
+| ------------- | ----------------------------------- |
+| Agent ID      | `mn-agents.prototype.stateful_step` |
+| Version       | `1`                                 |
+| Distribution  | `mn-prototype-stateful-step-agent`  |
+| Import module | `mn_prototype_stateful_step_agent`  |
+| Package kind  | `handler_factory`                   |
 
 This is a Python handler factory. It is not a manifest runtime-node template.
 

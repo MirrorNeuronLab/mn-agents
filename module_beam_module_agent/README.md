@@ -17,7 +17,7 @@ message type. The template standardizes the manifest shape.
     "module": "MirrorNeuron.Examples.TickSource",
     "module_source": "payloads/tick_source.ex",
     "emit_type": "tick_generated",
-    "backpressure": {"max_in_flight": 1}
+    "backpressure": { "max_in_flight": 1 }
   }
 }
 ```

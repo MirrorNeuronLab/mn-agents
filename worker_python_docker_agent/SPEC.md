@@ -2,14 +2,14 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
+| Field              | Value                              |
+| ------------------ | ---------------------------------- |
 | Template reference | `mn-agents.worker.python_docker@1` |
-| Agent ID | `mn-agents.worker.python_docker` |
-| Distribution | `mn-worker-python-docker-agent` |
-| Import module | `mn_worker_python_docker_agent` |
-| Package kind | `runtime_node` |
-| Category / kind | `data` / `executor` |
+| Agent ID           | `mn-agents.worker.python_docker`   |
+| Distribution       | `mn-worker-python-docker-agent`    |
+| Import module      | `mn_worker_python_docker_agent`    |
+| Package kind       | `runtime_node`                     |
+| Category / kind    | `data` / `executor`                |
 
 ## Required and optional inputs
 

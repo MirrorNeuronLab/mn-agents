@@ -13,11 +13,7 @@
           "schema": "mn-agents.control.message_router.output.v1"
         }
       ],
-      "events": [
-        "agent_started",
-        "agent_completed",
-        "agent_failed"
-      ],
+      "events": ["agent_started", "agent_completed", "agent_failed"],
       "messages": [
         {
           "fallback_message_type": "route_message",
@@ -26,14 +22,8 @@
       ]
     },
     "lifecycle_events": {
-      "failure": [
-        "agent_started",
-        "agent_failed"
-      ],
-      "success": [
-        "agent_started",
-        "agent_completed"
-      ]
+      "failure": ["agent_started", "agent_failed"],
+      "success": ["agent_started", "agent_completed"]
     },
     "required_config": [],
     "routing": {

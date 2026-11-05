@@ -10,4 +10,6 @@ AGENT_VERSION = 1
 
 
 def load_agent_definition() -> dict[str, Any]:
-    return json.loads(files(__package__).joinpath("resources/agent.json").read_text(encoding="utf-8"))
+    return json.loads(
+        files(__package__).joinpath("resources/agent.json").read_text(encoding="utf-8")
+    )

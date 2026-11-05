@@ -1,7 +1,5 @@
 {
-  "accepted_message_types": [
-    "actualize_agent_template"
-  ],
+  "accepted_message_types": ["actualize_agent_template"],
   "description": "Inputs accepted by mn-agents.worker.python_host.",
   "examples": [
     {
@@ -38,12 +36,8 @@
       "schema": "mn-agents.worker.python_host.input.v1"
     }
   ],
-  "required_fields": [
-    "upload_path"
-  ],
-  "required_unless_command": [
-    "script"
-  ],
+  "required_fields": ["upload_path"],
+  "required_unless_command": ["script"],
   "schema_version": "mn.agent.input.v1",
   "version": 1
 }

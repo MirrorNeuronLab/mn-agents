@@ -2,14 +2,14 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
+| Field              | Value                         |
+| ------------------ | ----------------------------- |
 | Template reference | `mn-agents.worker.llm_host@1` |
-| Agent ID | `mn-agents.worker.llm_host` |
-| Distribution | `mn-worker-llm-host-agent` |
-| Import module | `mn_worker_llm_host_agent` |
-| Package kind | `runtime_node` |
-| Category / kind | `data` / `executor` |
+| Agent ID           | `mn-agents.worker.llm_host`   |
+| Distribution       | `mn-worker-llm-host-agent`    |
+| Import module      | `mn_worker_llm_host_agent`    |
+| Package kind       | `runtime_node`                |
+| Category / kind    | `data` / `executor`           |
 
 ## Actualization contract
 

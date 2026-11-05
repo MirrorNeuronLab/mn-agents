@@ -313,9 +313,7 @@ def create_message_agent(
             **parameters,
         )
         serialized = (
-            result.get("result")
-            if isinstance(result.get("result"), dict)
-            else result
+            result.get("result") if isinstance(result.get("result"), dict) else result
         )
         payload = serialized.get("payload")
         if not isinstance(payload, Mapping):
@@ -432,9 +430,7 @@ def _normalize_agent_handler_output(value: Any) -> AgentHandlerOutput:
         return value
     if isinstance(value, Mapping):
         return AgentHandlerOutput(payload=dict(value))
-    raise TypeError(
-        "message agent handler must return AgentHandlerOutput or a mapping"
-    )
+    raise TypeError("message agent handler must return AgentHandlerOutput or a mapping")
 
 
 __all__ = [

@@ -18,7 +18,11 @@ class ActorReviewResult:
     status: str = "completed"
 
     def to_dict(self) -> dict[str, Any]:
-        return {"status": self.status, "findings": self.findings, "warnings": list(self.warnings)}
+        return {
+            "status": self.status,
+            "findings": self.findings,
+            "warnings": list(self.warnings),
+        }
 
 
 @dataclass(frozen=True)
@@ -33,24 +37,41 @@ class ActorReviewSpec:
 
 
 def load_agent_definition() -> dict[str, Any]:
-    return json.loads(files(__package__).joinpath("resources/agent.json").read_text(encoding="utf-8"))
+    return json.loads(
+        files(__package__).joinpath("resources/agent.json").read_text(encoding="utf-8")
+    )
 
 
 def create_agent(spec: ActorReviewSpec) -> Callable[..., dict[str, Any]]:
-    if isinstance(spec.failure_policy, str) and spec.failure_policy not in {"fail", "warn"}:
+    if isinstance(spec.failure_policy, str) and spec.failure_policy not in {
+        "fail",
+        "warn",
+    }:
         raise ValueError("actor review failure_policy must be fail or warn")
 
-    def run(context: Any, *, llm_client: Any | None = None, **options: Any) -> dict[str, Any]:
+    def run(
+        context: Any, *, llm_client: Any | None = None, **options: Any
+    ) -> dict[str, Any]:
         run_options = dict(options)
         actor_ids_override = run_options.pop("actor_ids", None)
-        actor_ids = actor_ids_override if actor_ids_override is not None else spec.actor_ids
+        actor_ids = (
+            actor_ids_override if actor_ids_override is not None else spec.actor_ids
+        )
         if callable(actor_ids):
             actor_ids = actor_ids(context, **run_options)
         resolved_actor_ids = [str(actor_id) for actor_id in actor_ids]
-        failure_policy = spec.failure_policy(context, **run_options) if callable(spec.failure_policy) else spec.failure_policy
+        failure_policy = (
+            spec.failure_policy(context, **run_options)
+            if callable(spec.failure_policy)
+            else spec.failure_policy
+        )
         if failure_policy not in {"fail", "warn"}:
             raise ValueError("actor review failure_policy must resolve to fail or warn")
-        review_context = spec.build_context(context, **run_options) if spec.build_context else context
+        review_context = (
+            spec.build_context(context, **run_options)
+            if spec.build_context
+            else context
+        )
         try:
             findings = spec.runner(
                 config=context.get("config", {}) if hasattr(context, "get") else {},
@@ -68,10 +89,16 @@ def create_agent(spec: ActorReviewSpec) -> Callable[..., dict[str, Any]]:
         except Exception as exc:
             if failure_policy == "fail":
                 raise
-            recovered = spec.on_error(context, exc, actor_ids=resolved_actor_ids, **run_options) if spec.on_error else None
+            recovered = (
+                spec.on_error(context, exc, actor_ids=resolved_actor_ids, **run_options)
+                if spec.on_error
+                else None
+            )
             if isinstance(recovered, ActorReviewResult):
                 result = recovered
-            elif isinstance(recovered, Mapping) and {"findings", "status"} & set(recovered):
+            elif isinstance(recovered, Mapping) and {"findings", "status"} & set(
+                recovered
+            ):
                 result = ActorReviewResult(
                     findings=recovered.get("findings", {}),
                     warnings=tuple(recovered.get("warnings") or ()),
@@ -122,9 +149,22 @@ def wrap_agent(
 
 def _call(handler: Callable[..., Any], context: Any, **options: Any) -> Any:
     parameters = inspect.signature(handler).parameters
-    if any(parameter.kind == inspect.Parameter.VAR_KEYWORD for parameter in parameters.values()):
+    if any(
+        parameter.kind == inspect.Parameter.VAR_KEYWORD
+        for parameter in parameters.values()
+    ):
         return handler(context, **options)
-    return handler(context, **{key: value for key, value in options.items() if key in parameters})
+    return handler(
+        context, **{key: value for key, value in options.items() if key in parameters}
+    )
 
 
-__all__ = ["AGENT_ID", "AGENT_VERSION", "ActorReviewResult", "ActorReviewSpec", "create_agent", "load_agent_definition", "wrap_agent"]
+__all__ = [
+    "AGENT_ID",
+    "AGENT_VERSION",
+    "ActorReviewResult",
+    "ActorReviewSpec",
+    "create_agent",
+    "load_agent_definition",
+    "wrap_agent",
+]

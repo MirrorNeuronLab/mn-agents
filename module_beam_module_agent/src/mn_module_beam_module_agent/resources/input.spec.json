@@ -1,7 +1,5 @@
 {
-  "accepted_message_types": [
-    "actualize_agent_template"
-  ],
+  "accepted_message_types": ["actualize_agent_template"],
   "description": "Inputs accepted by mn-agents.module.beam_module.",
   "examples": [
     {
@@ -27,11 +25,7 @@
       "schema": "mn-agents.module.beam_module.input.v1"
     }
   ],
-  "required_fields": [
-    "module",
-    "module_source",
-    "emit_type"
-  ],
+  "required_fields": ["module", "module_source", "emit_type"],
   "schema_version": "mn.agent.input.v1",
   "version": 1
 }

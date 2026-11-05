@@ -42,7 +42,9 @@ class ArtifactFinalizerSpec:
 
 
 def load_agent_definition() -> dict[str, Any]:
-    return json.loads(files(__package__).joinpath("resources/agent.json").read_text(encoding="utf-8"))
+    return json.loads(
+        files(__package__).joinpath("resources/agent.json").read_text(encoding="utf-8")
+    )
 
 
 def create_agent(spec: ArtifactFinalizerSpec) -> Callable[..., dict[str, Any]]:
@@ -55,10 +57,14 @@ def create_agent(spec: ArtifactFinalizerSpec) -> Callable[..., dict[str, Any]]:
         written: list[str] = []
         for artifact in bundle.writes:
             if artifact.destination not in {"run", "output", "both"}:
-                raise ValueError(f"unsupported artifact destination: {artifact.destination}")
+                raise ValueError(
+                    f"unsupported artifact destination: {artifact.destination}"
+                )
             targets = []
             if artifact.destination in {"output", "both"}:
-                targets.append(_target(output_folder, artifact.path, spec.contained_paths))
+                targets.append(
+                    _target(output_folder, artifact.path, spec.contained_paths)
+                )
             if artifact.destination in {"run", "both"}:
                 targets.append(_target(run_dir, artifact.path, spec.contained_paths))
             for target in targets:
@@ -70,9 +76,15 @@ def create_agent(spec: ArtifactFinalizerSpec) -> Callable[..., dict[str, Any]]:
         result.setdefault("final_artifact", dict(bundle.final_artifact))
         result["artifact_writes"] = written
         if spec.human_notice:
-            spec.event_writer(run_dir, "human_input_requested", {"mode": "approval_required", "reason": spec.human_notice})
+            spec.event_writer(
+                run_dir,
+                "human_input_requested",
+                {"mode": "approval_required", "reason": spec.human_notice},
+            )
         if spec.step_id:
-            complete_runtime_step(context, spec.step_id, {"artifact_count": len(written)})
+            complete_runtime_step(
+                context, spec.step_id, {"artifact_count": len(written)}
+            )
         if spec.result_builder:
             result = dict(spec.result_builder(context, result, **options))
         return result
@@ -105,11 +117,22 @@ def _target(root: Path, value: str, contained: bool) -> Path:
     resolved_root = root.expanduser().resolve()
     target = resolved_root.joinpath(*path.parts)
     resolved_parent = target.parent.resolve()
-    if resolved_parent != resolved_root and resolved_root not in resolved_parent.parents:
+    if (
+        resolved_parent != resolved_root
+        and resolved_root not in resolved_parent.parents
+    ):
         raise ValueError("artifact path escapes its destination root")
     if target.exists() and target.resolve().parent != resolved_parent:
         raise ValueError("artifact symlink escapes its destination root")
     return target
 
 
-__all__ = ["AGENT_ID", "AGENT_VERSION", "ArtifactBundle", "ArtifactFinalizerSpec", "ArtifactWrite", "create_agent", "load_agent_definition"]
+__all__ = [
+    "AGENT_ID",
+    "AGENT_VERSION",
+    "ArtifactBundle",
+    "ArtifactFinalizerSpec",
+    "ArtifactWrite",
+    "create_agent",
+    "load_agent_definition",
+]

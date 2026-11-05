@@ -7,10 +7,7 @@
     "beacon_missed_action": "fail_attempt",
     "beacon_timeout_ms": 45000,
     "cleanup_remote_dir": true,
-    "command": [
-      "python3",
-      "run_blueprint.py"
-    ],
+    "command": ["python3", "run_blueprint.py"],
     "docker_worker_image": "docker_worker",
     "environment": {
       "W3M_BROWSER_MAX_CHARS": "6000",

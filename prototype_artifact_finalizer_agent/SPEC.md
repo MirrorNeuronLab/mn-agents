@@ -2,13 +2,13 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
-| Agent ID | `mn-agents.prototype.artifact_finalizer` |
-| Version | `1` |
-| Distribution | `mn-prototype-artifact-finalizer-agent` |
-| Import module | `mn_prototype_artifact_finalizer_agent` |
-| Package kind | `handler_factory` |
+| Field         | Value                                    |
+| ------------- | ---------------------------------------- |
+| Agent ID      | `mn-agents.prototype.artifact_finalizer` |
+| Version       | `1`                                      |
+| Distribution  | `mn-prototype-artifact-finalizer-agent`  |
+| Import module | `mn_prototype_artifact_finalizer_agent`  |
+| Package kind  | `handler_factory`                        |
 
 ## Public data types
 
@@ -66,10 +66,10 @@ ArtifactFinalizerSpec(
 
 ## Write semantics
 
-| Kind | Behavior |
-| --- | --- |
-| `json` | Delegate to SDK `write_json(path, value)`. |
-| `text` | Write `str(value)` as UTF-8 to a temporary sibling, then replace. |
+| Kind    | Behavior                                                              |
+| ------- | --------------------------------------------------------------------- |
+| `json`  | Delegate to SDK `write_json(path, value)`.                            |
+| `text`  | Write `str(value)` as UTF-8 to a temporary sibling, then replace.     |
 | `bytes` | Convert with `bytes(value)`, write a temporary sibling, then replace. |
 
 Text/byte temporary names include process ID and UUID. Parent directories are

@@ -24,7 +24,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
       - name: Install source components and package test dependencies
         env:
           PIP_INDEX_URL: https://us-central1-python.pkg.dev/mirrorneuron-public-packages/agent-skills/simple/

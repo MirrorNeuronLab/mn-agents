@@ -1,7 +1,5 @@
 {
-  "accepted_message_types": [
-    "actualize_agent_template"
-  ],
+  "accepted_message_types": ["actualize_agent_template"],
   "description": "Inputs accepted by mn-agents.worker.python_docker.",
   "examples": [
     {
@@ -9,11 +7,7 @@
       "role": "public_researcher",
       "uses": "mn-agents.worker.python_docker@1",
       "with": {
-        "command": [
-          "python3",
-          "-m",
-          "mn_sdk.step_runtime"
-        ],
+        "command": ["python3", "-m", "mn_sdk.step_runtime"],
         "docker_worker_image": "docker_worker",
         "image": "mirror-neuron/example:local",
         "network": "mirror-neuron-runtime",
@@ -48,14 +42,8 @@
       "schema": "mn-agents.worker.python_docker.input.v1"
     }
   ],
-  "required_fields": [
-    "upload_path",
-    "docker_worker_image",
-    "image"
-  ],
-  "required_unless_command": [
-    "script"
-  ],
+  "required_fields": ["upload_path", "docker_worker_image", "image"],
+  "required_unless_command": ["script"],
   "schema_version": "mn.agent.input.v1",
   "version": 1
 }

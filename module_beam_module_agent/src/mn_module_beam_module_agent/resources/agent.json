@@ -13,11 +13,7 @@
           "schema": "mn-agents.module.beam_module.output.v1"
         }
       ],
-      "events": [
-        "agent_started",
-        "agent_completed",
-        "agent_failed"
-      ],
+      "events": ["agent_started", "agent_completed", "agent_failed"],
       "messages": [
         {
           "fallback_message_type": "module_completed",
@@ -26,20 +22,10 @@
       ]
     },
     "lifecycle_events": {
-      "failure": [
-        "agent_started",
-        "agent_failed"
-      ],
-      "success": [
-        "agent_started",
-        "agent_completed"
-      ]
+      "failure": ["agent_started", "agent_failed"],
+      "success": ["agent_started", "agent_completed"]
     },
-    "required_config": [
-      "module",
-      "module_source",
-      "emit_type"
-    ],
+    "required_config": ["module", "module_source", "emit_type"],
     "routing": {
       "transitions": [
         {
@@ -70,11 +56,7 @@
       "backpressure",
       "answer_node"
     ],
-    "required": [
-      "module",
-      "module_source",
-      "emit_type"
-    ]
+    "required": ["module", "module_source", "emit_type"]
   },
   "kind": "module",
   "output_spec": "output.spec.json",

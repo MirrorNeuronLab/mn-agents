@@ -4,10 +4,7 @@
   "uses": "mn-agents.worker.python_docker@1",
   "version": 1,
   "with": {
-    "command": [
-      "python3",
-      "run_blueprint.py"
-    ],
+    "command": ["python3", "run_blueprint.py"],
     "docker_worker_image": "docker_worker",
     "image": "mirror-neuron/example:local",
     "network": "mirror-neuron-runtime",

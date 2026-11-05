@@ -2,14 +2,14 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
+| Field              | Value                           |
+| ------------------ | ------------------------------- |
 | Template reference | `mn-agents.service.openshell@1` |
-| Agent ID | `mn-agents.service.openshell` |
-| Distribution | `mn-service-openshell-agent` |
-| Import module | `mn_service_openshell_agent` |
-| Package kind | `runtime_node` |
-| Category / kind | `data` / `service` |
+| Agent ID           | `mn-agents.service.openshell`   |
+| Distribution       | `mn-service-openshell-agent`    |
+| Import module      | `mn_service_openshell_agent`    |
+| Package kind       | `runtime_node`                  |
+| Category / kind    | `data` / `service`              |
 
 ## Python API
 

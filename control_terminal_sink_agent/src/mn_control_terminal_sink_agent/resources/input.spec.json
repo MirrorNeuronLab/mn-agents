@@ -1,7 +1,5 @@
 {
-  "accepted_message_types": [
-    "actualize_agent_template"
-  ],
+  "accepted_message_types": ["actualize_agent_template"],
   "description": "Inputs accepted by mn-agents.control.terminal_sink.",
   "examples": [
     {

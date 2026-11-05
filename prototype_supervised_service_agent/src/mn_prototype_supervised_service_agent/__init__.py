@@ -51,7 +51,9 @@ class SupervisedServiceSpec:
 
 
 def load_agent_definition() -> dict[str, Any]:
-    return json.loads(files(__package__).joinpath("resources/agent.json").read_text(encoding="utf-8"))
+    return json.loads(
+        files(__package__).joinpath("resources/agent.json").read_text(encoding="utf-8")
+    )
 
 
 def create_agent(spec: SupervisedServiceSpec) -> Callable[..., dict[str, Any]]:
@@ -61,12 +63,20 @@ def create_agent(spec: SupervisedServiceSpec) -> Callable[..., dict[str, Any]]:
         raise ValueError("service interval_seconds must not be negative")
     if spec.max_cycles is not None and spec.max_cycles < 1:
         raise ValueError("service max_cycles must be positive")
-    if type(spec.health_each_cycle) is not bool or type(spec.restore_signals) is not bool:
+    if (
+        type(spec.health_each_cycle) is not bool
+        or type(spec.restore_signals) is not bool
+    ):
         raise ValueError("service health/signal policies must be booleans")
     if spec.health_each_cycle and (spec.cycle is None or spec.health is None):
         raise ValueError("health_each_cycle requires cycle and health callbacks")
 
-    def run(*, context: ServiceContext | None = None, config: Mapping[str, Any] | None = None, **options: Any) -> dict[str, Any]:
+    def run(
+        *,
+        context: ServiceContext | None = None,
+        config: Mapping[str, Any] | None = None,
+        **options: Any,
+    ) -> dict[str, Any]:
         service_context = context or ServiceContext(config=config or {})
         previous_signals = _install_signal_handlers(service_context.stop_event)
         if spec.stop_file:
@@ -88,7 +98,10 @@ def create_agent(spec: SupervisedServiceSpec) -> Callable[..., dict[str, Any]]:
                         spec.health(service_context, **options)
                     spec.cycle(service_context, **options)
                     service_context.cycles_completed += 1
-                    if spec.max_cycles and service_context.cycles_completed >= spec.max_cycles:
+                    if (
+                        spec.max_cycles
+                        and service_context.cycles_completed >= spec.max_cycles
+                    ):
                         break
                     if spec.interval_seconds:
                         service_context.stop_event.wait(spec.interval_seconds)
@@ -123,4 +136,12 @@ def _install_signal_handlers(stop_event: threading.Event) -> dict:
     return previous
 
 
-__all__ = ["AGENT_ID", "AGENT_VERSION", "ServiceContext", "ServiceResult", "SupervisedServiceSpec", "create_agent", "load_agent_definition"]
+__all__ = [
+    "AGENT_ID",
+    "AGENT_VERSION",
+    "ServiceContext",
+    "ServiceResult",
+    "SupervisedServiceSpec",
+    "create_agent",
+    "load_agent_definition",
+]

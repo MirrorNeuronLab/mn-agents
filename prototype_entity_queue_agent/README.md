@@ -56,8 +56,12 @@ overrides the spec, including a callable configured in the spec.
 {
   "status": "completed",
   "outcomes": [
-    {"entity_id": "scene-1", "status": "processed", "value": {"frames": 120}},
-    {"entity_id": "scene-2", "status": "skipped"}
+    {
+      "entity_id": "scene-1",
+      "status": "processed",
+      "value": { "frames": 120 }
+    },
+    { "entity_id": "scene-2", "status": "skipped" }
   ],
   "processed_count": 1,
   "skipped_count": 1,

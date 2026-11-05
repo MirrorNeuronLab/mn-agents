@@ -2,14 +2,14 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
+| Field              | Value                                |
+| ------------------ | ------------------------------------ |
 | Template reference | `mn-agents.control.message_router@1` |
-| Agent ID | `mn-agents.control.message_router` |
-| Distribution | `mn-control-message-router-agent` |
-| Import module | `mn_control_message_router_agent` |
-| Package kind | `runtime_node` |
-| Category / kind | `control` / `router` |
+| Agent ID           | `mn-agents.control.message_router`   |
+| Distribution       | `mn-control-message-router-agent`    |
+| Import module      | `mn_control_message_router_agent`    |
+| Package kind       | `runtime_node`                       |
+| Category / kind    | `control` / `router`                 |
 
 ## Python API
 
@@ -38,7 +38,7 @@ Version 1 has no required `with` fields. Optional fields are `stereotype`,
 Rendered defaults are:
 
 ```json
-{"type": "map", "agent_type": "router", "config": {}}
+{ "type": "map", "agent_type": "router", "config": {} }
 ```
 
 Top-level `type` and `agent_type` override defaults. Role resolves from the

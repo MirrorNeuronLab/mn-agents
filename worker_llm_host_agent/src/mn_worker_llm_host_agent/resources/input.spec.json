@@ -1,7 +1,5 @@
 {
-  "accepted_message_types": [
-    "actualize_agent_template"
-  ],
+  "accepted_message_types": ["actualize_agent_template"],
   "description": "Inputs accepted by mn-agents.worker.llm_host.",
   "examples": [
     {
@@ -31,9 +29,7 @@
       "schema": "mn-agents.worker.llm_host.input.v1"
     }
   ],
-  "required_fields": [
-    "llm_config"
-  ],
+  "required_fields": ["llm_config"],
   "schema_version": "mn.agent.input.v1",
   "version": 1
 }

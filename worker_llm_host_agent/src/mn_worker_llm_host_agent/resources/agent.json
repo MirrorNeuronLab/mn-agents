@@ -13,11 +13,7 @@
           "schema": "mn-agents.worker.llm_host.output.v1"
         }
       ],
-      "events": [
-        "agent_started",
-        "agent_completed",
-        "agent_failed"
-      ],
+      "events": ["agent_started", "agent_completed", "agent_failed"],
       "messages": [
         {
           "fallback_message_type": "llm_worker_completed",
@@ -26,19 +22,10 @@
       ]
     },
     "lifecycle_events": {
-      "failure": [
-        "agent_started",
-        "agent_failed"
-      ],
-      "success": [
-        "agent_started",
-        "agent_completed"
-      ]
+      "failure": ["agent_started", "agent_failed"],
+      "success": ["agent_started", "agent_completed"]
     },
-    "required_config": [
-      "runner_module",
-      "llm_config"
-    ],
+    "required_config": ["runner_module", "llm_config"],
     "routing": {
       "transitions": [
         {
@@ -78,9 +65,7 @@
       "tools",
       "system_prompt_ref"
     ],
-    "required": [
-      "llm_config"
-    ]
+    "required": ["llm_config"]
   },
   "kind": "executor",
   "output_spec": "output.spec.json",

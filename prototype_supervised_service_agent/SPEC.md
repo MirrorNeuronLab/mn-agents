@@ -2,13 +2,13 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
-| Agent ID | `mn-agents.prototype.supervised_service` |
-| Version | `1` |
-| Distribution | `mn-prototype-supervised-service-agent` |
-| Import module | `mn_prototype_supervised_service_agent` |
-| Package kind | `handler_factory` |
+| Field         | Value                                    |
+| ------------- | ---------------------------------------- |
+| Agent ID      | `mn-agents.prototype.supervised_service` |
+| Version       | `1`                                      |
+| Distribution  | `mn-prototype-supervised-service-agent`  |
+| Import module | `mn_prototype_supervised_service_agent`  |
+| Package kind  | `handler_factory`                        |
 
 ## Public data types
 

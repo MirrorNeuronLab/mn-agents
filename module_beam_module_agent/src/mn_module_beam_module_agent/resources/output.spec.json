@@ -7,9 +7,7 @@
     }
   ],
   "description": "Outputs emitted by mn-agents.module.beam_module.",
-  "emitted_message_types": [
-    "module_completed"
-  ],
+  "emitted_message_types": ["module_completed"],
   "parts": [
     {
       "kind": "data",

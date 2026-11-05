@@ -13,11 +13,7 @@
           "schema": "mn-agents.worker.python_host.output.v1"
         }
       ],
-      "events": [
-        "agent_started",
-        "agent_completed",
-        "agent_failed"
-      ],
+      "events": ["agent_started", "agent_completed", "agent_failed"],
       "messages": [
         {
           "fallback_message_type": "worker_completed",
@@ -26,21 +22,10 @@
       ]
     },
     "lifecycle_events": {
-      "failure": [
-        "agent_started",
-        "agent_failed"
-      ],
-      "success": [
-        "agent_started",
-        "agent_completed"
-      ]
+      "failure": ["agent_started", "agent_failed"],
+      "success": ["agent_started", "agent_completed"]
     },
-    "required_config": [
-      "command",
-      "runner_module",
-      "upload_path",
-      "workdir"
-    ],
+    "required_config": ["command", "runner_module", "upload_path", "workdir"],
     "routing": {
       "transitions": [
         {
@@ -95,12 +80,8 @@
       "safe_to_retry",
       "idempotent"
     ],
-    "required": [
-      "upload_path"
-    ],
-    "required_unless_command": [
-      "script"
-    ]
+    "required": ["upload_path"],
+    "required_unless_command": ["script"]
   },
   "kind": "executor",
   "output_spec": "output.spec.json",
@@ -115,11 +96,7 @@
     "blueprint_host_worker": {
       "description": "Standard host-local blueprint worker.",
       "with": {
-        "command": [
-          "python3",
-          "-m",
-          "mn_sdk.step_runtime"
-        ],
+        "command": ["python3", "-m", "mn_sdk.step_runtime"],
         "idempotent": true,
         "safe_to_retry": true,
         "side_effect": "read",

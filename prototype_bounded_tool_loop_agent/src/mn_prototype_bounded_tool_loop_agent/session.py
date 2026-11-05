@@ -10,6 +10,7 @@ from .execution import GeneratedCodePolicy, execute_generated_python, _clean, _d
 
 ToolHandler = Callable[[dict[str, Any]], Any]
 
+
 @dataclass
 class ToolRegistry:
     allowed_tools: set[str]
@@ -36,7 +37,11 @@ class ToolRegistry:
             result = self.handlers[normalized](arguments or {})
         except Exception as exc:
             if active:
-                report_activity(f"Tool {normalized} failed ({type(exc).__name__})", kind="result", level="error")
+                report_activity(
+                    f"Tool {normalized} failed ({type(exc).__name__})",
+                    kind="result",
+                    level="error",
+                )
             raise
         if active:
             report_activity(f"Tool completed: {normalized}", kind="result")
@@ -58,13 +63,24 @@ class ToolSession:
         """Compose session tools with the package's shared bounded loop."""
         from . import ToolLoopSpec, create_agent
 
-        remaining = max(0, self.max_tool_calls - sum(item.get("kind") == "tool_call" for item in self.trace))
-        agent = create_agent(ToolLoopSpec(
-            propose_action=propose_action,
-            execute_action=lambda context, action, **options: self.use_tool(action.name, dict(action.arguments)),
-            validate_action=lambda context, action, **options: action.name in self.registry.allowed_tools,
-            max_iterations=max_iterations, max_tool_calls=remaining,
-        ))
+        remaining = max(
+            0,
+            self.max_tool_calls
+            - sum(item.get("kind") == "tool_call" for item in self.trace),
+        )
+        agent = create_agent(
+            ToolLoopSpec(
+                propose_action=propose_action,
+                execute_action=lambda context, action, **options: self.use_tool(
+                    action.name, dict(action.arguments)
+                ),
+                validate_action=lambda context, action, **options: (
+                    action.name in self.registry.allowed_tools
+                ),
+                max_iterations=max_iterations,
+                max_tool_calls=remaining,
+            )
+        )
         return agent(self.goal)
 
     def create_prompt(
@@ -75,10 +91,16 @@ class ToolSession:
         context_refs: list[str] | None = None,
         allowed_tools: list[str] | None = None,
     ) -> dict[str, Any]:
-        requested = sorted(self.registry.allowed_tools) if allowed_tools is None else allowed_tools
+        requested = (
+            sorted(self.registry.allowed_tools)
+            if allowed_tools is None
+            else allowed_tools
+        )
         unknown = sorted(set(requested) - self.registry.allowed_tools)
         if unknown:
-            raise ValueError(f"prompt requested non-allowlisted tools: {', '.join(unknown)}")
+            raise ValueError(
+                f"prompt requested non-allowlisted tools: {', '.join(unknown)}"
+            )
         prompt = self.prompt_factory(
             self.goal,
             phase=phase,
@@ -87,7 +109,9 @@ class ToolSession:
             allowed_tools=requested,
         )
         self.prompts.append(prompt)
-        self.trace.append({"kind": "prompt_created", "phase": phase, "prompt_id": prompt["prompt_id"]})
+        self.trace.append(
+            {"kind": "prompt_created", "phase": phase, "prompt_id": prompt["prompt_id"]}
+        )
         return prompt
 
     def use_tool(self, name: str, arguments: dict[str, Any] | None = None) -> Any:
@@ -124,7 +148,9 @@ class ToolSession:
             )
             raise
 
-    def execute_python(self, code: str, *, input_payload: dict[str, Any] | None = None) -> dict[str, Any]:
+    def execute_python(
+        self, code: str, *, input_payload: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         execution_id = f"generated_{sum(1 for item in self.trace if item.get('kind') == 'generated_code') + 1:03d}"
         result = execute_generated_python(
             code,
@@ -153,8 +179,10 @@ class ToolSession:
             "trace": self.trace,
             "workspace": str(self.workspace),
             "tool_budget": self.max_tool_calls,
-            "tool_calls_used": sum(1 for item in self.trace if item.get("kind") == "tool_call"),
-            "generated_code_runs": sum(1 for item in self.trace if item.get("kind") == "generated_code"),
+            "tool_calls_used": sum(
+                1 for item in self.trace if item.get("kind") == "tool_call"
+            ),
+            "generated_code_runs": sum(
+                1 for item in self.trace if item.get("kind") == "generated_code"
+            ),
         }
-
-

@@ -10,7 +10,11 @@ from .definition import AGENT_ID, AGENT_VERSION, load_agent_definition
 
 def create_agent(instance: dict[str, Any] | None = None) -> dict[str, Any]:
     definition = load_agent_definition()
-    return copy.deepcopy(definition) if instance is None else render_agent_node_from_definition(instance, definition)
+    return (
+        copy.deepcopy(definition)
+        if instance is None
+        else render_agent_node_from_definition(instance, definition)
+    )
 
 
 __all__ = ["AGENT_ID", "AGENT_VERSION", "create_agent", "load_agent_definition"]

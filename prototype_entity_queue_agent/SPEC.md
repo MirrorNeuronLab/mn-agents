@@ -2,13 +2,13 @@
 
 ## Identity
 
-| Field | Value |
-| --- | --- |
-| Agent ID | `mn-agents.prototype.entity_queue` |
-| Version | `1` |
-| Distribution | `mn-prototype-entity-queue-agent` |
-| Import module | `mn_prototype_entity_queue_agent` |
-| Package kind | `handler_factory` |
+| Field         | Value                              |
+| ------------- | ---------------------------------- |
+| Agent ID      | `mn-agents.prototype.entity_queue` |
+| Version       | `1`                                |
+| Distribution  | `mn-prototype-entity-queue-agent`  |
+| Import module | `mn_prototype_entity_queue_agent`  |
+| Package kind  | `handler_factory`                  |
 
 ## Public symbols
 
@@ -91,7 +91,7 @@ cancelled or that no other side effects occur.
 With `collect`, each processor exception becomes:
 
 ```json
-{"entity_id": "...", "status": "failed", "error": "exception text"}
+{ "entity_id": "...", "status": "failed", "error": "exception text" }
 ```
 
 Loader, ID, skip, worker-resolution, and executor-level errors always
