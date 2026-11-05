@@ -69,16 +69,16 @@ config=WebBrowserConfig(respect_robots=False,per_host_delay_seconds=0,min_text_c
 html='<html><body><article><h1>Local evidence</h1><p>Public fixture evidence is read locally for this installation test.</p></article></body></html>'
 def read(url,depth='fast'):
     return browse(url,config,depth=depth,http_fetcher=lambda url,config,timeout:{'status':'ok','html':html,'url':url,'http_status':200})
-bindings={('mirrorneuron.web.browser','browse'):read,
-          ('mirrorneuron.graph.analysis','query'):graph.query}
+bindings={('mirrorneuron-web-browser','browse'):read,
+          ('mirrorneuron-graph-analysis','query'):graph.query}
 runtime=SkillRuntime.discover(['mirrorneuron-web-browser-skill','mirrorneuron-graph-analysis-skill'],bindings)
 assert len(preparations)==1
 for skill in runtime.list_skills():
     assert runtime.read_skill(skill['id'])['manual']
-page=runtime.invoke_skill('mirrorneuron.web.browser','browse',{'url':'https://example.test','depth':'fast'})
+page=runtime.invoke_skill('mirrorneuron-web-browser','browse',{'url':'https://example.test','depth':'fast'})
 assert page['status']=='ok' and 'Public fixture evidence' in page['text']
 assert read('https://example.test')['text']==page['text']
-assert runtime.invoke_skill('mirrorneuron.graph.analysis','query',{'rgql':'MATCH (n) RETURN n LIMIT 5'})==graph.query('MATCH (n) RETURN n LIMIT 5')
+assert runtime.invoke_skill('mirrorneuron-graph-analysis','query',{'rgql':'MATCH (n) RETURN n LIMIT 5'})==graph.query('MATCH (n) RETURN n LIMIT 5')
 assert len(preparations)==1
 print('manual discovery and dual-use operations passed')
 """
