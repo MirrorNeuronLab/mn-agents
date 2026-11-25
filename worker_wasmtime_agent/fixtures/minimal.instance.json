@@ -1,0 +1,10 @@
+{
+  "node_id": "verify_scope",
+  "uses": "mn-agents.worker.wasmtime@1",
+  "with": {
+    "wasm_component": "wasm/worker.wasm",
+    "wasm_config": {
+      "operation": "admit"
+    }
+  }
+}

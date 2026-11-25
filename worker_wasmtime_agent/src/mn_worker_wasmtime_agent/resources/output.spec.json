@@ -1,0 +1,19 @@
+{
+  "artifacts": [
+    {
+      "artifact_id": "result",
+      "mime_type": "application/json",
+      "schema": "mn-agents.worker.wasmtime.output.v1"
+    }
+  ],
+  "description": "Outputs emitted by mn-agents.worker.wasmtime.",
+  "emitted_message_types": ["worker_completed"],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.worker.wasmtime.output.v1"
+    }
+  ],
+  "schema_version": "mn.agent.output.v1",
+  "version": 1
+}

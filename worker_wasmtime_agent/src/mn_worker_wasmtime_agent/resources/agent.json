@@ -1,0 +1,112 @@
+{
+  "behavior": {
+    "delegation": {
+      "allow_recursive": false,
+      "enabled": false,
+      "inherits_tools": false
+    },
+    "emits": {
+      "artifacts": [
+        {
+          "artifact_id": "result",
+          "mime_type": "application/json",
+          "schema": "mn-agents.worker.wasmtime.output.v1"
+        }
+      ],
+      "events": ["agent_started", "agent_completed", "agent_failed"],
+      "messages": [
+        {
+          "fallback_message_type": "worker_completed",
+          "message_type": "config.output_message_type"
+        }
+      ]
+    },
+    "lifecycle_events": {
+      "failure": ["agent_started", "agent_failed"],
+      "success": ["agent_started", "agent_completed"]
+    },
+    "required_config": ["wasm_component", "runner_module"],
+    "routing": {
+      "transitions": [
+        {
+          "then": {
+            "reason": "agent_completed",
+            "type": "terminate"
+          },
+          "when": {
+            "type": "always"
+          }
+        }
+      ]
+    },
+    "schema_version": "mn.agent.behavior.v1",
+    "summary": "Execute a WIT-composed WASI 0.3 command component inside Wasmtime."
+  },
+  "defaults": {
+    "agent_beacon_required": true,
+    "agent_type": "executor",
+    "beacon_enabled": true,
+    "beacon_interval_ms": 15000,
+    "beacon_missed_action": "fail_attempt",
+    "beacon_timeout_ms": 45000,
+    "pool": "default",
+    "pool_slots": 1,
+    "runner_module": "MirrorNeuron.Runner.Wasmtime",
+    "type": "generic"
+  },
+  "description": "WASI 0.3 component worker with a private invocation directory.",
+  "input_spec": "input.spec.json",
+  "inputs": {
+    "required": ["wasm_component"],
+    "optional": [
+      "wasm_inputs",
+      "wasm_config",
+      "wasm_config_fields",
+      "wasm_capabilities",
+      "wasm_optional_inputs",
+      "wit_skills",
+      "output_message_type",
+      "timeout_seconds",
+      "max_output_bytes",
+      "beacon_enabled",
+      "beacon_timeout_ms",
+      "agent_beacon_required",
+      "pool",
+      "pool_slots",
+      "safe_to_retry",
+      "idempotent",
+      "stereotype"
+    ]
+  },
+  "kind": "executor",
+  "output_spec": "output.spec.json",
+  "payloads": "payloads",
+  "provides": [
+    "runtime_shape",
+    "rendered_manifest_node",
+    "behavior_simulation"
+  ],
+  "renders_to": "manifest.nodes[]",
+  "stereotypes": {
+    "component_worker": {
+      "description": "WASI command with read-only effects outside its private invocation directory.",
+      "with": {
+        "safe_to_retry": true,
+        "idempotent": true,
+        "side_effect": "read"
+      }
+    }
+  },
+  "template_category": "data",
+  "template_id": "mn-agents.worker.wasmtime",
+  "version": 1,
+  "schema_version": "mn.agent.package.v1",
+  "package_kind": "runtime_node",
+  "agent_id": "mn-agents.worker.wasmtime",
+  "python": {
+    "distribution": "mn-worker-wasmtime-agent",
+    "module": "mn_worker_wasmtime_agent",
+    "factory": "create_agent",
+    "definition_loader": "load_agent_definition"
+  }
+}

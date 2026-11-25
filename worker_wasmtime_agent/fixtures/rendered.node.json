@@ -1,0 +1,19 @@
+{
+  "agent_type": "executor",
+  "config": {
+    "agent_beacon_required": true,
+    "beacon_enabled": true,
+    "beacon_interval_ms": 15000,
+    "beacon_missed_action": "fail_attempt",
+    "beacon_timeout_ms": 45000,
+    "pool": "default",
+    "pool_slots": 1,
+    "runner_module": "MirrorNeuron.Runner.Wasmtime",
+    "wasm_component": "wasm/worker.wasm",
+    "wasm_config": {
+      "operation": "admit"
+    }
+  },
+  "node_id": "verify_scope",
+  "type": "generic"
+}

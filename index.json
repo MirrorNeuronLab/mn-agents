@@ -12,6 +12,17 @@
       "version": 1
     },
     {
+      "agent_id": "mn-agents.worker.wasmtime",
+      "distribution": "mn-worker-wasmtime-agent",
+      "kind": "executor",
+      "module": "mn_worker_wasmtime_agent",
+      "package_kind": "runtime_node",
+      "resource_path": "worker_wasmtime_agent/src/mn_worker_wasmtime_agent/resources/agent.json",
+      "template_category": "data",
+      "template_id": "mn-agents.worker.wasmtime",
+      "version": 1
+    },
+    {
       "agent_id": "mn-agents.worker.python_docker",
       "distribution": "mn-worker-python-docker-agent",
       "kind": "executor",

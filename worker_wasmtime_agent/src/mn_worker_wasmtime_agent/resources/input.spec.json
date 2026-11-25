@@ -1,0 +1,44 @@
+{
+  "accepted_message_types": ["actualize_agent_template"],
+  "description": "Inputs accepted by mn-agents.worker.wasmtime.",
+  "examples": [
+    {
+      "node_id": "verify_scope",
+      "uses": "mn-agents.worker.wasmtime@1",
+      "with": {
+        "wasm_component": "wasm/worker.wasm",
+        "wasm_config": {
+          "operation": "admit"
+        }
+      }
+    }
+  ],
+  "optional_fields": [
+    "wasm_inputs",
+    "wasm_config",
+    "wasm_config_fields",
+    "wasm_capabilities",
+    "wasm_optional_inputs",
+    "wit_skills",
+    "output_message_type",
+    "timeout_seconds",
+    "max_output_bytes",
+    "beacon_enabled",
+    "beacon_timeout_ms",
+    "agent_beacon_required",
+    "pool",
+    "pool_slots",
+    "safe_to_retry",
+    "idempotent",
+    "stereotype"
+  ],
+  "parts": [
+    {
+      "kind": "data",
+      "schema": "mn-agents.worker.wasmtime.input.v1"
+    }
+  ],
+  "required_fields": ["wasm_component"],
+  "schema_version": "mn.agent.input.v1",
+  "version": 1
+}
