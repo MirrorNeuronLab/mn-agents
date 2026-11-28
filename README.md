@@ -1,6 +1,6 @@
 # MirrorNeuron Agents
 
-Every agent distribution requires Python 3.12 or newer. Runtime Python command defaults use Python 3.12, matching the SDK and Core HostLocal.
+The JSON catalog can be read by any language. Python wheels and handler factories require Python 3.12 or newer. Runtime Python command defaults use Python 3.12, matching the SDK and Core HostLocal.
 
 `mn-agents` is the shared, versioned catalog of MirrorNeuron runtime-node
 templates and Python handler factories. Blueprints reuse these packages instead
@@ -14,6 +14,12 @@ Every package has:
 - an exact version entry in `index.json`.
 
 Read [SPEC.md](SPEC.md) before adding or changing an agent.
+
+## Portable catalog
+
+Export a self-contained JSON catalog with `python3 scripts/export_catalog.py /tmp/mn-agents.zip`. Extract it and point `MN_AGENTS_ROOT` at the directory containing `index.json`. Passing a new directory to the exporter produces the extracted layout directly.
+
+Both SDKs resolve an exact reference such as `mn-agents.worker.wasmtime@1` through the v2 index and its relative `resource_path`. Each entry carries its original descriptor and input/output schemas. Runtime nodes can be rendered without installing a wheel. Handler factory entries describe Python callables whose execution still requires their distribution.
 
 ## Choose an agent
 
